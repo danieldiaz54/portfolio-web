@@ -41,9 +41,9 @@ const EFFECT_PARAMS: Record<Exclude<HeroEffectId, "off">, Record<string, number>
     background: 0,
     blur: 0.18,
     speed: 0.025,
-    clear: 0.38,
-    calm: 0.56,
-    calmX: 0.24,
+    clear: 0.42,
+    calm: 0.6,
+    calmX: 0.28,
     calmY: 0.48,
   },
   "grain-gradient": {

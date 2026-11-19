@@ -481,7 +481,7 @@ a {
 .stage-preview-frame {
   position: relative;
   overflow: hidden;
-  padding: 20px;
+  padding: 16px;
   cursor: pointer;
   background: color-mix(
     in srgb,
@@ -524,10 +524,10 @@ a {
 }
 
 .stage-preview-body {
-  padding: 24px 26px 26px;
+  padding: 20px 24px 22px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 .stage-preview-meta {
