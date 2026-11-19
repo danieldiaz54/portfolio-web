@@ -10,7 +10,7 @@ import {
 } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { AnimatePresence, motion, useMotionValue, useSpring } from "motion/react";
+import { motion, useMotionValue, useSpring } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import type { Project, TelemetryMap } from "@/types/project";
 import PreviewPlate from "@/components/PreviewPlate";
@@ -88,15 +88,17 @@ export default function CinemaStage({
       const st = ScrollTrigger.create({
         trigger: pinEl,
         start: "top top",
-        end: () => `+=${projects.length * 480}`,
+        end: () => `+=${projects.length * 460}`,
         pin: true,
-        scrub: 0.55,
+        pinSpacing: true,
+        scrub: 0.35,
         anticipatePin: 1,
+        invalidateOnRefresh: true,
         onUpdate: (self) => {
           pinEl.style.setProperty("--scrub-progress", self.progress.toFixed(4));
           const nextIdx = Math.min(
             projects.length - 1,
-            Math.max(0, Math.floor(self.progress * projects.length)),
+            Math.max(0, Math.floor(self.progress * projects.length * 0.9999)),
           );
           if (nextIdx !== lastIdxRef.current && Date.now() > clickLockUntil.current) {
             lastIdxRef.current = nextIdx;
@@ -127,8 +129,11 @@ export default function CinemaStage({
 
     if (syncScroll && triggerRef.current) {
       const st = triggerRef.current;
-      const targetY = st.start + ((safeIdx + 0.35) / projects.length) * (st.end - st.start);
-      scrollTo(targetY, { duration: 0.72 });
+      const targetY =
+        safeIdx === 0
+          ? st.start + 12
+          : st.start + ((safeIdx + 0.35) / projects.length) * (st.end - st.start);
+      scrollTo(targetY, { duration: 0.7 });
     }
   };
 
@@ -198,44 +203,41 @@ export default function CinemaStage({
             </div>
 
             <div className="cinema-stage-grid">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={active.slug}
-                  className="cinema-editorial-copy"
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  <p className="cinema-everyday-name">{active.everydayName}</p>
-                  <h2 id="proyectos-title" className="cinema-project-title">
-                    {active.name}
-                  </h2>
-                  <p className="cinema-problem">{active.problem}</p>
-                  <p className="cinema-outcome">{active.outcome}</p>
+              <motion.div
+                key={active.slug}
+                className="cinema-editorial-copy"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <p className="cinema-everyday-name">{active.everydayName}</p>
+                <h2 id="proyectos-title" className="cinema-project-title">
+                  {active.name}
+                </h2>
+                <p className="cinema-problem">{active.problem}</p>
+                <p className="cinema-outcome">{active.outcome}</p>
 
-                  <div className="cinema-actions">
-                    <MagneticButton>
-                      <button
-                        type="button"
-                        className="btn btn-solid"
-                        onClick={() => onOpenStudio(active.slug)}
-                      >
-                        Probar y ver cómo funciona
-                      </button>
-                    </MagneticButton>
-                    <a
-                      className="link-action"
-                      href={active.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                <div className="cinema-actions">
+                  <MagneticButton>
+                    <button
+                      type="button"
+                      className="btn btn-solid"
+                      onClick={() => onOpenStudio(active.slug)}
                     >
-                      <span>Abrir app en vivo</span>
-                      <ArrowUpRight size={15} aria-hidden="true" />
-                    </a>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
+                      Probar y ver cómo funciona
+                    </button>
+                  </MagneticButton>
+                  <a
+                    className="link-action"
+                    href={active.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span>Abrir app en vivo</span>
+                    <ArrowUpRight size={15} aria-hidden="true" />
+                  </a>
+                </div>
+              </motion.div>
 
               <div
                 className="cinema-projection"
@@ -264,34 +266,16 @@ export default function CinemaStage({
                     transformPerspective: 1200,
                   }}
                 >
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={active.slug}
-                      className="cinema-plate-float"
-                      initial={{
-                        opacity: 0,
-                        y: 22,
-                        scale: 0.94,
-                        clipPath: "inset(8% 0% 0% 0% round 12px)",
-                      }}
-                      animate={{
-                        opacity: 1,
-                        y: 0,
-                        scale: 1,
-                        clipPath: "inset(0% 0% 0% 0% round 12px)",
-                      }}
-                      exit={{
-                        opacity: 0,
-                        y: -16,
-                        scale: 0.96,
-                        clipPath: "inset(0% 0% 8% 0% round 12px)",
-                      }}
-                      transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                    >
-                      <div className="projection-specular" aria-hidden="true" />
-                      <PreviewPlate project={active} />
-                    </motion.div>
-                  </AnimatePresence>
+                  <motion.div
+                    key={active.slug}
+                    className="cinema-plate-float"
+                    initial={{ opacity: 0, y: 14, scale: 0.985 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    <div className="projection-specular" aria-hidden="true" />
+                    <PreviewPlate project={active} />
+                  </motion.div>
                 </motion.div>
               </div>
             </div>
@@ -327,10 +311,7 @@ export default function CinemaStage({
                         />
                       ) : null}
                       <span className="filmstrip-item-head">
-                        <span
-                          className={dotClass(project, telemetry)}
-                          aria-hidden="true"
-                        />
+                        <span className={dotClass(project, telemetry)} aria-hidden="true" />
                         <span className="filmstrip-name">{project.name}</span>
                       </span>
                       <span className="filmstrip-sub">{project.everydayName}</span>
@@ -356,16 +337,15 @@ export default function CinemaStage({
               style={{ "--stage-accent": project.plate.accent } as CSSProperties}
             >
               <div className="cinema-mobile-meta mono">
-                <span>{String(idx + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
+                <span>
+                  {String(idx + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
+                </span>
                 <span>{project.categoryLabel}</span>
                 <span className={dotClass(project, telemetry)} aria-hidden="true" />
               </div>
               <h3 className="cinema-mobile-title">{project.name}</h3>
               <p className="cinema-mobile-sub">{project.everydayName}</p>
-              <div
-                className="cinema-mobile-plate"
-                onClick={() => onOpenStudio(project.slug)}
-              >
+              <div className="cinema-mobile-plate" onClick={() => onOpenStudio(project.slug)}>
                 <PreviewPlate project={project} />
               </div>
               <p className="cinema-problem">{project.problem}</p>

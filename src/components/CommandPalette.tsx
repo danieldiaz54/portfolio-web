@@ -18,8 +18,11 @@ interface PaletteItem {
   id: string;
   label: string;
   sub: string;
+  keywords?: string;
   run: () => void;
 }
+
+const SHADER_KEYWORDS = "shader webgl glsl fondo atmosfera";
 
 export default function CommandPalette({
   open,
@@ -39,6 +42,7 @@ export default function CommandPalette({
       id: `studio-${project.slug}`,
       label: `${project.name} — ${project.everydayName}`,
       sub: project.matrix.paradigm,
+      keywords: `${project.categoryLabel} ${project.stack.join(" ")}`,
       run: () => {
         onOpenStudio(project.slug);
         onClose();
@@ -50,6 +54,7 @@ export default function CommandPalette({
         id: "action-ping",
         label: "Comprobar salud en vivo (Railway)",
         sub: "5 servicios",
+        keywords: "health ping railway estado",
         run: () => {
           onPingAll();
           onClose();
@@ -59,6 +64,7 @@ export default function CommandPalette({
         id: "fx-prism",
         label: "Atmósfera: Prisma espectral WebGL",
         sub: heroEffect === "prism-dispersion" ? "Activo" : "Cambiar",
+        keywords: `${SHADER_KEYWORDS} prism`,
         run: () => {
           onChangeHeroEffect("prism-dispersion");
           onClose();
@@ -68,6 +74,7 @@ export default function CommandPalette({
         id: "fx-spotlight",
         label: "Atmósfera: Reflector escénico WebGL",
         sub: heroEffect === "spotlight-cone" ? "Activo" : "Cambiar",
+        keywords: `${SHADER_KEYWORDS} spotlight`,
         run: () => {
           onChangeHeroEffect("spotlight-cone");
           onClose();
@@ -77,6 +84,7 @@ export default function CommandPalette({
         id: "fx-rays",
         label: "Atmósfera: Haces de luz WebGL",
         sub: heroEffect === "god-rays" ? "Activo" : "Cambiar",
+        keywords: `${SHADER_KEYWORDS} rays god-rays`,
         run: () => {
           onChangeHeroEffect("god-rays");
           onClose();
@@ -86,6 +94,7 @@ export default function CommandPalette({
         id: "fx-fluted",
         label: "Atmósfera: Vidrio estriado WebGL",
         sub: heroEffect === "fluted-glass" ? "Activo" : "Cambiar",
+        keywords: `${SHADER_KEYWORDS} fluted-glass`,
         run: () => {
           onChangeHeroEffect("fluted-glass");
           onClose();
@@ -95,6 +104,7 @@ export default function CommandPalette({
         id: "fx-grid",
         label: "Atmósfera: Señales sobre retícula",
         sub: heroEffect === "grid-pulse" ? "Activo" : "Cambiar",
+        keywords: `${SHADER_KEYWORDS} grid-pulse`,
         run: () => {
           onChangeHeroEffect("grid-pulse");
           onClose();
@@ -104,6 +114,7 @@ export default function CommandPalette({
         id: "fx-contour",
         label: "Atmósfera: Curvas topográficas GLSL",
         sub: heroEffect === "contour-lines" ? "Activo" : "Cambiar",
+        keywords: `${SHADER_KEYWORDS} contour-lines`,
         run: () => {
           onChangeHeroEffect("contour-lines");
           onClose();
@@ -113,6 +124,7 @@ export default function CommandPalette({
         id: "fx-off",
         label: "Atmósfera: Obsidiana pura sin shader",
         sub: heroEffect === "off" ? "Activo" : "Cambiar",
+        keywords: `${SHADER_KEYWORDS} off apagado`,
         run: () => {
           onChangeHeroEffect("off");
           onClose();
@@ -127,7 +139,9 @@ export default function CommandPalette({
     }
     return all.filter(
       (item) =>
-        item.label.toLowerCase().includes(needle) || item.sub.toLowerCase().includes(needle),
+        item.label.toLowerCase().includes(needle) ||
+        item.sub.toLowerCase().includes(needle) ||
+        Boolean(item.keywords && item.keywords.toLowerCase().includes(needle)),
     );
   }, [projects, heroEffect, query, onOpenStudio, onPingAll, onChangeHeroEffect, onClose]);
 
@@ -144,11 +158,9 @@ export default function CommandPalette({
       }
     };
     document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
     return () => {
       window.cancelAnimationFrame(frame);
       document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
     };
   }, [open, onClose]);
 

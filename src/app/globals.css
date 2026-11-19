@@ -113,7 +113,7 @@ a {
   left: -9999px;
 }
 
-.skip-link:focus {
+.skip-link:focus-visible {
   left: 16px;
   top: 16px;
   background: var(--ink);
@@ -185,7 +185,24 @@ a {
   right: 0;
   z-index: 30;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(6, 8, 13, 0.72) 0%, rgba(6, 8, 13, 0) 100%);
+}
+
+.hud-nav::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 -22px 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 8, 13, 0.96) 0%,
+    rgba(6, 8, 13, 0.86) 64%,
+    rgba(6, 8, 13, 0) 100%
+  );
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  mask-image: linear-gradient(180deg, #000 72%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, #000 72%, transparent 100%);
 }
 
 .hud-nav-inner {
@@ -665,7 +682,7 @@ a {
 .filmstrip {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 12px;
+  gap: 10px;
 }
 
 .filmstrip-item {
@@ -678,7 +695,7 @@ a {
   color: var(--graphite);
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   transition: color 180ms var(--ease);
 }
 
@@ -713,12 +730,11 @@ a {
 }
 
 .filmstrip-sub {
-  font-size: 12px;
+  font-size: 11px;
+  line-height: 1.3;
   color: var(--graphite);
-  padding-left: 16px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  padding-left: 0;
+  white-space: normal;
 }
 
 /* Carril vertical móvil (0 tarjetas) */
@@ -1084,6 +1100,7 @@ a {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .studio-page {
@@ -1793,8 +1810,12 @@ a {
 }
 
 .section-finale {
-  padding-top: 120px;
-  padding-bottom: 84px;
+  min-height: calc(100svh - 140px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 112px;
+  padding-bottom: 48px;
 }
 
 .cinema-finale {
@@ -1879,9 +1900,10 @@ a {
 }
 
 .cmdk-list {
-  max-height: min(60vh, 420px);
+  max-height: min(62vh, 480px);
   overflow-y: auto;
-  padding: 6px 0;
+  padding: 8px 0;
+  overscroll-behavior: contain;
 }
 
 .cmdk-group-label {

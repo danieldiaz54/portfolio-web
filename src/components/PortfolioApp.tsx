@@ -66,7 +66,7 @@ async function probeService(project: Project): Promise<TelemetryEntry> {
 }
 
 export default function PortfolioApp() {
-  const { scrollTo } = useSmoothScroll();
+  const { scrollTo, stop, start } = useSmoothScroll();
   const mainRef = useRef<HTMLElement>(null);
   const heroSectionRef = useRef<HTMLElement>(null);
   const heroInnerRef = useRef<HTMLDivElement>(null);
@@ -180,7 +180,7 @@ export default function PortfolioApp() {
     return () => ctx.revert();
   }, []);
 
-  // Cámara dolly-through de Hero + rastreo continuo de sección activa sobre el lienzo fijo
+  // Transición fluida sin pin en Hero + rastreo exacto de sección activa
   useEffect(() => {
     const heroEl = heroSectionRef.current;
     const heroInner = heroInnerRef.current;
@@ -197,21 +197,18 @@ export default function PortfolioApp() {
         scrollTrigger: {
           trigger: heroEl,
           start: "top top",
-          end: "+=55%",
-          pin: true,
-          pinSpacing: true,
-          scrub: 0.6,
-          anticipatePin: 1,
+          end: "bottom top",
+          scrub: 0.45,
+          invalidateOnRefresh: true,
         },
       });
 
       heroTl.to(
         heroInner,
         {
-          scale: 1.06,
-          y: -28,
-          opacity: 0,
-          filter: "blur(8px)",
+          y: -44,
+          scale: 0.96,
+          opacity: 0.08,
           ease: "none",
         },
         0,
@@ -223,7 +220,7 @@ export default function PortfolioApp() {
           {
             opacity: 0,
             y: 12,
-            duration: 0.28,
+            duration: 0.3,
             ease: "none",
           },
           0,
@@ -250,6 +247,7 @@ export default function PortfolioApp() {
           trigger: el,
           start: "top 45%",
           end: "bottom 45%",
+          invalidateOnRefresh: true,
           onEnter: () => setActiveSection(id),
           onEnterBack: () => setActiveSection(id),
           onLeaveBack: idx === 0 ? () => setActiveSection("hero") : undefined,
@@ -264,6 +262,20 @@ export default function PortfolioApp() {
   }, []);
 
   const studioProject = PROJECTS.find((project) => project.slug === studioSlug) ?? null;
+  const anyModalOpen = Boolean(studioProject) || cmdkOpen;
+
+  // Congela completamente Lenis y scroll de fondo mientras un modal está abierto
+  useEffect(() => {
+    if (!anyModalOpen) {
+      return undefined;
+    }
+    stop();
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+      start();
+    };
+  }, [anyModalOpen, stop, start]);
 
   useEffect(() => {
     if (!studioProject) {
@@ -275,10 +287,8 @@ export default function PortfolioApp() {
       }
     };
     document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
     return () => {
       document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
     };
   }, [studioProject]);
 
@@ -299,7 +309,10 @@ export default function PortfolioApp() {
 
   const handleHeroScrollLink = (event: MouseEvent<HTMLAnchorElement>, targetId: string) => {
     event.preventDefault();
-    scrollTo(`#${targetId}`, { duration: 0.95 });
+    scrollTo(`#${targetId}`, {
+      offset: targetId === "proyectos" ? 0 : -24,
+      duration: 0.9,
+    });
   };
 
   const activeProject = PROJECTS.find((project) => project.slug === selectedSlug) ?? PROJECTS[0];
