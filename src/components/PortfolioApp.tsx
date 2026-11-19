@@ -1,6 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { AnimatePresence, motion } from "motion/react";
+import { ArrowDown, ArrowRight, ArrowUpRight, Check, Copy } from "lucide-react";
 import type { HeroEffectId, Project, TelemetryEntry, TelemetryMap } from "@/types/project";
 import { OWNER, PROJECTS, SUPPORTING_REPO } from "@/data/projects";
 import Navbar from "@/components/Navbar";
@@ -8,6 +11,11 @@ import HeroShader from "@/components/HeroShader";
 import ProjectIndex from "@/components/ProjectIndex";
 import ProjectStudio from "@/components/ProjectStudio";
 import CommandPalette from "@/components/CommandPalette";
+import ScrollProgressBar from "@/components/ScrollProgressBar";
+import MagneticButton from "@/components/MagneticButton";
+import KineticManifesto from "@/components/KineticManifesto";
+
+const HERO_TITLE_WORDS = ["Software", "claro", "para", "usar,", "sólido", "por", "dentro."];
 
 const CRITERIA: readonly { title: string; text: string }[] = [
   {
@@ -49,7 +57,8 @@ async function probeService(project: Project): Promise<TelemetryEntry> {
 }
 
 export default function PortfolioApp() {
-  const [heroEffect, setHeroEffect] = useState<HeroEffectId>("grid-pulse");
+  const heroRef = useRef<HTMLDivElement>(null);
+  const [heroEffect, setHeroEffect] = useState<HeroEffectId>("fluted-glass");
   const [selectedSlug, setSelectedSlug] = useState<string>(PROJECTS[0].slug);
   const [studioSlug, setStudioSlug] = useState<string | null>(null);
   const [cmdkOpen, setCmdkOpen] = useState<boolean>(false);
@@ -81,6 +90,20 @@ export default function PortfolioApp() {
   }, [pingAll]);
 
   useEffect(() => {
+    if (typeof window === "undefined") {
+      return undefined;
+    }
+    const hash = window.location.hash;
+    let hashFrame = 0;
+    if (hash.startsWith("#estudio-")) {
+      const slug = hash.slice("#estudio-".length);
+      if (PROJECTS.some((item) => item.slug === slug)) {
+        hashFrame = window.requestAnimationFrame(() => {
+          setSelectedSlug(slug);
+          setStudioSlug(slug);
+        });
+      }
+    }
     const onGlobalKey = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
@@ -88,7 +111,57 @@ export default function PortfolioApp() {
       }
     };
     window.addEventListener("keydown", onGlobalKey);
-    return () => window.removeEventListener("keydown", onGlobalKey);
+    return () => {
+      if (hashFrame) {
+        window.cancelAnimationFrame(hashFrame);
+      }
+      window.removeEventListener("keydown", onGlobalKey);
+    };
+  }, []);
+
+  useEffect(() => {
+    const scope = heroRef.current;
+    if (!scope || typeof window === "undefined") {
+      return undefined;
+    }
+    const reduced =
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      return undefined;
+    }
+
+    const ctx = gsap.context(() => {
+      const words = scope.querySelectorAll<HTMLElement>(".hero-word-inner");
+      const subElements = scope.querySelectorAll<HTMLElement>(".hero-thesis, .hero-actions");
+      gsap.fromTo(
+        words,
+        { yPercent: 110, opacity: 0 },
+        {
+          yPercent: 0,
+          opacity: 1,
+          duration: 0.72,
+          stagger: 0.045,
+          ease: "power3.out",
+          clearProps: "transform,opacity",
+        },
+      );
+      gsap.fromTo(
+        subElements,
+        { y: 16, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.65,
+          delay: 0.2,
+          stagger: 0.08,
+          ease: "power3.out",
+          clearProps: "transform,opacity",
+        },
+      );
+    }, scope);
+
+    return () => ctx.revert();
   }, []);
 
   const studioProject = PROJECTS.find((project) => project.slug === studioSlug) ?? null;
@@ -116,7 +189,8 @@ export default function PortfolioApp() {
   }, []);
 
   const copyPortfolioLink = useCallback(() => {
-    const url = typeof window !== "undefined" ? window.location.origin + window.location.pathname : "";
+    const url =
+      typeof window !== "undefined" ? window.location.origin + window.location.pathname : "";
     if (navigator.clipboard && url) {
       void navigator.clipboard.writeText(url);
     }
@@ -126,6 +200,7 @@ export default function PortfolioApp() {
 
   return (
     <>
+      <ScrollProgressBar />
       <a className="skip-link" href="#proyectos">
         Saltar a los proyectos
       </a>
@@ -134,20 +209,31 @@ export default function PortfolioApp() {
       <main>
         <section className="hero" aria-labelledby="hero-title">
           <HeroShader effect={heroEffect} />
-          <div className="shell">
+          <div className="shell" ref={heroRef}>
             <h1 id="hero-title" className="hero-title">
-              Software claro para usar, sólido por dentro.
+              {HERO_TITLE_WORDS.map((word, idx) => (
+                <span key={`${word}-${idx}`}>
+                  <span className="hero-word-mask">
+                    <span className="hero-word-inner">{word}</span>
+                  </span>
+                  {idx < HERO_TITLE_WORDS.length - 1 ? " " : ""}
+                </span>
+              ))}
             </h1>
             <p className="hero-thesis">
               Soy {OWNER.name}, ingeniero full-stack. Diseñé seis aplicaciones cotidianas —cada una
               con su propia arquitectura y base de datos— que puedes probar en vivo aquí mismo.
             </p>
             <div className="hero-actions">
-              <a className="btn btn-solid" href="#proyectos">
-                Explorar los proyectos
-              </a>
+              <MagneticButton>
+                <a className="btn btn-solid" href="#proyectos">
+                  <span>Explorar los proyectos</span>
+                  <ArrowDown size={15} aria-hidden="true" />
+                </a>
+              </MagneticButton>
               <a className="link-action" href="#criterio">
-                Cómo trabajo
+                <span>Cómo trabajo</span>
+                <ArrowRight size={15} aria-hidden="true" />
               </a>
             </div>
           </div>
@@ -158,8 +244,8 @@ export default function PortfolioApp() {
             <div className="section-intro">
               <h2 id="proyectos-title">Proyectos</h2>
               <p>
-                Selecciona cualquiera para ver qué resuelve y abre su estudio para probarlo por dentro,
-                entender sus flujos de falla o revisar su código.
+                Recorre o selecciona cualquiera para ver qué resuelve y abre su estudio para probarlo
+                por dentro, explorar sus flujos de falla o revisar su código.
               </p>
             </div>
             <ProjectIndex
@@ -178,6 +264,7 @@ export default function PortfolioApp() {
               <h2 id="criterio-title">Cómo diseño y construyo software</h2>
               <p>Un mismo método para las seis obras, sin repetir arquitectura ni estética.</p>
             </div>
+            <KineticManifesto text="Cada producto empieza por el problema humano real, aísla su dominio puro de la infraestructura y demuestra su comportamiento bajo falla." />
             <div className="criteria-list">
               {CRITERIA.map((item) => (
                 <div className="criteria-row" key={item.title}>
@@ -199,16 +286,29 @@ export default function PortfolioApp() {
                 </p>
               </div>
               <div className="contact-actions">
-                <a
-                  className="btn btn-solid"
-                  href={OWNER.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  GitHub ↗
-                </a>
+                <MagneticButton>
+                  <a
+                    className="btn btn-solid"
+                    href={OWNER.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span>GitHub</span>
+                    <ArrowUpRight size={15} aria-hidden="true" />
+                  </a>
+                </MagneticButton>
                 <button type="button" className="btn" onClick={copyPortfolioLink}>
-                  {copied ? "Enlace copiado ✓" : "Copiar enlace del portafolio"}
+                  {copied ? (
+                    <>
+                      <Check size={15} aria-hidden="true" />
+                      <span>Enlace copiado</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={15} aria-hidden="true" />
+                      <span>Copiar enlace del portafolio</span>
+                    </>
+                  )}
                 </button>
               </div>
             </div>
@@ -228,31 +328,43 @@ export default function PortfolioApp() {
         </div>
       </footer>
 
-      {studioProject ? (
-        <div
-          className="studio-overlay"
-          role="presentation"
-          onClick={() => setStudioSlug(null)}
-        >
-          <aside
-            className="studio-sheet"
-            role="dialog"
-            aria-modal="true"
-            aria-label={`Estudio de ${studioProject.name}`}
-            onClick={(event) => event.stopPropagation()}
+      <AnimatePresence>
+        {studioProject ? (
+          <motion.div
+            className="studio-overlay"
+            data-lenis-prevent
+            role="presentation"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setStudioSlug(null)}
           >
-            <ProjectStudio
-              project={studioProject}
-              allProjects={PROJECTS}
-              mode="modal"
-              telemetry={telemetry}
-              onPingProject={(slug) => void pingOne(slug)}
-              onClose={() => setStudioSlug(null)}
-              onNavigate={openStudio}
-            />
-          </aside>
-        </div>
-      ) : null}
+            <motion.aside
+              className="studio-sheet"
+              data-lenis-prevent
+              role="dialog"
+              aria-modal="true"
+              aria-label={`Estudio de ${studioProject.name}`}
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", stiffness: 320, damping: 34 }}
+              onClick={(event) => event.stopPropagation()}
+            >
+              <ProjectStudio
+                project={studioProject}
+                allProjects={PROJECTS}
+                mode="modal"
+                telemetry={telemetry}
+                onPingProject={(slug) => void pingOne(slug)}
+                onClose={() => setStudioSlug(null)}
+                onNavigate={openStudio}
+              />
+            </motion.aside>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
 
       <CommandPalette
         open={cmdkOpen}

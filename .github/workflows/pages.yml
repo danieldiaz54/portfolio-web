@@ -24,13 +24,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: if [ -f package-lock.json ]; then npm ci; else npm install; fi
+
+      - name: Build static Next.js export
+        env:
+          STATIC_EXPORT: "1"
+          NEXT_PUBLIC_BASE_PATH: "/portfolio-web"
+        run: npm run build
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
       - name: Upload static artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "./public"
+          path: "./out"
 
       - name: Deploy to GitHub Pages
         id: deployment

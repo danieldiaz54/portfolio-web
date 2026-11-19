@@ -16,7 +16,12 @@ export type PreviewKind =
 
 export type Hosting = "GitHub Pages" | "Railway";
 
-export type HeroEffectId = "grid-pulse" | "contour-lines" | "off";
+export type HeroEffectId =
+  | "fluted-glass"
+  | "grain-gradient"
+  | "grid-pulse"
+  | "contour-lines"
+  | "off";
 
 export type TelemetryStatus = "idle" | "checking" | "live" | "local" | "degraded";
 
