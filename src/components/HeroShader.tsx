@@ -33,23 +33,23 @@ const GALLERY_PALETTE: FxPalette = {
 
 const EFFECT_PARAMS: Record<Exclude<HeroEffectId, "off">, Record<string, number>> = {
   "grid-pulse": {
-    cell: 52,
-    lineOpacity: 0.14,
-    pulses: 7,
-    tail: 2.8,
-    speed: 145,
-    calm: 0.38,
-    calmX: 0.22,
+    cell: 56,
+    lineOpacity: 0.09,
+    pulses: 4,
+    tail: 2.4,
+    speed: 110,
+    calm: 0.62,
+    calmX: 0.3,
     calmY: 0.45,
   },
   "contour-lines": {
-    levels: 22,
-    opacity: 0.34,
+    levels: 20,
+    opacity: 0.24,
     indexEvery: 5,
-    speed: 0.025,
-    tint: 0.65,
-    calm: 0.45,
-    calmX: 0.22,
+    speed: 0.02,
+    tint: 0.55,
+    calm: 0.62,
+    calmX: 0.3,
     calmY: 0.45,
   },
 };
@@ -96,7 +96,7 @@ export default function HeroShader({ effect }: { effect: HeroEffectId }) {
         handle = mounted;
       })
       .catch(() => {
-        // Degradación silenciosa: permanece el lienzo base #F7F7F5
+        // Permanece el lienzo de papel #F7F7F5
       });
 
     return () => {
