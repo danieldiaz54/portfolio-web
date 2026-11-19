@@ -10,6 +10,7 @@ Skills y librerías aplicadas: `gpt-taste` (dolly & pinning editorial), `design-
   - Layer cromático reactivo `.cinema-chroma-wash` sincronizado con `--scene-accent` + viñeta lateral protectora.
 - **Arquitectura abierta sin cajas:**
   - **Barra HUD abierta (`.hud-nav`):** tipografía en esquina izquierda (`Daniel Díaz`) y derecha (`Obras`, `Método`, `Contacto`, `⌘K`) con único subrayado `1px` móvil (`layoutId="hud-underline"`).
+  - **Hero editorial con retrato 4:5 (`.hero-layout` + `.hero-portrait`):** presentación en dos columnas sobre el lienzo obsidiana sin cajas ni recargamiento, con fotografía `880×1100` (`public/images/daniel-diaz.jpg`), bisel `1px` sutil, revelación `clip-path` y adaptación horizontal compacta en móvil.
   - **Proyección 3D sin marco (`.cinema-projection`):** `<PreviewPlate />` flota sin tarjeta blanca alrededor, manteniendo intacta la paleta individual de cada producto y emitiendo sombra volumétrica del acento de la obra.
   - **Tira cinematográfica inferior (`.filmstrip`):** 6 capítulos horizontales sobre filete único láser (`--scrub-progress`).
   - **Editorial Method (`#criterio`) & Finale (`#contacto`):** filas suizas con filetes `1px` dibujados en scroll y tipografía abierta gigante `Conversemos.`.

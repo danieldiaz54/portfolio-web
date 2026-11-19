@@ -8,10 +8,10 @@ const nextConfig = {
   output: isStaticExport ? "export" : "standalone",
   reactStrictMode: true,
   poweredByHeader: false,
+  images: { unoptimized: true },
   ...(isStaticExport
     ? {
         trailingSlash: true,
-        images: { unoptimized: true },
         ...(basePath ? { basePath, assetPrefix: basePath } : {}),
       }
     : {}),
