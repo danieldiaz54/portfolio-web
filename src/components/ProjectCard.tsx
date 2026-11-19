@@ -68,24 +68,36 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </div>
       </div>
 
-      <div className="mt-6 flex items-center justify-between border-t border-slate-800/80 pt-4">
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-slate-800/80 pt-4">
         <Link
           href={`/projects/${project.slug}`}
           className="inline-flex items-center gap-1.5 text-sm font-medium text-accent-cyan hover:underline"
         >
-          <span>Ver Case Study y Diagrama</span>
+          <span>Ver Case Study</span>
           <ArrowUpRight className="h-4 w-4" />
         </Link>
 
-        <a
-          href={project.repoUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-slate-200 transition-colors"
-        >
-          <GitBranch className="h-3.5 w-3.5" />
-          <span>Repo</span>
-        </a>
+        <div className="flex items-center gap-3">
+          <a
+            href={project.liveUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-accent-emerald hover:bg-emerald-500/20 transition-colors"
+          >
+            <span>Demo en Vivo</span>
+            <ArrowUpRight className="h-3.5 w-3.5" />
+          </a>
+
+          <a
+            href={project.repoUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-slate-200 transition-colors"
+          >
+            <GitBranch className="h-3.5 w-3.5" />
+            <span>Repo</span>
+          </a>
+        </div>
       </div>
     </article>
   );

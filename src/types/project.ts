@@ -31,4 +31,5 @@ export interface ProjectCaseStudy {
   mermaidDiagram: string;
   adrHighlights: ArchitectureDecision[];
   repoUrl: string;
+  liveUrl: string;
 }

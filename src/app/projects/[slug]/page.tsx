@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, CheckCircle2, GitBranch, Layers } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, CheckCircle2, GitBranch, Layers } from "lucide-react";
 import { PROJECTS, getProjectBySlug } from "@/data/projects";
 
 interface ProjectPageProps {
@@ -79,12 +79,21 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
           ))}
         </div>
 
-        <div className="mt-6 border-t border-slate-800 pt-5">
+        <div className="mt-6 flex flex-wrap gap-3 border-t border-slate-800 pt-5">
+          <a
+            href={project.liveUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-xl bg-accent-emerald px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-emerald-300 transition-colors"
+          >
+            <span>Demo en Vivo</span>
+            <ArrowUpRight className="h-4 w-4" />
+          </a>
           <a
             href={project.repoUrl}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-xl bg-accent-cyan px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-cyan-300 transition-colors"
+            className="inline-flex items-center gap-2 rounded-xl border border-cyan-500/40 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-accent-cyan hover:bg-cyan-500/20 transition-colors"
           >
             <GitBranch className="h-4 w-4" />
             <span>Ver Repositorio Público ({project.slug})</span>
