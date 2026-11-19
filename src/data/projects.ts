@@ -1,7 +1,7 @@
 import type { ProjectCaseStudy } from "@/types/project";
 
 const GITHUB_USERNAME =
-  process.env.NEXT_PUBLIC_GITHUB_USERNAME?.trim() || "daniel-dev";
+  process.env.NEXT_PUBLIC_GITHUB_USERNAME?.trim() || "danieldiaz54";
 
 export const PROJECTS: ProjectCaseStudy[] = [
   {

@@ -12,9 +12,10 @@ __pycache__/
 # Testing & Coverage
 /coverage
 
-# Next.js
+# Next.js & Netlify
 /.next/
 /out/
+/.netlify/
 
 # Production
 /build
