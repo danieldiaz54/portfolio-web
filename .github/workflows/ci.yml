@@ -36,3 +36,6 @@ jobs:
 
       - name: Build Next.js application
         run: npm run build
+
+      - name: Run contract & security tests
+        run: python3 -m unittest discover -s tests -v
