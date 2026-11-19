@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Daniel Díaz — Exposición de ingeniería: seis productos, seis arquitecturas</title>
+  <meta name="description" content="Portafolio de ingeniería de software: seis productos en vivo, cada uno con su propia arquitectura, identidad visual y ficha de decisiones técnicas." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Bricolage+Grotesque:wght@700&family=Bodoni+Moda:ital,wght@1,600&family=Sora:wght@700&family=Source+Serif+4:wght@400;700&family=Albert+Sans:wght@700&family=Bitter:wght@700&display=swap" />
+  <!-- Generado por scripts/sync_static_hub.py a partir de src/app/globals.css y src/data/projects.ts. No editar a mano. -->
+  <style>
+/*@@CSS@@*/
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#exposicion">Saltar a la exposición</a>
+  <header class="masthead">
+    <div class="shell masthead-inner">
+      <a href="#" class="wordmark">Daniel Díaz <span class="mono">/ Exposición</span></a>
+      <nav aria-label="Secciones" class="mono">
+        <a href="#exposicion">Exposición</a>
+        <a href="#matriz" class="hide-sm">Matriz</a>
+        <a href="#metodo" class="hide-sm">Método</a>
+        <a href="https://github.com/danieldiaz54" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="shell">
+        <p class="hero-kicker mono">Daniel Díaz — Ingeniero de software full-stack</p>
+        <h1 id="hero-title" class="hero-title">Seis problemas cotidianos. <em>Seis arquitecturas.</em></h1>
+        <div class="hero-grid">
+          <div>
+            <p class="hero-thesis">Diseño y construyo sistemas completos —del dominio a la interfaz— y explico cada decisión con su costo.</p>
+            <div class="hero-actions">
+              <a class="btn btn-solid" href="#exposicion">Ver la exposición ↓</a>
+              <a class="btn" href="https://github.com/danieldiaz54" target="_blank" rel="noopener noreferrer">GitHub</a>
+            </div>
+          </div>
+          <div class="hero-figures">
+            <div><strong id="fig-live">6</strong><span class="mono">Productos en vivo</span></div>
+            <div><strong id="fig-paradigms">6</strong><span class="mono">Paradigmas</span></div>
+            <div><strong>100%</strong><span class="mono">Con CI y pruebas</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="exposicion" class="section" aria-labelledby="exposicion-title">
+      <div class="shell">
+        <div class="section-head">
+          <h2 id="exposicion-title">I — Exposición</h2>
+          <p>Cada placa muestra el producto con su propia paleta y tipografía. Ábrela para leer la ficha: el problema, la decisión que tomé, la alternativa que descarté y lo que cambiaría.</p>
+        </div>
+        <div class="filters" role="tablist" aria-label="Filtrar por tipo de sistema" id="filters"></div>
+        <div class="exhibit-grid" id="exhibit-grid"></div>
+      </div>
+    </section>
+
+    <section id="matriz" class="section" aria-labelledby="matriz-title">
+      <div class="shell">
+        <div class="section-head">
+          <h2 id="matriz-title">II — Matriz de paradigmas</h2>
+          <p>Ningún proyecto repite arquitectura. La matriz resume cómo cada uno guarda sus datos y qué garantía de consistencia ofrece.</p>
+        </div>
+        <div class="matrix-wrap">
+          <table class="matrix">
+            <thead>
+              <tr>
+                <th scope="col">Producto</th><th scope="col">Paradigma</th><th scope="col">Persistencia</th>
+                <th scope="col">Consistencia</th><th scope="col">Despliegue</th><th scope="col">Pruebas</th>
+              </tr>
+            </thead>
+            <tbody id="matrix-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="metodo" class="section" aria-labelledby="metodo-title">
+      <div class="shell">
+        <div class="section-head">
+          <h2 id="metodo-title">III — Método</h2>
+          <p>El mismo proceso para los seis productos, sin importar el lenguaje o la base de datos.</p>
+        </div>
+        <div class="method">
+          <div><span class="mono">01</span><strong>Problema antes que stack</strong><p>Cada producto parte de una molestia cotidiana concreta y de quién la sufre.</p></div>
+          <div><span class="mono">02</span><strong>Especificación escrita</strong><p>Spec-Driven Development: el contrato y las reglas de dominio se escriben antes del código.</p></div>
+          <div><span class="mono">03</span><strong>Dominio aislado</strong><p>Arquitectura limpia: la lógica de negocio no depende de frameworks ni de la base de datos.</p></div>
+          <div><span class="mono">04</span><strong>Pruebas antes del merge</strong><p>GitFlow con dev como único origen; main solo recibe versiones con CI en verde.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="colofon" class="section" aria-labelledby="colofon-title">
+      <div class="shell">
+        <div class="section-head">
+          <h2 id="colofon-title">IV — Colofón</h2>
+          <p>Cómo está hecho este sitio y qué hay detrás del telón.</p>
+        </div>
+        <div class="colophon">
+          <div><h3>Tipografía</h3><p>Archivo para titulares, Hanken Grotesk para texto y JetBrains Mono para metadatos. Las placas usan la tipografía real de cada producto.</p></div>
+          <div><h3>Construcción</h3><p>Next.js 15, React 19 y TypeScript estricto. Esta versión estática en GitHub Pages construye el DOM nodo a nodo, sin inyectar HTML.</p></div>
+          <div><h3>Infraestructura</h3><p>Infraestructura como código, manifiestos GitOps y señales doradas que documentan cómo se operaría el ecosistema en Kubernetes. <a href="https://github.com/danieldiaz54/cloudops-gitops-platform" target="_blank" rel="noopener noreferrer">CloudOps GitOps Platform ↗</a></p></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="shell">
+    <div class="footer mono">
+      <span>© Daniel Díaz</span>
+      <a href="https://github.com/danieldiaz54" target="_blank" rel="noopener noreferrer">github.com/danieldiaz54</a>
+    </div>
+  </footer>
+
+  <div id="drawer-root"></div>
+
+  <script>
+    "use strict";
+    const PROJECTS = /*@@PROJECTS@@*/;
+    const FILTERS = [
+      { id: "all", label: "Todo" }, { id: "web", label: "Web local" }, { id: "data", label: "Datos" },
+      { id: "realtime", label: "Tiempo real" }, { id: "ai", label: "IA" },
+      { id: "fintech", label: "Fintech" }, { id: "mobile", label: "Móvil" }
+    ];
+
+    /* Constructor seguro de nodos: solo createElement + textContent. */
+    function h(tag, attrs, children) {
+      const node = document.createElement(tag);
+      const options = attrs || {};
+      Object.keys(options).forEach(function (key) {
+        const value = options[key];
+        if (key === "className") { node.className = value; }
+        else if (key === "text") { node.textContent = value; }
+        else if (key === "style") { Object.keys(value).forEach(function (prop) { node.style.setProperty(prop, value[prop]); }); }
+        else if (key.indexOf("on") === 0) { node.addEventListener(key.slice(2).toLowerCase(), value); }
+        else { node.setAttribute(key, value); }
+      });
+      (children || []).forEach(function (child) {
+        if (child === null || child === undefined) { return; }
+        node.appendChild(typeof child === "string" ? document.createTextNode(child) : child);
+      });
+      return node;
+    }
+
+    function bar(brand, chip) {
+      return h("div", { className: "pv-bar" }, [h("span", { className: "pv-brand", text: brand }), chip]);
+    }
+    function chip(text) { return h("span", { className: "pv-chip", text: text }); }
+
+    const PREVIEWS = {
+      pdf: function () {
+        return [
+          bar("PdfCraft", chip("Firmar")),
+          h("div", { className: "pv-body" }, [
+            h("div", { className: "pv-thumbs" }, [h("i"), h("i", { className: "on" }), h("i")]),
+            h("div", { className: "pv-page" }, [
+              h("b", { className: "w80" }), h("b", { className: "w60" }), h("b", { className: "hl" }),
+              h("b", { className: "w70" }), h("span", { className: "pv-sign", text: "D. Díaz" })
+            ])
+          ])
+        ];
+      },
+      catalog: function () {
+        const items = [["Anillo Sol", "$ 120"], ["Seda Nº 4", "$ 86"], ["Ámbar 50 ml", "$ 64"]];
+        return [
+          bar("Merkat", chip("Joyería")),
+          h("div", { className: "pv-tiles" }, items.map(function (item) {
+            return h("div", { className: "pv-tile" }, [h("i"), h("span", { text: item[0] }), h("em", { text: item[1] })]);
+          }))
+        ];
+      },
+      kanban: function () {
+        return [
+          bar("PulseFlow", h("span", { className: "pv-presence", "aria-hidden": "true" }, [h("i"), h("i"), h("i")])),
+          h("div", { className: "pv-cols" }, [
+            h("div", { className: "pv-col" }, [h("span", { text: "Por hacer" }), h("i"), h("i")]),
+            h("div", { className: "pv-col" }, [h("span", { text: "En curso" }), h("i", { className: "on" })]),
+            h("div", { className: "pv-col" }, [h("span", { text: "Hecho" }), h("i")])
+          ])
+        ];
+      },
+      chat: function () {
+        return [
+          bar("Cortex", chip("manual.pdf")),
+          h("div", { className: "pv-q", text: "¿Cada cuánto se cambia el filtro?" }),
+          h("div", { className: "pv-a" }, ["Cada 500 horas de uso.", h("span", { className: "pv-cite", text: "p. 12" })]),
+          h("div", { className: "pv-src", text: "«…reemplace el filtro cada 500 horas de operación…» — manual.pdf, p. 12" })
+        ];
+      },
+      wallet: function () {
+        return [
+          bar("LedgerCore", chip("Saldo")),
+          h("div", { className: "pv-balance", text: "$ 2.480,00" }),
+          h("div", { className: "pv-row" }, [h("span", { text: "Envío a Ana" }), h("em", { text: "− 120,00" })]),
+          h("div", { className: "pv-row" }, [h("span", { text: "Reverso automático" }), h("em", { text: "+ 45,00" })]),
+          h("div", { className: "pv-actions" }, [h("span", { text: "Enviar" }), h("span", { text: "Recibir" })])
+        ];
+      },
+      phone: function () {
+        return [
+          h("div", { className: "pv-device" }, [
+            h("div", { className: "pv-offline", text: "Sin conexión · 3 en cola" }),
+            h("div", { className: "pv-note" }, [h("b", { text: "Poste 14" }), h("span", { text: "Tensión normal" })]),
+            h("div", { className: "pv-note" }, [h("b", { text: "Válvula B" }), h("span", { text: "Fuga leve" })]),
+            h("div", { className: "pv-fab", text: "+ Nota" })
+          ])
+        ];
+      }
+    };
+
+    function plate(project) {
+      const p = project.plate;
+      return h("div", {
+        className: "pv pv-" + project.previewKind,
+        role: "img",
+        "aria-label": "Miniatura de " + project.name + " en su paleta y tipografía " + p.displayFont,
+        style: {
+          "--p-bg": p.bg, "--p-surface": p.surface, "--p-ink": p.ink, "--p-muted": p.muted,
+          "--p-accent": p.accent, "--p-display": "\"" + p.displayFont + "\", serif"
+        }
+      }, PREVIEWS[project.previewKind]());
+    }
+
+    function extLink(className, href, text) {
+      return h("a", { className: className, href: href, target: "_blank", rel: "noopener noreferrer", text: text });
+    }
+
+    function specRow(label, value) {
+      return h("div", {}, [h("dt", { text: label }), h("dd", {}, value)]);
+    }
+
+    function card(project) {
+      return h("article", { className: "exhibit", "aria-labelledby": "title-" + project.slug }, [
+        h("div", { className: "exhibit-mount" }, [plate(project)]),
+        h("div", { className: "exhibit-body" }, [
+          h("div", { className: "exhibit-top mono" }, [h("span", { text: "N.º " + project.inventory }), h("span", { text: project.categoryLabel })]),
+          h("h3", { id: "title-" + project.slug }, [project.name, h("small", { text: project.everydayName })]),
+          h("p", { text: project.oneLiner }),
+          h("dl", { className: "exhibit-spec" }, [
+            specRow("Paradigma", [project.matrix.paradigm]),
+            specRow("Pruebas", [project.testsLabel]),
+            specRow("Identidad", [h("span", { className: "swatch", style: { background: project.plate.accent } }), project.plate.displayFont])
+          ]),
+          h("div", { className: "exhibit-actions" }, [
+            h("button", { type: "button", className: "link-case", text: "Leer ficha de caso →", onClick: function () { openCase(project.slug); } }),
+            extLink("link-live", project.liveUrl, "En vivo"),
+            extLink("link-plain", project.repoUrl, "Código")
+          ])
+        ])
+      ]);
+    }
+
+    function block(title, children) {
+      return h("section", { className: "case-block" }, [h("h4", { text: title })].concat(children));
+    }
+
+    function caseStudy(project) {
+      const trade = project.tradeOffs.map(function (t) {
+        return h("div", { className: "tradeoff" }, [
+          h("div", {}, [h("span", { className: "mono label", text: "Elegido" }), t.chosen]),
+          h("div", {}, [h("span", { className: "mono label", text: "Descartado" }), h("s", { text: t.rejected })]),
+          h("div", { className: "tradeoff-note" }, [h("span", { className: "mono label", text: "Por qué" }), t.because]),
+          h("div", { className: "tradeoff-note" }, [h("span", { className: "mono label", text: "Modo de falla aceptado" }), t.failureMode])
+        ]);
+      });
+      return h("div", { className: "case-body" }, [
+        h("p", { className: "mono", text: "N.º " + project.inventory + " · " + project.categoryLabel + " · " + project.hosting }),
+        h("h2", { className: "case-title", id: "case-title", text: project.name }),
+        h("p", { className: "case-sub", text: project.everydayName + ". " + project.oneLiner }),
+        block("El problema", [h("p", { text: project.problem }), h("p", {}, [h("strong", { text: "Para quién: " }), project.audience])]),
+        block("Qué entrega", [h("p", { text: project.outcome })]),
+        block("Decisión de arquitectura", trade),
+        block("Flujo", [h("ol", { className: "flow" }, project.flow.map(function (s) { return h("li", { text: s }); }))]),
+        block("Evidencia", [h("ul", { className: "case-list" }, [h("li", { text: "Pruebas automatizadas: " + project.testsLabel })].concat(project.evidence.map(function (e) { return h("li", { text: e }); })))]),
+        block("Stack", [h("ul", { className: "stack-list" }, project.stack.map(function (s) { return h("li", { text: s }); }))]),
+        block("Retrospectiva", [h("p", { text: project.retrospective }), h("p", {}, [h("strong", { text: "Siguiente evolución: " }), project.nextEvolution])]),
+        h("div", { className: "exhibit-actions" }, [
+          extLink("btn btn-solid", project.liveUrl, "Abrir en vivo ↗"),
+          extLink("btn", project.repoUrl, "Código fuente")
+        ])
+      ]);
+    }
+
+    const drawerRoot = document.getElementById("drawer-root");
+    let lastFocus = null;
+
+    function onKey(event) { if (event.key === "Escape") { closeCase(); } }
+
+    function closeCase() {
+      drawerRoot.replaceChildren();
+      document.body.style.overflow = "";
+      document.removeEventListener("keydown", onKey);
+      if (location.hash.indexOf("#caso-") === 0) { history.replaceState(null, "", location.pathname + location.search); }
+      if (lastFocus) { lastFocus.focus(); }
+    }
+
+    function openCase(slug) {
+      const project = PROJECTS.find(function (p) { return p.slug === slug; });
+      if (!project) { return; }
+      lastFocus = document.activeElement;
+      const closeBtn = h("button", { type: "button", className: "btn", text: "Cerrar (Esc)", onClick: closeCase });
+      drawerRoot.replaceChildren(
+        h("div", { className: "drawer-backdrop", "aria-hidden": "true", onClick: closeCase }),
+        h("aside", { className: "drawer", role: "dialog", "aria-modal": "true", "aria-label": "Ficha de caso: " + project.name }, [
+          h("div", { className: "drawer-head" }, [h("span", { className: "mono", text: "Ficha de caso" }), closeBtn]),
+          h("div", { className: "drawer-body" }, [caseStudy(project)])
+        ])
+      );
+      document.body.style.overflow = "hidden";
+      document.addEventListener("keydown", onKey);
+      history.replaceState(null, "", "#caso-" + slug);
+      closeBtn.focus();
+    }
+
+    let activeFilter = "all";
+    function renderFilters() {
+      document.getElementById("filters").replaceChildren.apply(
+        document.getElementById("filters"),
+        FILTERS.map(function (f) {
+          return h("button", {
+            type: "button", role: "tab", "aria-selected": String(activeFilter === f.id), text: f.label,
+            onClick: function () { activeFilter = f.id; renderFilters(); renderGrid(); }
+          });
+        })
+      );
+    }
+    function renderGrid() {
+      const grid = document.getElementById("exhibit-grid");
+      grid.replaceChildren.apply(grid, PROJECTS
+        .filter(function (p) { return activeFilter === "all" || p.category === activeFilter; })
+        .map(card));
+    }
+    function renderMatrix() {
+      const body = document.getElementById("matrix-body");
+      body.replaceChildren.apply(body, PROJECTS.map(function (p) {
+        return h("tr", {}, [
+          h("td", {}, [h("span", { className: "swatch", style: { background: p.plate.accent } }), p.name]),
+          h("td", { text: p.matrix.paradigm }), h("td", { text: p.matrix.persistence }),
+          h("td", { text: p.matrix.consistency }), h("td", { text: p.hosting }), h("td", { text: p.testsLabel })
+        ]);
+      }));
+    }
+
+    document.getElementById("fig-live").textContent = String(PROJECTS.length);
+    document.getElementById("fig-paradigms").textContent = String(new Set(PROJECTS.map(function (p) { return p.matrix.paradigm; })).size);
+    renderFilters();
+    renderGrid();
+    renderMatrix();
+    if (location.hash.indexOf("#caso-") === 0) { openCase(location.hash.slice(6)); }
+  </script>
+</body>
+</html>

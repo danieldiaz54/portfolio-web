@@ -1,35 +1,72 @@
-export type MarketArea =
-  | "Full-Stack & Realtime"
-  | "Applied AI & Agents"
-  | "Distributed Systems"
-  | "Cloud & DevOps"
-  | "Mobile Offline-First";
+export type ProjectCategory =
+  | "web"
+  | "realtime"
+  | "ai"
+  | "fintech"
+  | "mobile"
+  | "data";
 
-export interface ProjectMetric {
-  label: string;
-  value: string;
+export type PreviewKind =
+  | "pdf"
+  | "catalog"
+  | "kanban"
+  | "chat"
+  | "wallet"
+  | "phone";
+
+export type Hosting = "GitHub Pages" | "Railway";
+
+export interface PlateTheme {
+  bg: string;
+  surface: string;
+  ink: string;
+  muted: string;
+  accent: string;
+  displayFont: string;
+  bodyFont: string;
+  displayVar: string;
 }
 
-export interface ArchitectureDecision {
-  id: string;
-  title: string;
-  decision: string;
-  rationale: string;
+export interface TradeOff {
+  chosen: string;
+  rejected: string;
+  because: string;
+  failureMode: string;
 }
 
-export interface ProjectCaseStudy {
+export interface ParadigmRow {
+  paradigm: string;
+  persistence: string;
+  consistency: string;
+}
+
+export interface Project {
   slug: string;
-  title: string;
-  tagline: string;
-  area: MarketArea;
-  architecture: string;
-  phase: string;
+  inventory: string;
+  name: string;
+  everydayName: string;
+  oneLiner: string;
   problem: string;
-  solution: string;
-  techStack: string[];
-  metrics: ProjectMetric[];
-  mermaidDiagram: string;
-  adrHighlights: ArchitectureDecision[];
-  repoUrl: string;
+  audience: string;
+  outcome: string;
+  category: ProjectCategory;
+  categoryLabel: string;
+  stack: readonly string[];
   liveUrl: string;
+  repoUrl: string;
+  hosting: Hosting;
+  testsLabel: string;
+  matrix: ParadigmRow;
+  plate: PlateTheme;
+  previewKind: PreviewKind;
+  tradeOffs: readonly TradeOff[];
+  flow: readonly string[];
+  evidence: readonly string[];
+  retrospective: string;
+  nextEvolution: string;
+}
+
+export interface CategoryFilter {
+  id: ProjectCategory | "all";
+  label: string;
 }

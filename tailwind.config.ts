@@ -9,16 +9,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        surface: {
-          950: "#070b14",
-          900: "#0d1322",
-          800: "#151e33",
-        },
-        accent: {
-          cyan: "#22d3ee",
-          emerald: "#34d399",
-          indigo: "#818cf8",
-        },
+        paper: "#F7F7F5",
+        plate: "#FFFFFF",
+        ink: "#0A0A0A",
+        graphite: "#3F3F46",
+        hairline: "#E4E4E7",
+        gallery: "#0044CC",
+        live: "#15803D",
+      },
+      fontFamily: {
+        display: ["var(--font-archivo)", "Archivo", "sans-serif"],
+        body: ["var(--font-hanken)", "Hanken Grotesk", "sans-serif"],
+        mono: ["var(--font-jetbrains)", "JetBrains Mono", "monospace"],
       },
     },
   },
