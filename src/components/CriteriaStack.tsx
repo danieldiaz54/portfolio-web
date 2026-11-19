@@ -72,16 +72,16 @@ export default function CriteriaStack({ items }: CriteriaStackProps) {
       cards.forEach((card) => {
         const tween = gsap.fromTo(
           card,
-          { y: 22, opacity: 0 },
+          { y: 18, scale: 0.97 },
           {
             y: 0,
-            opacity: 1,
+            scale: 1,
             duration: 0.55,
             ease: "power2.out",
-            clearProps: "transform,opacity",
+            clearProps: "transform",
             scrollTrigger: {
               trigger: card,
-              start: "top 88%",
+              start: "top 92%",
               once: true,
             },
           },
