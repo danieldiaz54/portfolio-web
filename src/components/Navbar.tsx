@@ -2,7 +2,7 @@ import Link from "next/link";
 import { GitBranch, Layers } from "lucide-react";
 
 const GITHUB_USERNAME =
-  process.env.NEXT_PUBLIC_GITHUB_USERNAME?.trim() || "daniel-dev";
+  process.env.NEXT_PUBLIC_GITHUB_USERNAME?.trim() || "danieldiaz54";
 
 export function Navbar() {
   return (
