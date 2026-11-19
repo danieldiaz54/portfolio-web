@@ -71,14 +71,14 @@ export default function KineticManifesto({ text }: KineticManifestoProps) {
     mm.add("(max-width: 959px) and (prefers-reduced-motion: no-preference)", () => {
       const tween = gsap.fromTo(
         targets,
-        { opacity: 0.22 },
+        { opacity: 0.36 },
         {
           opacity: 1,
           stagger: 0.04,
           ease: "none",
           scrollTrigger: {
             trigger: stage,
-            start: "top 86%",
+            start: "top 90%",
             end: "top 44%",
             scrub: 0.5,
           },
