@@ -18,6 +18,7 @@ export type Hosting = "GitHub Pages" | "Railway";
 
 export type HeroEffectId =
   | "fluted-glass"
+  | "silk-folds"
   | "grain-gradient"
   | "grid-pulse"
   | "contour-lines"
