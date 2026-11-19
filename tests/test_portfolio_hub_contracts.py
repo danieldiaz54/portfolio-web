@@ -1,18 +1,14 @@
-"""Contratos V4 del hub: arquitectura de información en 3 capas, cero duplicación, seguridad DOM y anti-slop."""
+"""Contratos V5 Kinetic Light Studio: exportación Next.js 15, shaders vendored, 0 any/DOM inseguro y 3 capas intactas."""
 
 from __future__ import annotations
 
 import json
 import re
-import sys
 import unittest
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 ECOSYSTEM_ROOT = REPO_ROOT.parent
-sys.path.insert(0, str(REPO_ROOT / "scripts"))
-
-import sync_static_hub  # noqa: E402
 
 EXPECTED_PROJECTS = {
     "pdfcraft-studio": ("https://danieldiaz54.github.io/pdfcraft-studio/", "Bricolage Grotesque", "#1D4ED8"),
@@ -24,41 +20,96 @@ EXPECTED_PROJECTS = {
 }
 
 OBSOLETE_COMPONENTS = ("LivePulseRail", "InteractiveStage", "ProjectCard", "ExhibitionHub", "CaseStudy")
+OBSOLETE_STATIC_FILES = (
+    "public/index.html",
+    "public/preview.html",
+    "scripts/static_hub.template.html",
+    "scripts/sync_static_hub.py",
+)
 NOISE_LABELS = ("Shader Hero", "Re-ping vivo", "I — Laboratorio", "II — Exposición", "III — Matriz")
 BANNED_FONTS = ("Inter", "Roboto", "Open Sans")
 BANNED_DOM = ("innerHTML", "outerHTML", "insertAdjacentHTML", "eval(", "document.write")
+
+REQUIRED_V5_COMPONENTS = (
+    "SmoothScrollProvider.tsx",
+    "ScrollProgressBar.tsx",
+    "MagneticButton.tsx",
+    "KineticManifesto.tsx",
+    "HeroShader.tsx",
+    "Navbar.tsx",
+    "ProjectIndex.tsx",
+    "ProjectStudio.tsx",
+    "MicroLabs.tsx",
+    "SignalDiagram.tsx",
+    "CommandPalette.tsx",
+    "PortfolioApp.tsx",
+    "PreviewPlate.tsx",
+)
 
 
 def read(relative: str) -> str:
     return (REPO_ROOT / relative).read_text(encoding="utf-8")
 
 
+def parse_project_blocks() -> dict[str, str]:
+    src = read("src/data/projects.ts")
+    parts = re.split(r'\n  \{\r?\n    slug:\s*"([^"]+)"', src)
+    blocks: dict[str, str] = {}
+    for idx in range(1, len(parts), 2):
+        blocks[parts[idx]] = parts[idx + 1]
+    return blocks
+
+
 class TestPortfolioHubContracts(unittest.TestCase):
-    def test_package_and_tsconfig_strict_mode(self) -> None:
+    def test_package_dependencies_and_strict_typescript(self) -> None:
         pkg = json.loads(read("package.json"))
         tsc = json.loads(read("tsconfig.json"))
         self.assertEqual(pkg["name"], "portfolio-web")
         for script in ("build", "typecheck", "lint"):
             self.assertIn(script, pkg["scripts"])
+        for dep in ("gsap", "lenis", "motion", "lucide-react", "next", "react", "react-dom"):
+            self.assertIn(dep, pkg["dependencies"], f"Falta dependencia {dep}")
         self.assertTrue(tsc["compilerOptions"]["strict"])
 
-    def test_v4_typescript_sources_zero_any_and_no_obsolete_imports(self) -> None:
+    def test_pages_static_export_configuration_and_no_legacy_html(self) -> None:
+        next_cfg = read("next.config.mjs")
+        pages_yml = read(".github/workflows/pages.yml")
+        ci_yml = read(".github/workflows/ci.yml")
+
+        self.assertIn('STATIC_EXPORT', next_cfg)
+        self.assertIn('"export"', next_cfg)
+        self.assertIn("trailingSlash: true", next_cfg)
+        self.assertIn('STATIC_EXPORT: "1"', pages_yml)
+        self.assertIn('NEXT_PUBLIC_BASE_PATH: "/portfolio-web"', pages_yml)
+        self.assertIn('path: "./out"', pages_yml)
+        self.assertIn('STATIC_EXPORT: "1"', ci_yml)
+        self.assertTrue((REPO_ROOT / "public" / ".nojekyll").is_file(), "Falta public/.nojekyll")
+        for obsolete in OBSOLETE_STATIC_FILES:
+            self.assertFalse((REPO_ROOT / obsolete).exists(), f"Archivo estático obsoleto aún existe: {obsolete}")
+
+    def test_v5_typescript_sources_zero_any_safe_dom_and_components_present(self) -> None:
         any_pattern = re.compile(r"(:\s*any\b|\bas\s+any\b|<any>)")
         ts_files = list((REPO_ROOT / "src").rglob("*.ts")) + list((REPO_ROOT / "src").rglob("*.tsx"))
-        self.assertGreaterEqual(len(ts_files), 12)
+        self.assertGreaterEqual(len(ts_files), 15)
         for path in ts_files:
             content = path.read_text(encoding="utf-8")
             self.assertIsNone(any_pattern.search(content), f"'any' prohibido en {path.name}")
             self.assertNotIn("JSX.Element", content, f"Usar ReactNode en {path.name}")
+            for forbidden_dom in BANNED_DOM:
+                self.assertNotIn(forbidden_dom, content, f"{forbidden_dom} prohibido en {path.name}")
             for deleted in OBSOLETE_COMPONENTS:
                 self.assertNotIn(deleted, content, f"Referencia huérfana a {deleted} en {path.name}")
                 self.assertFalse((REPO_ROOT / "src" / "components" / f"{deleted}.tsx").exists())
-        for comp in ("HeroShader.tsx", "ProjectIndex.tsx", "ProjectStudio.tsx", "MicroLabs.tsx", "SignalDiagram.tsx", "CommandPalette.tsx", "PortfolioApp.tsx"):
+            for noise in NOISE_LABELS:
+                self.assertNotIn(noise, content, f"Ruido V3 residual encontrado en {path.name}: {noise}")
+        for comp in REQUIRED_V5_COMPONENTS:
             self.assertTrue((REPO_ROOT / "src" / "components" / comp).is_file(), f"Falta {comp}")
 
     def test_vendored_taste_skill_effects_are_present_and_safe(self) -> None:
         effects = (
             "public/assets/effects/fx.js",
+            "public/assets/effects/fluted-glass/effect.js",
+            "public/assets/effects/grain-gradient/effect.js",
             "public/assets/effects/grid-pulse/effect.js",
             "public/assets/effects/contour-lines/effect.js",
         )
@@ -67,79 +118,72 @@ class TestPortfolioHubContracts(unittest.TestCase):
             for forbidden in BANNED_DOM:
                 self.assertNotIn(forbidden, content, f"{forbidden} encontrado en {rel}")
 
-    def test_catalog_lists_six_v4_products_with_diagrams_and_health_urls(self) -> None:
-        projects = sync_static_hub.extract_projects()
-        self.assertEqual([p["slug"] for p in projects], list(EXPECTED_PROJECTS))
-        for project in projects:
-            slug = str(project["slug"])
+    def test_catalog_lists_six_products_with_distinct_identities_and_health_urls(self) -> None:
+        blocks = parse_project_blocks()
+        self.assertEqual(list(blocks.keys()), list(EXPECTED_PROJECTS.keys()))
+
+        bgs: list[str] = []
+        accents: list[str] = []
+        fonts: list[str] = []
+        paradigms: list[str] = []
+
+        for slug, block in blocks.items():
             live, font, accent = EXPECTED_PROJECTS[slug]
-            self.assertEqual(project["liveUrl"], live)
+            self.assertIn(f'liveUrl: "{live}"', block)
             if slug == "pdfcraft-studio":
-                self.assertIsNone(project["healthUrl"])
+                self.assertIn("healthUrl: null", block)
             else:
-                self.assertEqual(project["healthUrl"], f"{live}/api/v1/health")
-            self.assertTrue(str(project["labPrompt"]).strip())
+                self.assertIn(f'healthUrl: "{live}/api/v1/health"', block)
+            self.assertIn(f'displayFont: "{font}"', block)
+            self.assertIn(f'accent: "{accent}"', block)
+            self.assertIn('mode: "normal"', block)
+            self.assertIn('mode: "fault"', block)
 
-            diagram = project["diagram"]
-            assert isinstance(diagram, dict)
-            self.assertEqual(len(diagram["nodes"]), 4)
-            modes = {e["mode"] for e in diagram["edges"]}
-            self.assertEqual(modes, {"normal", "fault"}, f"{slug} requiere rutas normal y fault")
+            bg_match = re.search(r'bg:\s*"([^"]+)"', block)
+            paradigm_match = re.search(r'paradigm:\s*"([^"]+)"', block)
+            self.assertIsNotNone(bg_match, f"Falta plate.bg en {slug}")
+            self.assertIsNotNone(paradigm_match, f"Falta matrix.paradigm en {slug}")
+            bgs.append(bg_match.group(1))  # type: ignore[union-attr]
+            accents.append(accent)
+            fonts.append(font)
+            paradigms.append(paradigm_match.group(1))  # type: ignore[union-attr]
 
-            plate = project["plate"]
-            assert isinstance(plate, dict)
-            self.assertEqual(plate["displayFont"], font)
-            self.assertEqual(plate["accent"], accent)
-            for field in ("problem", "outcome", "retrospective", "nextEvolution", "everydayName"):
-                self.assertTrue(str(project[field]).strip(), f"{slug} sin {field}")
+        for group_name, values in (("bg", bgs), ("accent", accents), ("displayFont", fonts), ("paradigm", paradigms)):
+            self.assertEqual(len(values), len(set(values)), f"'{group_name}' repetido entre productos")
 
-    def test_each_product_has_a_distinct_visual_identity(self) -> None:
-        projects = sync_static_hub.extract_projects()
-        plates = [p["plate"] for p in projects]
-        for key in ("bg", "accent", "displayFont"):
-            values = [plate[key] for plate in plates]  # type: ignore[index]
-            self.assertEqual(len(values), len(set(values)), f"'{key}' repetido entre productos")
-        paradigms = [p["matrix"]["paradigm"] for p in projects]  # type: ignore[index]
-        self.assertEqual(len(paradigms), len(set(paradigms)))
+    def test_three_layer_progressive_disclosure_preserved_in_v5(self) -> None:
+        app_src = read("src/components/PortfolioApp.tsx")
+        studio_src = read("src/components/ProjectStudio.tsx")
+        shader_src = read("src/components/HeroShader.tsx")
 
-    def test_static_pages_enforce_v4_information_architecture(self) -> None:
-        expected = sync_static_hub.build()
-        for page in ("public/index.html", "public/preview.html"):
-            self.assertEqual(read(page), expected, f"{page} desactualizado: ejecutar scripts/sync_static_hub.py")
-        for slug, (live, _font, _accent) in EXPECTED_PROJECTS.items():
-            self.assertIn(slug, expected)
-            self.assertIn(live, expected)
-        for token in ("Software claro para usar, sólido por dentro.", "Pruébalo", "Cómo funciona", "Ingeniería y código", "Conversemos"):
-            self.assertIn(token, expected)
-        for noise in NOISE_LABELS:
-            self.assertNotIn(noise, expected, f"Ruido V3 residual encontrado: {noise}")
+        for word in ("Software", "claro", "para", "usar,", "sólido", "por", "dentro."):
+            self.assertIn(f'"{word}"', app_src)
+        self.assertIn('heroEffect, setHeroEffect] = useState<HeroEffectId>("fluted-glass")', app_src)
+        self.assertIn("KineticManifesto", app_src)
+        self.assertIn("ScrollProgressBar", app_src)
+        self.assertIn("MagneticButton", app_src)
+        self.assertIn("Conversemos", app_src)
+        self.assertIn("NEXT_PUBLIC_BASE_PATH", shader_src)
+        for tab_label in ("Pruébalo", "Cómo funciona", "Ingeniería y código"):
+            self.assertIn(tab_label, studio_src)
 
-    def test_static_pages_use_safe_dom_only(self) -> None:
-        for page in ("public/index.html", "public/preview.html", "scripts/static_hub.template.html"):
-            content = read(page)
-            for forbidden in BANNED_DOM:
-                self.assertNotIn(forbidden, content, f"{forbidden} en {page}")
-            self.assertIn("createElement", content)
-            self.assertIn("createElementNS", content)
-            self.assertIn("textContent", content)
-
-    def test_hub_typography_and_palette_are_anti_slop(self) -> None:
+    def test_kinetic_light_studio_palette_and_typography_are_anti_slop(self) -> None:
         css = read("src/app/globals.css")
         layout = read("src/app/layout.tsx")
-        self.assertIn("#f7f7f5", css)
-        self.assertIn("#0044cc", css)
+        self.assertIn("#fafaf8", css)
+        self.assertIn("#2563eb", css)
         self.assertIn("::selection", css)
+        self.assertIn("SmoothScrollProvider", layout)
         self.assertIn("Archivo", layout)
         self.assertIn("Hanken_Grotesk", layout)
-        self.assertNotIn("#F7F6F3".lower(), css.lower())
         self.assertNotIn("#8b5cf6", css.lower())
         for font in BANNED_FONTS:
             self.assertIsNone(re.search(rf"\b{font}\b", css + layout), f"Fuente prohibida {font}")
 
-    def test_v4_specs_docs_dockerfile_and_adrs(self) -> None:
-        self.assertIn("Tesis en 10 segundos", read("PRODUCT.md"))
-        self.assertIn("Monografía de Galería", read("DESIGN.md"))
-        self.assertIn("Divulgación Progresiva", read(".specs/04-phase6-v4-ux-ia/v4-ux-information-architecture.spec.md"))
+    def test_v5_specs_docs_dockerfile_and_adrs(self) -> None:
+        self.assertIn("Portafolio Hub V5 (Kinetic Light Studio", read("PRODUCT.md"))
+        self.assertIn("Kinetic Light Studio V5", read("DESIGN.md"))
+        self.assertTrue((REPO_ROOT / ".specs" / "05-phase7-v5-kinetic-studio" / "v5-kinetic-light-studio.spec.md").is_file())
         self.assertIn("USER nextjs", read("Dockerfile"))
         for adr in ("001-nextjs-app-router-and-static-case-studies.md", "002-multi-architecture-portfolio-taxonomy.md"):
             self.assertTrue((REPO_ROOT / "docs" / "adr" / adr).is_file())

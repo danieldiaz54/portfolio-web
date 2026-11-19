@@ -1,8 +1,16 @@
+"use client";
+
 import Link from "next/link";
+import { motion } from "motion/react";
 
 export default function Navbar() {
   return (
-    <header className="masthead">
+    <motion.header
+      className="masthead"
+      initial={{ y: -12, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+    >
       <div className="shell masthead-inner">
         <Link href="/" className="wordmark">
           Daniel Díaz
@@ -13,6 +21,6 @@ export default function Navbar() {
           <Link href="/#contacto">Contacto</Link>
         </nav>
       </div>
-    </header>
+    </motion.header>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import { Search } from "lucide-react";
 import type { HeroEffectId, Project } from "@/types/project";
 
 interface CommandPaletteProps {
@@ -51,6 +52,24 @@ export default function CommandPalette({
         sub: "5 servicios",
         run: () => {
           onPingAll();
+          onClose();
+        },
+      },
+      {
+        id: "fx-fluted",
+        label: "Fondo portada: Vidrio estriado WebGL",
+        sub: heroEffect === "fluted-glass" ? "Activo" : "Cambiar",
+        run: () => {
+          onChangeHeroEffect("fluted-glass");
+          onClose();
+        },
+      },
+      {
+        id: "fx-grain",
+        label: "Fondo portada: Degradado orgánico con grano",
+        sub: heroEffect === "grain-gradient" ? "Activo" : "Cambiar",
+        run: () => {
+          onChangeHeroEffect("grain-gradient");
           onClose();
         },
       },
@@ -139,7 +158,7 @@ export default function CommandPalette({
   };
 
   return (
-    <div className="cmdk-backdrop" onClick={onClose}>
+    <div className="cmdk-backdrop" data-lenis-prevent onClick={onClose}>
       <div
         className="cmdk-dialog"
         role="dialog"
@@ -148,7 +167,7 @@ export default function CommandPalette({
         onClick={(event) => event.stopPropagation()}
       >
         <div className="cmdk-input-row">
-          <span className="mono">⌘K</span>
+          <Search size={16} aria-hidden="true" />
           <input
             ref={inputRef}
             type="text"
@@ -159,7 +178,7 @@ export default function CommandPalette({
               setSelectedIndex(0);
             }}
             onKeyDown={handleInputKey}
-            placeholder="Ir a proyecto o acción…"
+            placeholder="Ir a proyecto, salud en vivo o shader…"
             aria-label="Filtrar comandos"
           />
           <button type="button" className="studio-nav-btn" onClick={onClose}>
@@ -167,7 +186,7 @@ export default function CommandPalette({
           </button>
         </div>
 
-        <div className="cmdk-list" role="listbox" aria-label="Resultados">
+        <div className="cmdk-list" data-lenis-prevent role="listbox" aria-label="Resultados">
           {items.length === 0 ? (
             <div className="cmdk-group-label mono">Sin coincidencias</div>
           ) : (
@@ -190,7 +209,7 @@ export default function CommandPalette({
 
         <div className="cmdk-foot mono">
           <span>↑↓ mover · Enter abrir · Esc cerrar</span>
-          <span>6 proyectos</span>
+          <span>6 proyectos · ⌘K</span>
         </div>
       </div>
     </div>
