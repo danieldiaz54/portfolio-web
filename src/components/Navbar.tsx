@@ -21,6 +21,17 @@ const NAV_ITEMS: readonly { id: Exclude<ActiveSectionId, "hero">; href: string; 
 export default function Navbar({ activeSection = "hero", onOpenCmdk }: NavbarProps) {
   const { scrollTo } = useSmoothScroll();
 
+  const handleBrandClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (typeof document === "undefined") {
+      return;
+    }
+    if (!document.getElementById("proyectos")) {
+      return;
+    }
+    event.preventDefault();
+    scrollTo(0, { duration: 0.85 });
+  };
+
   const handleAnchor = (event: MouseEvent<HTMLAnchorElement>, id: string) => {
     if (typeof document === "undefined") {
       return;
@@ -30,7 +41,10 @@ export default function Navbar({ activeSection = "hero", onOpenCmdk }: NavbarPro
       return;
     }
     event.preventDefault();
-    scrollTo(`#${id}`, { duration: 0.95 });
+    scrollTo(`#${id}`, {
+      offset: id === "proyectos" ? 0 : -24,
+      duration: 0.9,
+    });
   };
 
   return (
@@ -41,7 +55,7 @@ export default function Navbar({ activeSection = "hero", onOpenCmdk }: NavbarPro
       transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
     >
       <div className="shell hud-nav-inner">
-        <Link href="/" className="wordmark">
+        <Link href="/" className="wordmark" onClick={handleBrandClick}>
           Daniel Díaz
         </Link>
 

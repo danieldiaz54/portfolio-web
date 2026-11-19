@@ -173,6 +173,7 @@ class TestPortfolioHubContracts(unittest.TestCase):
         stage_src = read("src/components/CinemaStage.tsx")
         backdrop_src = read("src/components/FixedBackdrop.tsx")
         provider_src = read("src/components/SmoothScrollProvider.tsx")
+        cmdk_src = read("src/components/CommandPalette.tsx")
 
         for word in ("Software", "claro", "para", "usar,", "sólido", "por", "dentro."):
             self.assertIn(f'"{word}"', app_src)
@@ -186,7 +187,11 @@ class TestPortfolioHubContracts(unittest.TestCase):
         self.assertIn("pin: true", stage_src)
         self.assertIn("gsap.matchMedia", stage_src)
         self.assertIn("filmstrip", stage_src)
+        self.assertNotIn('mode="wait"', stage_src)
         self.assertIn("useSmoothScroll", provider_src)
+        self.assertIn("stop:", provider_src)
+        self.assertIn("start:", provider_src)
+        self.assertIn("keywords", cmdk_src)
         self.assertIn("NEXT_PUBLIC_BASE_PATH", shader_src)
         for fx_id in ("prism-dispersion", "spotlight-cone", "god-rays"):
             self.assertIn(fx_id, shader_src)
@@ -199,6 +204,7 @@ class TestPortfolioHubContracts(unittest.TestCase):
         self.assertIn("#06080d", css)
         self.assertIn("position: fixed", css)
         self.assertIn("overflow-x: clip", css)
+        self.assertIn("skip-link:focus-visible", css)
         self.assertIn("#3b82f6", css)
         self.assertIn("::selection", css)
         self.assertIn("SmoothScrollProvider", layout)
