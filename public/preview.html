@@ -180,25 +180,25 @@
           filterKey: "Full-Stack",
           area: "Full-Stack & Realtime",
           architecture: "Monolito Modular + Event-Driven WebSockets",
-          phase: "Fase 1",
+          phase: "v0.1.0 · Certificado",
           tagline:
-            "Plataforma colaborativa de gestión de incidentes y operaciones en tiempo real.",
+            "Plataforma colaborativa de gestión de incidentes y operaciones en tiempo real (:8095).",
           problem:
             "Los equipos de ingeniería que coordinan incidentes sufren estado desactualizado entre múltiples pestañas, sobrescrituras silenciosas cuando dos operadores editan el mismo registro y ausencia de trazabilidad auditada.",
           solution:
-            "Backend en monolito modular con separación estricta por dominios, control de concurrencia optimista mediante versionado de entidades, publicación de eventos en Redis Pub/Sub para escalar gateways WebSocket horizontalmente y bitácora inmutable en PostgreSQL.",
+            "Backend en monolito modular con separación estricta por dominios, control de concurrencia optimista CAS (ERR-409-OPTIMISTIC-LOCK), publicación de eventos en backplane Pub/Sub multi-nodo y bitácora append-only inmutable.",
           techStack: [
-            "Next.js",
+            "Next.js / Minimalist UI",
             "TypeScript",
-            "NestJS / Fastify",
-            "PostgreSQL",
-            "Redis Pub/Sub",
-            "WebSockets",
+            "Python 3.12 / aiohttp WS",
+            "PostgreSQL / SQLite CAS",
+            "Redis Pub/Sub Backplane",
+            "WebSockets & SSE",
           ],
           metrics: [
-            { label: "Latencia Sync", value: "< 50 ms p95" },
-            { label: "Concurrencia", value: "Optimistic Locking" },
-            { label: "Escalado WS", value: "Multi-nodo via Redis" },
+            { label: "Concurrencia", value: "CAS · HTTP 409 OCC" },
+            { label: "Escalado WS", value: "Multi-nodo Pub/Sub" },
+            { label: "Suite QA", value: "17/17 Tests PASS" },
           ],
           mermaidDiagram: `flowchart LR
     C1[Browser Client A] <-->|WebSocket| GW1[WS Gateway Node 1]
@@ -232,25 +232,25 @@
           filterKey: "IA / RAG",
           area: "Applied AI & Agents",
           architecture: "Pipeline Multi-Agente + RAG Híbrido + Evals",
-          phase: "Fase 2",
+          phase: "v0.1.0 · Certificado",
           tagline:
-            "Copiloto multi-agente para análisis documental técnico con RAG híbrido y evaluación continua.",
+            "Copiloto multi-agente para análisis documental técnico con RAG híbrido y evaluación continua (:8090).",
           problem:
             "Los asistentes basados en RAG ingenuo fallan en consultas técnicas con acrónimos exactos, generan respuestas sin citas verificables y carecen de métricas objetivas para detectar regresiones.",
           solution:
-            "Pipeline orquestado con grafo de agentes (Router, Retriever Híbrido, Verificador de Citas) que combina búsqueda vectorial densa con BM25 y Reranking, entrega respuestas vía SSE y ejecuta un Eval Harness automatizado.",
+            "Pipeline orquestado con grafo de 4 agentes (Router, Hybrid Retriever BM25 + Vector 64-D con RRF k=60, Synthesizer y Citation Guardrail) con streaming SSE y Eval Harness conectado a un ledger append-only.",
           techStack: [
             "Python 3.12",
-            "FastAPI",
-            "LangGraph",
-            "pgvector",
+            "FastAPI / ThreadingHTTP",
+            "Multi-Agent Pipeline",
+            "pgvector + Okapi BM25",
             "SSE Streaming",
-            "Next.js",
+            "Eval Harness Ledger",
           ],
           metrics: [
-            { label: "Recuperación", value: "Hybrid Vector + BM25" },
-            { label: "Grounding", value: "100% Citas Verificadas" },
-            { label: "Calidad", value: "Eval Harness Automatizado" },
+            { label: "Recuperación", value: "BM25 + Vector RRF" },
+            { label: "Golden Evals", value: "5/5 · Faithfulness 1.0" },
+            { label: "Suite QA", value: "15/15 Tests PASS" },
           ],
           mermaidDiagram: `flowchart TD
     Q[User Query] --> R[Router Agent]
@@ -286,25 +286,25 @@
           filterKey: "Sistemas Distribuidos",
           area: "Distributed Systems",
           architecture: "Microservicios Event-Driven (Saga + Outbox Pattern)",
-          phase: "Fase 1",
+          phase: "v0.1.0 · Certificado",
           tagline:
-            "Motor transaccional y de reservas de alta concurrencia con consistencia eventual garantizada.",
+            "Motor transaccional double-entry y orquestador Saga con Transactional Outbox e idempotencia (:8096).",
           problem:
             "En sistemas distribuidos de pagos o inventario, los reintentos de red y las fallas parciales entre base de datos y broker de mensajes provocan cobros duplicados o estados inconsistentes.",
           solution:
-            "Arquitectura orientada a eventos en Java 21 y Spring Boot 3 con Idempotency Keys, Transactional Outbox Pattern para publicación atómica hacia Apache Kafka, orquestación Saga y locks distribuidos en Redis.",
+            "Motor contable de partida doble en centavos enteros exactos (Zero-Sum Invariant) con huella SHA-256 de Idempotency-Key, locks distribuidos con fencing tokens, Transactional Outbox hacia tópicos Kafka, compensación Saga + DLQ y blueprint Java 21 / Spring Boot 3.",
           techStack: [
-            "Java 21",
-            "Spring Boot 3",
-            "Apache Kafka",
-            "PostgreSQL",
-            "Redis",
-            "Testcontainers",
+            "Java 21 & Spring Boot 3",
+            "Python 3.12 Core Engine",
+            "Apache Kafka Outbox Relay",
+            "PostgreSQL / SQLite ACID",
+            "Redis Fencing Locks",
+            "Double-Entry Zero-Sum",
           ],
           metrics: [
-            { label: "Seguridad", value: "Zero Double-Spend" },
-            { label: "Mensajería", value: "Transactional Outbox" },
-            { label: "Tolerancia", value: "Saga + Dead Letter Queue" },
+            { label: "Contabilidad", value: "Zero-Sum Imbalance $0" },
+            { label: "Idempotencia", value: "SHA-256 Replay / 409" },
+            { label: "Suite QA", value: "33/33 Tests PASS" },
           ],
           mermaidDiagram: `flowchart LR
     API[Ledger API] -->|Idempotency Check| RD[(Redis Lock)]
@@ -339,25 +339,25 @@
           filterKey: "Cloud / DevOps",
           area: "Cloud & DevOps",
           architecture: "IaC + GitOps + Full Observability (OTel)",
-          phase: "Fase 3",
+          phase: "v0.1.0 · Certificado",
           tagline:
-            "Plataforma de infraestructura declarativa, despliegue GitOps y observabilidad OpenTelemetry.",
+            "Plataforma de infraestructura Terraform, control plane GitOps y observabilidad OpenTelemetry (:8098).",
           problem:
             "Desplegar múltiples servicios manualmente genera deriva de configuración entre entornos, caídas durante actualizaciones y diagnóstico lento ante degradaciones en producción.",
           solution:
-            "Infraestructura reproducible con módulos Terraform, pipelines GitHub Actions con escaneo de seguridad, sincronización declarativa en Kubernetes vía ArgoCD y stack Prometheus + Grafana + Loki + OpenTelemetry.",
+            "Módulos Terraform multi-entorno, manifiestos Kubernetes endurecidos (PSS Restricted) sincronizados con ArgoCD ApplicationSet, stack OpenTelemetry + Prometheus + Grafana para los 5 servicios y motor Canary con auto-rollback por Golden Signals.",
           techStack: [
-            "Terraform",
-            "Kubernetes",
-            "ArgoCD",
-            "GitHub Actions",
-            "OpenTelemetry",
+            "Terraform IaC",
+            "Kubernetes & ArgoCD",
+            "OpenTelemetry Collector",
             "Prometheus & Grafana",
+            "Python 3.12 Control Plane",
+            "PSS Restricted Policy Gate",
           ],
           metrics: [
-            { label: "Despliegue", value: "Zero-Downtime GitOps" },
-            { label: "Observabilidad", value: "Golden Signals + Traces" },
-            { label: "Reproducibilidad", value: "100% Declarative IaC" },
+            { label: "Flota GitOps", value: "5/5 Servicios Synced" },
+            { label: "Canary Gate", value: "Auto-Rollback SLO 99.9%" },
+            { label: "Suite QA", value: "31/31 Tests PASS" },
           ],
           mermaidDiagram: `flowchart LR
     GH[GitHub Actions CI] -->|Build + Scan + Push| REG[(Container Registry)]
@@ -392,25 +392,25 @@
           filterKey: "Mobile",
           area: "Mobile Offline-First",
           architecture: "Clean Architecture + Offline-First Sync Engine",
-          phase: "Fase 2",
+          phase: "v0.1.0 · Certificado",
           tagline:
-            "Aplicación móvil multiplataforma offline-first con motor de sincronización y resolución de conflictos.",
+            "Aplicación móvil multiplataforma offline-first con cola SQLite, relojes de Lamport y resolución de conflictos (:8097).",
           problem:
             "Las aplicaciones móviles dependientes de red fallan en zonas sin cobertura, pierden formularios capturados en campo o generan conflictos destructivos al reconectar.",
           solution:
-            "App en React Native (Expo + TypeScript) con Clean Architecture, almacenamiento local transaccional en SQLite/WatermelonDB como fuente de verdad, cola persistente de mutaciones y sincronización incremental.",
+            "App en React Native (Expo 52 + TypeScript estricto) y motor de sincronización con almacenamiento SQLite local-first, cola persistente de mutaciones, relojes lógicos de Lamport y resolución determinística de conflictos (KEEP_LOCAL, ACCEPT_REMOTE, MANUAL_MERGE).",
           techStack: [
-            "React Native",
-            "Expo",
-            "TypeScript",
-            "SQLite / WatermelonDB",
+            "React Native & Expo 52",
+            "TypeScript Strict (0 any)",
+            "SQLite Local Outbox",
+            "Lamport Logical Clocks",
+            "Python 3.12 Sync Engine",
             "Clean Architecture",
-            "Jest",
           ],
           metrics: [
-            { label: "Disponibilidad", value: "100% Offline-Capable" },
-            { label: "UI Responsiveness", value: "Local-First Reads" },
-            { label: "Integridad", value: "Conflict-Aware Sync" },
+            { label: "Operación", value: "100% Offline + Outbox" },
+            { label: "Conflictos", value: "Lamport + 3-Way Merge" },
+            { label: "Suite QA", value: "45/45 Tests PASS" },
           ],
           mermaidDiagram: `flowchart TD
     UI[React Native Screens] --> UC[Domain Use Cases]
@@ -490,7 +490,9 @@
       async function renderCardDiagram(container, diagramId, definition) {
         try {
           const { svg } = await mermaid.render(diagramId, definition);
-          container.innerHTML = svg;
+          const parsed = new DOMParser().parseFromString(svg, "image/svg+xml");
+          const svgElement = parsed.documentElement;
+          container.replaceChildren(document.importNode(svgElement, true));
         } catch (err) {
           container.textContent = definition;
         }

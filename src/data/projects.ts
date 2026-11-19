@@ -8,50 +8,50 @@ export const PROJECTS: ProjectCaseStudy[] = [
     slug: "pulseflow-collab",
     title: "PulseFlow Collab",
     tagline:
-      "Plataforma colaborativa de gestión de incidentes y operaciones en tiempo real.",
+      "Plataforma colaborativa de gestión de incidentes y operaciones en tiempo real (:8095).",
     area: "Full-Stack & Realtime",
     architecture: "Monolito Modular + Event-Driven WebSockets",
-    phase: "Fase 1",
+    phase: "v0.1.0 · Certificado",
     problem:
       "Los equipos de ingeniería que coordinan incidentes sufren estado desactualizado entre múltiples pestañas, sobrescrituras silenciosas cuando dos operadores editan el mismo registro y ausencia de trazabilidad auditada.",
     solution:
-      "Backend en monolito modular con separación estricta por dominios, control de concurrencia optimista mediante versionado de entidades, publicación de eventos en Redis Pub/Sub para escalar gateways WebSocket horizontalmente y bitácora inmutable de cambios en PostgreSQL.",
+      "Backend en monolito modular con separación estricta por dominios, control de concurrencia optimista CAS (ERR-409-OPTIMISTIC-LOCK), publicación de eventos en backplane Pub/Sub multi-nodo (ws-gateway-01 y ws-gateway-02) y bitácora append-only inmutable.",
     techStack: [
-      "Next.js",
+      "Next.js / Minimalist UI",
       "TypeScript",
-      "NestJS / Fastify",
-      "PostgreSQL",
-      "Redis Pub/Sub",
-      "WebSockets",
+      "Python 3.12 / aiohttp WS",
+      "PostgreSQL / SQLite CAS",
+      "Redis Pub/Sub Backplane",
+      "WebSockets & SSE",
     ],
     metrics: [
-      { label: "Latencia Sync", value: "< 50 ms p95" },
-      { label: "Concurrencia", value: "Optimistic Locking" },
-      { label: "Escalado WS", value: "Multi-nodo via Redis" },
+      { label: "Concurrencia", value: "CAS · HTTP 409 OCC" },
+      { label: "Escalado WS", value: "Multi-nodo Pub/Sub" },
+      { label: "Suite QA", value: "17/17 Tests PASS" },
     ],
     mermaidDiagram: `flowchart LR
-    C1[Browser Client A] <-->|WebSocket| GW1[WS Gateway Node 1]
-    C2[Browser Client B] <-->|WebSocket| GW2[WS Gateway Node 2]
-    GW1 <-->|Pub/Sub| R[(Redis Event Bus)]
-    GW2 <-->|Pub/Sub| R
+    C1[Operator A] <-->|WebSocket / SSE| GW1[ws-gateway-01]
+    C2[Operator B] <-->|WebSocket / SSE| GW2[ws-gateway-02]
+    GW1 <-->|Pub/Sub Fan-out| R[(Multi-Node Event Bus)]
+    GW2 <-->|Pub/Sub Fan-out| R
     GW1 --> MOD[Modular Monolith Core]
-    MOD -->|Optimistic Lock + Audit| PG[(PostgreSQL)]`,
+    MOD -->|Atomic CAS + Append-Only Triggers| PG[(PostgreSQL / SQLite)]`,
     adrHighlights: [
       {
         id: "ADR-01",
         title: "Monolito Modular antes que Microservicios",
         decision:
-          "Estructurar el backend como un monolito modular con fronteras de dominio explícitas.",
+          "Estructurar el backend como un monolito modular con fronteras de dominio explícitas (incidents, sla_policy, collaboration).",
         rationale:
           "Maximiza velocidad de iteración y transacciones ACID sin la sobrecarga operacional de múltiples despliegues en el dominio colaborativo.",
       },
       {
         id: "ADR-02",
-        title: "Redis Pub/Sub como backplane de WebSockets",
+        title: "Compare-And-Swap Atómico y Bitácora Append-Only",
         decision:
-          "Desacoplar las conexiones WebSocket usando canales Pub/Sub en Redis.",
+          "Exigir expected_version en mutaciones y bloquear UPDATE/DELETE en incident_audit_ledger mediante triggers de base de datos.",
         rationale:
-          "Permite ejecutar múltiples instancias del servidor detrás de un balanceador manteniendo sincronizados a todos los clientes conectados.",
+          "Evita sobrescrituras silenciosas (HTTP 409) y garantiza trazabilidad post-mortem inmutable.",
       },
     ],
     repoUrl: `https://github.com/${GITHUB_USERNAME}/pulseflow-collab`,
@@ -60,52 +60,52 @@ export const PROJECTS: ProjectCaseStudy[] = [
     slug: "cortex-rag-agent",
     title: "Cortex RAG Agent",
     tagline:
-      "Copiloto multi-agente para análisis documental técnico con RAG híbrido y evaluación continua.",
+      "Copiloto multi-agente para análisis documental técnico con RAG híbrido y evaluación continua (:8090).",
     area: "Applied AI & Agents",
     architecture: "Pipeline Multi-Agente + RAG Híbrido + Evals",
-    phase: "Fase 2",
+    phase: "v0.1.0 · Certificado",
     problem:
       "Los asistentes basados en RAG ingenuo fallan en consultas técnicas con acrónimos exactos, generan respuestas sin citas verificables y carecen de métricas objetivas para detectar regresiones en calidad, latencia o costo.",
     solution:
-      "Pipeline orquestado con grafo de agentes (Router, Retriever Híbrido, Verificador de Citas) que combina búsqueda vectorial densa con BM25/léxica y Reranking, entrega respuestas vía Server-Sent Events (SSE) y ejecuta un Eval Harness automatizado sobre datasets dorados.",
+      "Pipeline orquestado con grafo de 4 agentes (Router, Hybrid Retriever BM25 + Vector 64-D con Reciprocal Rank Fusion k=60, Synthesizer y Citation Guardrail) con streaming SSE y Eval Harness conectado a un ledger append-only.",
     techStack: [
       "Python 3.12",
-      "FastAPI",
-      "LangGraph",
-      "pgvector",
+      "FastAPI / ThreadingHTTP",
+      "Multi-Agent Pipeline",
+      "pgvector + Okapi BM25",
       "SSE Streaming",
-      "Next.js",
+      "Eval Harness Ledger",
     ],
     metrics: [
-      { label: "Recuperación", value: "Hybrid Vector + BM25" },
-      { label: "Grounding", value: "100% Citas Verificadas" },
-      { label: "Calidad", value: "Eval Harness Automatizado" },
+      { label: "Recuperación", value: "BM25 + Vector RRF" },
+      { label: "Golden Evals", value: "5/5 · Faithfulness 1.0" },
+      { label: "Suite QA", value: "15/15 Tests PASS" },
     ],
     mermaidDiagram: `flowchart TD
     Q[User Query] --> R[Router Agent]
-    R --> V[Vector Search pgvector]
-    R --> K[Keyword Search BM25]
-    V --> RR[Reciprocal Rank Fusion]
+    R --> V[Vector Search 64-D Cosine]
+    R --> K[Keyword Search Okapi BM25]
+    V --> RR[Weighted RRF k=60]
     K --> RR
     RR --> G[Synthesizer + Citation Guardrail]
-    G -->|SSE Stream| UI[Next.js Streaming UI]
-    EV[Eval Harness CI] -.->|Faithfulness & Latency| G`,
+    G -->|SSE Stream| UI[Minimalist Console :8090]
+    EV[Eval Harness 5/5] -->|Append-Only| L[(eval_runs_ledger)]`,
     adrHighlights: [
       {
         id: "ADR-01",
-        title: "Búsqueda Híbrida sobre pgvector + Full-Text",
+        title: "Búsqueda Híbrida BM25 + Vector con Reciprocal Rank Fusion",
         decision:
-          "Unificar almacenamiento relacional, vectorial y léxico en PostgreSQL con pgvector.",
+          "Combinar ranking léxico Okapi BM25 y similitud coseno vectorial mediante RRF ponderado según la intención clasificada por RouterAgent.",
         rationale:
-          "Evita sincronización dual con bases vectoriales externas y mejora la precisión en códigos de error, símbolos y nombres propios.",
+          "Resuelve con precisión tanto códigos de error exactos (ERR-409, AGA-8) como consultas conceptuales de arquitectura.",
       },
       {
         id: "ADR-02",
-        title: "Eval Harness como compuerta de calidad",
+        title: "Citation Guardrail y Ledger Append-Only de Evaluaciones",
         decision:
-          "Versionar un conjunto de pruebas de evaluación con métricas de fidelidad, relevancia y costo por token.",
+          "Bloquear respuestas sin citas verificadas ([cite:chunk_id]) y registrar cada corrida de evaluación en una tabla protegida por triggers BEFORE UPDATE/DELETE.",
         rationale:
-          "Permite iterar prompts y chunking con evidencia cuantitativa en lugar de pruebas manuales subjetivas.",
+          "Elimina alucinaciones no fundamentadas y preserva evidencia histórica inmutable de calidad.",
       },
     ],
     repoUrl: `https://github.com/${GITHUB_USERNAME}/cortex-rag-agent`,
@@ -114,51 +114,49 @@ export const PROJECTS: ProjectCaseStudy[] = [
     slug: "ledgercore-distributed",
     title: "LedgerCore Distributed",
     tagline:
-      "Motor transaccional y de reservas de alta concurrencia con consistencia eventual garantizada.",
+      "Motor transaccional double-entry y orquestador Saga con Transactional Outbox e idempotencia (:8096).",
     area: "Distributed Systems",
     architecture: "Microservicios Event-Driven (Saga + Outbox Pattern)",
-    phase: "Fase 1",
+    phase: "v0.1.0 · Certificado",
     problem:
-      "En sistemas distribuidos de pagos o inventario, los reintentos de red y las fallas parciales entre base de datos y broker de mensajes provocan cobros duplicados, eventos perdidos o estados inconsistentes.",
+      "En sistemas distribuidos de pagos o inventario, los reintentos de red y las fallas parciales entre base de datos y broker de mensajes provocan cobros duplicados, eventos perdidos o estados contables inconsistentes.",
     solution:
-      "Arquitectura orientada a eventos en Java 21 y Spring Boot 3 que implementa Idempotency Keys, Transactional Outbox Pattern para publicación atómica hacia Apache Kafka, orquestación Saga con acciones compensatorias y locks distribuidos en Redis.",
+      "Motor contable de partida doble en centavos enteros exactos (Zero-Sum Invariant) con huella SHA-256 de Idempotency-Key, locks distribuidos con fencing tokens, Transactional Outbox hacia tópicos Kafka, compensación automática Saga + DLQ y blueprint Java 21 / Spring Boot 3.",
     techStack: [
-      "Java 21",
-      "Spring Boot 3",
-      "Apache Kafka",
-      "PostgreSQL",
-      "Redis",
-      "Testcontainers",
+      "Java 21 & Spring Boot 3",
+      "Python 3.12 Core Engine",
+      "Apache Kafka Outbox Relay",
+      "PostgreSQL / SQLite ACID",
+      "Redis Fencing Locks",
+      "Double-Entry Zero-Sum",
     ],
     metrics: [
-      { label: "Seguridad", value: "Zero Double-Spend" },
-      { label: "Mensajería", value: "Transactional Outbox" },
-      { label: "Tolerancia", value: "Saga + Dead Letter Queue" },
+      { label: "Contabilidad", value: "Zero-Sum Imbalance $0" },
+      { label: "Idempotencia", value: "SHA-256 Replay / 409" },
+      { label: "Suite QA", value: "33/33 Tests PASS" },
     ],
     mermaidDiagram: `flowchart LR
-    API[Ledger API] -->|Idempotency Check| RD[(Redis Lock)]
-    API -->|ACID Tx: Ledger + Outbox| PG[(PostgreSQL)]
-    RL[Outbox Relay] -->|Publish Events| KF[[Apache Kafka]]
-    KF --> S1[Reservation Service]
-    KF --> S2[Settlement Service]
-    S2 -->|Failure Event| KF
-    KF -->|Compensating Action| API`,
+    API[Ledger API :8096] -->|Fencing Token| RD[(Distributed Lock)]
+    API -->|ACID Tx: Double-Entry + Outbox| PG[(PostgreSQL / SQLite)]
+    RL[Outbox Relay] -->|At-Least-Once| KF[[Kafka Partitioned Topics]]
+    KF --> S2[Settlement / Compensation]
+    S2 -->|Failure| DLQ[(Dead-Letter Queue)]`,
     adrHighlights: [
       {
         id: "ADR-01",
         title: "Transactional Outbox frente a 2PC (Two-Phase Commit)",
         decision:
-          "Persistir eventos de dominio en una tabla outbox dentro de la misma transacción local que el estado del ledger.",
+          "Persistir asientos contables de partida doble y eventos outbox dentro de la misma transacción ACID local.",
         rationale:
-          "Garantiza entrega al menos una vez hacia Kafka sin acoplar disponibilidad con transacciones distribuidas bloqueantes.",
+          "Garantiza publicación atómica hacia Kafka sin bloqueos distribuidos entre microservicios.",
       },
       {
         id: "ADR-02",
-        title: "Idempotencia por clave cliente y deduplicación en consumidor",
+        title: "Idempotencia SHA-256 y Compensación Contable Append-Only",
         decision:
-          "Exigir Idempotency-Key en comandos críticos y registrar IDs procesados en los consumidores Kafka.",
+          "Validar huella SHA-256 por Idempotency-Key y ejecutar rollbacks de Saga mediante asientos compensatorios SAGA_COMPENSATION sin borrar filas previas.",
         rationale:
-          "Neutraliza reintentos de red y entregas duplicadas propias de la semántica at-least-once.",
+          "Previene doble cobro ante reintentos y mantiene inmutabilidad contable verificada bajo 24 hilos concurrentes.",
       },
     ],
     repoUrl: `https://github.com/${GITHUB_USERNAME}/ledgercore-distributed`,
@@ -167,51 +165,49 @@ export const PROJECTS: ProjectCaseStudy[] = [
     slug: "cloudops-gitops-platform",
     title: "CloudOps GitOps Platform",
     tagline:
-      "Plataforma de infraestructura declarativa, despliegue GitOps y observabilidad OpenTelemetry.",
+      "Plataforma de infraestructura Terraform, control plane GitOps y observabilidad OpenTelemetry (:8098).",
     area: "Cloud & DevOps",
     architecture: "IaC + GitOps + Full Observability (OTel)",
-    phase: "Fase 3",
+    phase: "v0.1.0 · Certificado",
     problem:
-      "Desplegar múltiples servicios manualmente genera deriva de configuración entre entornos, caídas durante actualizaciones y diagnóstico lento ante degradaciones en producción por falta de trazas correlacionadas.",
+      "Desplegar múltiples servicios manualmente genera deriva de configuración entre entornos, contenedores inseguros en producción y diagnóstico lento ante degradaciones de SLO por falta de compuertas automáticas.",
     solution:
-      "Infraestructura reproducible con módulos Terraform, pipelines GitHub Actions con escaneo de seguridad e imágenes firmadas, sincronización declarativa en Kubernetes vía ArgoCD con despliegues progresivos y stack completo Prometheus + Grafana + Loki + OpenTelemetry.",
+      "Módulos Terraform multi-entorno, manifiestos Kubernetes endurecidos (Pod Security Standards Restricted) sincronizados con ArgoCD ApplicationSet, stack OpenTelemetry + Prometheus + Grafana para los 5 servicios y motor Canary con auto-rollback por Golden Signals.",
     techStack: [
-      "Terraform",
-      "Kubernetes",
-      "ArgoCD",
-      "GitHub Actions",
-      "OpenTelemetry",
+      "Terraform IaC",
+      "Kubernetes & ArgoCD",
+      "OpenTelemetry Collector",
       "Prometheus & Grafana",
+      "Python 3.12 Control Plane",
+      "PSS Restricted Policy Gate",
     ],
     metrics: [
-      { label: "Despliegue", value: "Zero-Downtime GitOps" },
-      { label: "Observabilidad", value: "Golden Signals + Traces" },
-      { label: "Reproducibilidad", value: "100% Declarative IaC" },
+      { label: "Flota GitOps", value: "5/5 Servicios Synced" },
+      { label: "Canary Gate", value: "Auto-Rollback SLO 99.9%" },
+      { label: "Suite QA", value: "31/31 Tests PASS" },
     ],
     mermaidDiagram: `flowchart LR
-    GH[GitHub Actions CI] -->|Build + Scan + Push| REG[(Container Registry)]
-    GH -->|Update Manifests| GIT[GitOps Config Repo]
-    ARGO[ArgoCD Controller] -->|Sync State| K8S[Kubernetes Cluster]
-    TF[Terraform IaC] -->|Provision| K8S
-    K8S -->|OTLP Metrics/Logs/Traces| OTEL[OTel Collector]
-    OTEL --> PROM[Prometheus / Loki]
-    PROM --> GRAF[Grafana Dashboards]`,
+    TF[Terraform VPC/EKS] --> K8S[K8s PSS Restricted Fleet]
+    ARGO[ArgoCD ApplicationSet] -->|Drift Reconcile| K8S
+    CP[CloudOps Control Plane :8098] -->|Policy Gate + Canary Rollback| K8S
+    K8S -->|OTLP Telemetry| OTEL[OTel Collector]
+    OTEL --> PROM[Prometheus Alerts + Grafana]`,
     adrHighlights: [
       {
         id: "ADR-01",
-        title: "Modelo Pull GitOps con ArgoCD",
+        title: "Modelo Pull GitOps y Compuerta de Admisión PSS Restricted",
         decision:
-          "Separar el pipeline de CI (construcción de artefactos) del controlador CD dentro del clúster.",
+          "Bloquear contenedores root, sistemas de archivos mutables y tags :latest en producción antes de reconciliar estado con ArgoCD.",
         rationale:
-          "Evita exponer credenciales de administrador del clúster en runners externos y detecta drift automáticamente.",
+          "Elimina deriva de configuración manual y garantiza mínimo privilegio en los 5 servicios del portafolio.",
       },
       {
         id: "ADR-02",
-        title: "Estándar OpenTelemetry transversal",
+        title: "Canary Auto-Rollback gobernado por Golden Signals",
         decision:
-          "Instrumentar los servicios del portafolio mediante OTel Collector agnóstico al backend.",
+          "Abortar y revertir despliegues canary automáticamente (HTTP 409) cuando la tasa de error supera 1.0% o la latencia p95 excede 250 ms.",
         rationale:
-          "Correlaciona trazas distribuidas entre Next.js, FastAPI y Spring Boot bajo un único Trace ID.",
+          "Protege el presupuesto de error (SLO 99.9%) con trazabilidad en un ledger append-only de despliegues.",
       },
     ],
     repoUrl: `https://github.com/${GITHUB_USERNAME}/cloudops-gitops-platform`,
@@ -220,51 +216,49 @@ export const PROJECTS: ProjectCaseStudy[] = [
     slug: "fieldnotes-mobile",
     title: "FieldNotes Mobile",
     tagline:
-      "Aplicación móvil multiplataforma offline-first con motor de sincronización y resolución de conflictos.",
+      "Aplicación móvil multiplataforma offline-first con cola SQLite, relojes de Lamport y resolución de conflictos (:8097).",
     area: "Mobile Offline-First",
     architecture: "Clean Architecture + Offline-First Sync Engine",
-    phase: "Fase 2",
+    phase: "v0.1.0 · Certificado",
     problem:
-      "Las aplicaciones móviles dependientes de red fallan en zonas sin cobertura, pierden formularios capturados en campo o generan conflictos destructivos cuando el dispositivo recupera conectividad.",
+      "Las aplicaciones móviles dependientes de red fallan en zonas industriales sin cobertura, pierden inspecciones capturadas en campo o sobrescriben cambios cuando múltiples técnicos reconectan.",
     solution:
-      "App en React Native (Expo + TypeScript) estructurada con Clean Architecture, almacenamiento local transaccional en SQLite/WatermelonDB como fuente de verdad de la UI, cola persistente de mutaciones (outbox local) y motor de sincronización incremental con manejo explícito de conflictos.",
+      "App en React Native (Expo 52 + TypeScript estricto) y motor de sincronización con almacenamiento SQLite local-first, cola persistente de mutaciones, relojes lógicos de Lamport y resolución determinística de conflictos (KEEP_LOCAL, ACCEPT_REMOTE, MANUAL_MERGE).",
     techStack: [
-      "React Native",
-      "Expo",
-      "TypeScript",
-      "SQLite / WatermelonDB",
+      "React Native & Expo 52",
+      "TypeScript Strict (0 any)",
+      "SQLite Local Outbox",
+      "Lamport Logical Clocks",
+      "Python 3.12 Sync Engine",
       "Clean Architecture",
-      "Jest",
     ],
     metrics: [
-      { label: "Disponibilidad", value: "100% Offline-Capable" },
-      { label: "UI Responsiveness", value: "Local-First Reads" },
-      { label: "Integridad", value: "Conflict-Aware Sync" },
+      { label: "Operación", value: "100% Offline + Outbox" },
+      { label: "Conflictos", value: "Lamport + 3-Way Merge" },
+      { label: "Suite QA", value: "45/45 Tests PASS" },
     ],
     mermaidDiagram: `flowchart TD
-    UI[React Native Screens] --> UC[Domain Use Cases]
-    UC --> REPO[Repository Interfaces]
-    REPO --> DB[(Local SQLite / WatermelonDB)]
-    DB --> Q[Pending Mutation Queue]
-    NET[Network Monitor] -->|Online Trigger| SYNC[Background Sync Engine]
-    Q --> SYNC
-    SYNC <-->|Delta Push/Pull| API[Remote Sync API]`,
+    UI[Expo Mobile UI / Simulator :8097] --> UC[Clean Arch Use Cases]
+    UC --> DB[(Local SQLite Notes + Outbox)]
+    DB -->|Offline 503 Guard / Online Trigger| SYNC[Delta Push/Pull Engine]
+    SYNC -->|Version & Lamport Check| REM[(Remote Cloud Sync Store)]
+    REM -->|409 Version Divergence| CR[Conflict Resolver: Local/Remote/Merge]`,
     adrHighlights: [
       {
         id: "ADR-01",
-        title: "Local-First como fuente de verdad de la interfaz",
+        title: "SQLite Local-First con Outbox Transaccional",
         decision:
-          "Toda lectura y escritura de UI opera contra SQLite local, delegando la red al motor de sincronización.",
+          "Persistir toda nota e inspección junto a su mutación pendiente en una única transacción SQLite local antes de intentar red.",
         rationale:
-          "Garantiza latencia instantánea al usuario y elimina estados rotos ante pérdida intermitente de señal.",
+          "Garantiza latencia cero en interfaz móvil y cero pérdida de datos cuando el dispositivo opera en modo avión o sin señal.",
       },
       {
         id: "ADR-02",
-        title: "Clean Architecture para aislar el motor de sync",
+        title: "Relojes Lógicos de Lamport y Resolución Explícita de Conflictos",
         decision:
-          "Separar entidades/casos de uso de adaptadores Expo, SQLite y transporte HTTP.",
+          "Ordenar causalmente las mutaciones con LamportClock y exigir resolución explícita cuando base_version difiere de la versión remota.",
         rationale:
-          "Permite probar la lógica de resolución de conflictos con tests unitarios rápidos sin emulador.",
+          "Evita pérdida silenciosa de inspecciones críticas de campo y registra cada sincronización en un ledger append-only.",
       },
     ],
     repoUrl: `https://github.com/${GITHUB_USERNAME}/fieldnotes-mobile`,
