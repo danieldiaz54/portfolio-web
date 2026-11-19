@@ -65,6 +65,15 @@ export default function CommandPalette({
         },
       },
       {
+        id: "fx-silk",
+        label: "Fondo portada: Seda arquitectónica WebGL",
+        sub: heroEffect === "silk-folds" ? "Activo" : "Cambiar",
+        run: () => {
+          onChangeHeroEffect("silk-folds");
+          onClose();
+        },
+      },
+      {
         id: "fx-grain",
         label: "Fondo portada: Degradado orgánico con grano",
         sub: heroEffect === "grain-gradient" ? "Activo" : "Cambiar",
