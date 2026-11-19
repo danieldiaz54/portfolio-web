@@ -32,6 +32,7 @@ html {
   overflow-x: clip;
   scrollbar-color: #334155 var(--paper);
   scrollbar-width: thin;
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -1089,6 +1090,7 @@ a {
   z-index: 45;
   display: flex;
   justify-content: flex-end;
+  overscroll-behavior: contain;
 }
 
 .studio-sheet {

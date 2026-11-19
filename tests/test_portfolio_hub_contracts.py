@@ -179,6 +179,7 @@ class TestPortfolioHubContracts(unittest.TestCase):
             self.assertIn(f'"{word}"', app_src)
         self.assertIn('heroEffect, setHeroEffect] = useState<HeroEffectId>("prism-dispersion")', app_src)
         self.assertIn("FixedBackdrop", app_src)
+        self.assertIn("overflowY", app_src)
         self.assertIn("CinemaStage", app_src)
         self.assertIn("EditorialMethod", app_src)
         self.assertIn("CinemaFinale", app_src)
