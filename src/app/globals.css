@@ -48,6 +48,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+html.is-modal-open,
+html.is-modal-open body {
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+}
+
 ::selection {
   background: var(--gallery);
   color: #ffffff;
