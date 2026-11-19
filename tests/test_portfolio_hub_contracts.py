@@ -183,6 +183,7 @@ class TestPortfolioHubContracts(unittest.TestCase):
     def test_v5_specs_docs_dockerfile_and_adrs(self) -> None:
         self.assertIn("Portafolio Hub V5 (Kinetic Light Studio", read("PRODUCT.md"))
         self.assertIn("Kinetic Light Studio V5", read("DESIGN.md"))
+        self.assertTrue((REPO_ROOT / "src" / "app" / "icon.svg").is_file(), "Falta src/app/icon.svg")
         self.assertTrue((REPO_ROOT / ".specs" / "05-phase7-v5-kinetic-studio" / "v5-kinetic-light-studio.spec.md").is_file())
         self.assertIn("USER nextjs", read("Dockerfile"))
         for adr in ("001-nextjs-app-router-and-static-case-studies.md", "002-multi-architecture-portfolio-taxonomy.md"):
