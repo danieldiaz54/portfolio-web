@@ -4,40 +4,52 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Daniel Díaz — Exposición de ingeniería: seis productos, seis arquitecturas</title>
-  <meta name="description" content="Portafolio de ingeniería de software: seis productos en vivo, cada uno con su propia arquitectura, identidad visual y ficha de decisiones técnicas." />
+  <meta name="description" content="Portafolio V3 de ingeniería de software: laboratorio interactivo en vivo, telemetría contra producción, seis arquitecturas y fichas técnicas." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Bricolage+Grotesque:wght@700&family=Bodoni+Moda:ital,wght@1,600&family=Sora:wght@700&family=Source+Serif+4:wght@400;700&family=Albert+Sans:wght@700&family=Bitter:wght@700&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Bricolage+Grotesque:wght@700&family=Bodoni+Moda:ital,wght@1,600;1,700&family=Sora:wght@700&family=Source+Serif+4:wght@400;700&family=Albert+Sans:wght@700;800&family=Bitter:wght@700&display=swap" />
   <!-- Generado por scripts/sync_static_hub.py a partir de src/app/globals.css y src/data/projects.ts. No editar a mano. -->
   <style>
 /*@@CSS@@*/
   </style>
 </head>
 <body>
-  <a class="skip-link" href="#exposicion">Saltar a la exposición</a>
+  <a class="skip-link" href="#laboratorio">Saltar al laboratorio en vivo</a>
   <header class="masthead">
     <div class="shell masthead-inner">
       <a href="#" class="wordmark">Daniel Díaz <span class="mono">/ Exposición</span></a>
-      <nav aria-label="Secciones" class="mono">
-        <a href="#exposicion">Exposición</a>
-        <a href="#matriz" class="hide-sm">Matriz</a>
-        <a href="#metodo" class="hide-sm">Método</a>
-        <a href="https://github.com/danieldiaz54" target="_blank" rel="noopener noreferrer">GitHub</a>
-      </nav>
+      <div class="masthead-right">
+        <nav aria-label="Secciones" class="mono">
+          <a href="#laboratorio">Laboratorio</a>
+          <a href="#exposicion">Exposición</a>
+          <a href="#matriz" class="hide-sm">Matriz</a>
+          <a href="https://github.com/danieldiaz54" target="_blank" rel="noopener noreferrer" class="hide-sm">GitHub</a>
+        </nav>
+        <button type="button" class="cmdk-trigger" id="nav-cmdk" aria-label="Abrir paleta de comandos y telemetría (Ctrl+K o Cmd+K)">
+          <span class="pulse-dot is-live" aria-hidden="true"></span>
+          <span>Paleta</span>
+          <span class="kbd">⌘K</span>
+        </button>
+      </div>
     </div>
   </header>
 
   <main>
     <section class="hero" aria-labelledby="hero-title">
+      <div id="hero-shader" class="hero-shader" aria-hidden="true"></div>
       <div class="shell">
-        <p class="hero-kicker mono">Daniel Díaz — Ingeniero de software full-stack</p>
+        <div class="hero-head-row">
+          <p class="hero-kicker mono">Daniel Díaz — Ingeniero de software full-stack</p>
+          <div class="shader-switch" role="group" aria-label="Fondo GPU del Hero" id="shader-switch"></div>
+        </div>
         <h1 id="hero-title" class="hero-title">Seis problemas cotidianos. <em>Seis arquitecturas.</em></h1>
         <div class="hero-grid">
           <div>
             <p class="hero-thesis">Diseño y construyo sistemas completos —del dominio a la interfaz— y explico cada decisión con su costo.</p>
             <div class="hero-actions">
-              <a class="btn btn-solid" href="#exposicion">Ver la exposición ↓</a>
-              <a class="btn" href="https://github.com/danieldiaz54" target="_blank" rel="noopener noreferrer">GitHub</a>
+              <a class="btn btn-solid" href="#laboratorio">Probar laboratorio vivo ↓</a>
+              <a class="btn" href="#exposicion">Ver las 6 placas</a>
+              <button type="button" class="btn" id="hero-cmdk">Paleta ⌘K</button>
             </div>
           </div>
           <div class="hero-figures">
@@ -46,14 +58,34 @@
             <div><strong>100%</strong><span class="mono">Con CI y pruebas</span></div>
           </div>
         </div>
+
+        <div class="pulse-rail" aria-label="Telemetría en vivo de servicios desplegados">
+          <div class="pulse-rail-head">
+            <span class="mono">Pulso real en vivo · 5 servicios Railway (/api/v1/health) + 1 app local</span>
+            <div class="pulse-actions">
+              <button type="button" class="pulse-ping-btn" id="ping-all-btn">Re-ping vivo</button>
+            </div>
+          </div>
+          <div class="pulse-grid" id="pulse-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="laboratorio" class="section" aria-labelledby="laboratorio-title">
+      <div class="shell">
+        <div class="section-head">
+          <h2 id="laboratorio-title">I — Laboratorio en vivo</h2>
+          <p>Cada sala adopta la paleta del producto y te deja operar su mecanismo central en el acto junto a un diagrama de señales que conmuta al provocar fallas o conflictos.</p>
+        </div>
+        <div id="interactive-stage"></div>
       </div>
     </section>
 
     <section id="exposicion" class="section" aria-labelledby="exposicion-title">
       <div class="shell">
         <div class="section-head">
-          <h2 id="exposicion-title">I — Exposición</h2>
-          <p>Cada placa muestra el producto con su propia paleta y tipografía. Ábrela para leer la ficha: el problema, la decisión que tomé, la alternativa que descarté y lo que cambiaría.</p>
+          <h2 id="exposicion-title">II — Exposición</h2>
+          <p>Vista completa curada de las seis obras. Abre cualquier ficha para revisar decisiones de arquitectura (Elegido vs Descartado), modo de falla y retrospectiva.</p>
         </div>
         <div class="filters" role="tablist" aria-label="Filtrar por tipo de sistema" id="filters"></div>
         <div class="exhibit-grid" id="exhibit-grid"></div>
@@ -63,7 +95,7 @@
     <section id="matriz" class="section" aria-labelledby="matriz-title">
       <div class="shell">
         <div class="section-head">
-          <h2 id="matriz-title">II — Matriz de paradigmas</h2>
+          <h2 id="matriz-title">III — Matriz de paradigmas</h2>
           <p>Ningún proyecto repite arquitectura. La matriz resume cómo cada uno guarda sus datos y qué garantía de consistencia ofrece.</p>
         </div>
         <div class="matrix-wrap">
@@ -83,7 +115,7 @@
     <section id="metodo" class="section" aria-labelledby="metodo-title">
       <div class="shell">
         <div class="section-head">
-          <h2 id="metodo-title">III — Método</h2>
+          <h2 id="metodo-title">IV — Método</h2>
           <p>El mismo proceso para los seis productos, sin importar el lenguaje o la base de datos.</p>
         </div>
         <div class="method">
@@ -98,11 +130,11 @@
     <section id="colofon" class="section" aria-labelledby="colofon-title">
       <div class="shell">
         <div class="section-head">
-          <h2 id="colofon-title">IV — Colofón</h2>
+          <h2 id="colofon-title">V — Colofón</h2>
           <p>Cómo está hecho este sitio y qué hay detrás del telón.</p>
         </div>
         <div class="colophon">
-          <div><h3>Tipografía</h3><p>Archivo para titulares, Hanken Grotesk para texto y JetBrains Mono para metadatos. Las placas usan la tipografía real de cada producto.</p></div>
+          <div><h3>Tipografía y shader GPU</h3><p>Archivo, Hanken Grotesk y JetBrains Mono. Fondo animado de portada impulsado por Leonxlnx/taste-skill (v2.5.1, efectos grid-pulse y contour-lines sin dependencias).</p></div>
           <div><h3>Construcción</h3><p>Next.js 15, React 19 y TypeScript estricto. Esta versión estática en GitHub Pages construye el DOM nodo a nodo, sin inyectar HTML.</p></div>
           <div><h3>Infraestructura</h3><p>Infraestructura como código, manifiestos GitOps y señales doradas que documentan cómo se operaría el ecosistema en Kubernetes. <a href="https://github.com/danieldiaz54/cloudops-gitops-platform" target="_blank" rel="noopener noreferrer">CloudOps GitOps Platform ↗</a></p></div>
         </div>
@@ -112,12 +144,39 @@
 
   <footer class="shell">
     <div class="footer mono">
-      <span>© Daniel Díaz</span>
+      <span>© Daniel Díaz · V3 Spatial Stage</span>
       <a href="https://github.com/danieldiaz54" target="_blank" rel="noopener noreferrer">github.com/danieldiaz54</a>
     </div>
   </footer>
 
   <div id="drawer-root"></div>
+  <div id="cmdk-root"></div>
+
+  <script type="module">
+    const host = document.getElementById("hero-shader");
+    const PALETTE = { bg: "#f7f7f5", surface: "#ffffff", ink: "#0a0a0a", muted: "#3f3f46", accent: "#0044cc" };
+    const PRESETS = {
+      "grid-pulse": { cell: 52, lineOpacity: 0.14, pulses: 7, tail: 2.8, speed: 145, calm: 0.38, calmX: 0.22, calmY: 0.45 },
+      "contour-lines": { levels: 22, opacity: 0.34, indexEvery: 5, speed: 0.025, tint: 0.65, calm: 0.45, calmX: 0.22, calmY: 0.45 }
+    };
+    let handle = null;
+    let mod = null;
+
+    async function applyEffect(id) {
+      if (handle) { handle.destroy(); handle = null; }
+      if (!host || id === "off") return;
+      if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      try {
+        if (!mod) mod = await import("./assets/effects/fx.js");
+        handle = await mod.mount(host, id, { palette: PALETTE, params: PRESETS[id], seed: 7 });
+      } catch (_err) {
+        // Degradación silenciosa sin backend o sin WebGL
+      }
+    }
+
+    window.__hubShader = { setEffect: applyEffect };
+    applyEffect("grid-pulse");
+  </script>
 
   <script>
     "use strict";
@@ -127,8 +186,9 @@
       { id: "realtime", label: "Tiempo real" }, { id: "ai", label: "IA" },
       { id: "fintech", label: "Fintech" }, { id: "mobile", label: "Móvil" }
     ];
+    const SVG_NS = "http://www.w3.org/2000/svg";
 
-    /* Constructor seguro de nodos: solo createElement + textContent. */
+    /* Constructores seguros de nodos HTML y SVG: cero cadenas HTML concatenadas. */
     function h(tag, attrs, children) {
       const node = document.createElement(tag);
       const options = attrs || {};
@@ -136,6 +196,7 @@
         const value = options[key];
         if (key === "className") { node.className = value; }
         else if (key === "text") { node.textContent = value; }
+        else if (key === "disabled") { node.disabled = Boolean(value); }
         else if (key === "style") { Object.keys(value).forEach(function (prop) { node.style.setProperty(prop, value[prop]); }); }
         else if (key.indexOf("on") === 0) { node.addEventListener(key.slice(2).toLowerCase(), value); }
         else { node.setAttribute(key, value); }
@@ -147,10 +208,29 @@
       return node;
     }
 
-    function bar(brand, chip) {
-      return h("div", { className: "pv-bar" }, [h("span", { className: "pv-brand", text: brand }), chip]);
+    function s(tag, attrs, children) {
+      const node = document.createElementNS(SVG_NS, tag);
+      const options = attrs || {};
+      Object.keys(options).forEach(function (key) {
+        const value = options[key];
+        if (key === "className") { node.setAttribute("class", value); }
+        else if (key === "text") { node.textContent = value; }
+        else if (key === "style") { Object.keys(value).forEach(function (prop) { node.style.setProperty(prop, value[prop]); }); }
+        else { node.setAttribute(key, String(value)); }
+      });
+      (children || []).forEach(function (child) {
+        if (child) { node.appendChild(child); }
+      });
+      return node;
+    }
+
+    function bar(brand, chipNode) {
+      return h("div", { className: "pv-bar" }, [h("span", { className: "pv-brand", text: brand }), chipNode]);
     }
     function chip(text) { return h("span", { className: "pv-chip", text: text }); }
+    function extLink(className, href, text) {
+      return h("a", { className: className, href: href, target: "_blank", rel: "noopener noreferrer", text: text });
+    }
 
     const PREVIEWS = {
       pdf: function () {
@@ -213,26 +293,588 @@
       }
     };
 
+    const state = {
+      heroEffect: "grid-pulse",
+      activeSlug: PROJECTS[0].slug,
+      activeFilter: "all",
+      telemetry: {},
+      pinging: false,
+      faultActive: false,
+      faultNote: PROJECTS[0].diagram.normalCaption,
+      lab: {}
+    };
+
+    function resetLabState(slug) {
+      state.faultActive = false;
+      const proj = PROJECTS.find(function (p) { return p.slug === slug; }) || PROJECTS[0];
+      state.faultNote = proj.diagram.normalCaption;
+      if (slug === "pdfcraft-studio") {
+        state.lab = {
+          pages: ["Pág. 01 · Portada del contrato", "Pág. 02 · Anexo financiero", "Pág. 03 · Cláusula y firma"],
+          activeIdx: 2, rotation: 0, signed: true,
+          log: "Motor local listo · 0 bytes enviados fuera del navegador."
+        };
+      } else if (slug === "merkat-catalog") {
+        state.lab = { cat: "joyeria", cacheMiss: false };
+      } else if (slug === "pulseflow-collab") {
+        state.lab = { version: 3, conflict: false, assignee: "Tú (borrador v3)" };
+      } else if (slug === "cortex-rag-agent") {
+        state.lab = { mode: "grounded" };
+      } else if (slug === "ledgercore-distributed") {
+        state.lab = {
+          balance: 2480,
+          entries: [{ label: "Saldo inicial auditado", amount: "+ $2,480.00", note: "Cuentas cuadran ∑ = $0.00" }],
+          status: "Libro de doble partida equilibrado · Llave SHA-256 lista."
+        };
+      } else {
+        state.lab = {
+          offline: true, queueCount: 2, conflict: false,
+          notes: ["Poste 14 · Tensión nominal 13.8 kV", "Válvula B · Sello sustituido en campo"],
+          status: "Modo avión activo · 2 cambios guardados en SQLite local."
+        };
+      }
+    }
+    resetLabState(state.activeSlug);
+
+    function setHeroEffect(next) {
+      state.heroEffect = next;
+      if (window.__hubShader) { window.__hubShader.setEffect(next); }
+      renderShaderSwitch();
+    }
+
+    function renderShaderSwitch() {
+      const box = document.getElementById("shader-switch");
+      const opts = [["grid-pulse", "Señales"], ["contour-lines", "Contornos"], ["off", "Estático"]];
+      box.replaceChildren.apply(box, [h("span", { className: "mono", text: "Shader Hero" })].concat(opts.map(function (o) {
+        return h("button", {
+          type: "button", "aria-pressed": String(state.heroEffect === o[0]), text: o[1],
+          onClick: function () { setHeroEffect(o[0]); }
+        });
+      })));
+    }
+
+    function dotClass(project) {
+      if (!project.healthUrl) return "pulse-dot is-local";
+      const e = state.telemetry[project.slug];
+      if (!e || e.status === "checking") return "pulse-dot";
+      return e.status === "live" ? "pulse-dot is-live" : "pulse-dot is-degraded";
+    }
+
+    function latencyText(project) {
+      if (!project.healthUrl) return "Local";
+      const e = state.telemetry[project.slug];
+      if (!e || e.status === "checking") return "…";
+      return e.status === "live" && e.latencyMs !== null ? (e.latencyMs + " ms") : e.detail;
+    }
+
+    function renderPulseRail() {
+      const grid = document.getElementById("pulse-grid");
+      const btn = document.getElementById("ping-all-btn");
+      btn.disabled = state.pinging;
+      btn.textContent = state.pinging ? "Sondeando…" : "Re-ping vivo";
+      grid.replaceChildren.apply(grid, PROJECTS.map(function (p) {
+        return h("button", {
+          type: "button", className: "pulse-pill", title: "Abrir laboratorio de " + p.name,
+          onClick: function () { selectLab(p.slug, true); }
+        }, [
+          h("span", { className: "pulse-pill-left" }, [h("span", { className: dotClass(p), "aria-hidden": "true" }), h("span", { text: p.name })]),
+          h("span", { className: "pulse-latency", text: latencyText(p) })
+        ]);
+      }));
+    }
+
+    async function pingAll() {
+      state.pinging = true;
+      PROJECTS.forEach(function (p) {
+        if (p.healthUrl) { state.telemetry[p.slug] = { status: "checking", latencyMs: null, detail: "Midiendo…" }; }
+      });
+      renderPulseRail();
+      await Promise.all(PROJECTS.map(async function (p) {
+        if (!p.healthUrl) {
+          state.telemetry[p.slug] = { status: "local", latencyMs: 0, detail: "Browser local" };
+          return;
+        }
+        const ctrl = typeof AbortController !== "undefined" ? new AbortController() : null;
+        const timer = ctrl ? window.setTimeout(function () { ctrl.abort(); }, 6000) : null;
+        const t0 = performance.now();
+        try {
+          const res = await fetch(p.healthUrl, { mode: "cors", cache: "no-store", signal: ctrl ? ctrl.signal : undefined });
+          const ms = Math.max(1, Math.round(performance.now() - t0));
+          state.telemetry[p.slug] = res.ok
+            ? { status: "live", latencyMs: ms, detail: "200 OK" }
+            : { status: "degraded", latencyMs: ms, detail: "HTTP " + res.status };
+        } catch (_err) {
+          state.telemetry[p.slug] = { status: "degraded", latencyMs: null, detail: "Sin respuesta" };
+        } finally {
+          if (timer) window.clearTimeout(timer);
+        }
+      }));
+      state.pinging = false;
+      renderPulseRail();
+      renderStage();
+      renderMatrix();
+    }
+
+    const MERKAT_DOCS = {
+      joyeria: {
+        label: "Joyería",
+        items: [["Anillo Sol 18k", "$ 120", "talla: 7 · oro reciclado"], ["Collar Meridiano", "$ 195", "largo: 45 cm · plata 925"]],
+        doc: { category: "jewelry", material: "18k recycled gold", ringSizes: [5, 6, 7, 8], hallmark: "CO-925" }
+      },
+      textil: {
+        label: "Textil",
+        items: [["Abrigo Seda Nº 4", "$ 86", "talla: M · lino lavado"], ["Camisa Taller", "$ 72", "talla: L · algodón orgánico"]],
+        doc: { category: "apparel", fabricWeightGsm: 240, sizes: ["S", "M", "L"], care: "cold wash only" }
+      },
+      fragancia: {
+        label: "Fragancias",
+        items: [["Ámbar Nocturno 50 ml", "$ 64", "notas: cedro, bergamota"], ["Bruma Verde 30 ml", "$ 48", "concentración: EDP 18 %"]],
+        doc: { category: "fragrance", volumeMl: 50, notes: ["bergamot", "cedarwood", "vetiver"], concentration: "EDP 18%" }
+      }
+    };
+
+    function buildLabNodes(project) {
+      const L = state.lab;
+      if (project.previewKind === "pdf") {
+        return [
+          h("div", { className: "lab-head" }, [
+            h("span", { className: "lab-title", text: "PdfCraft · Lienzo privado" }),
+            h("div", { className: "lab-controls" }, [
+              h("button", { type: "button", className: "lab-btn", text: "Intercambiar 1 ↔ 2", onClick: function () {
+                L.pages = [L.pages[1], L.pages[0], L.pages[2]];
+                state.faultActive = false;
+                state.faultNote = "Reordenamiento local en memoria: pdf-lib actualiza el árbol de páginas al instante.";
+                L.log = "Páginas 01 y 02 reordenadas en RAM · 0 peticiones HTTP.";
+                renderStage();
+              }}),
+              h("button", { type: "button", className: "lab-btn", text: "Rotar " + L.rotation + "° → " + ((L.rotation + 90) % 360) + "°", onClick: function () {
+                L.rotation = (L.rotation + 90) % 360;
+                state.faultActive = false;
+                state.faultNote = "Transformación de matriz local (" + L.rotation + "°) sin subir archivo a nube.";
+                L.log = "Hoja activa rotada a " + L.rotation + "° · pdf.js Canvas actualizado.";
+                renderStage();
+              }}),
+              h("button", { type: "button", className: "lab-btn lab-btn-primary", "aria-pressed": String(L.signed), text: L.signed ? "Firma aplicada ✓" : "Estampar firma", onClick: function () {
+                L.signed = !L.signed;
+                state.faultActive = false;
+                state.faultNote = "Trazado vectorial incrustado directo en los bytes del PDF local.";
+                L.log = L.signed ? "Firma local incrustada · Hash SHA-256 local regenerado." : "Firma removida del borrador local.";
+                renderStage();
+              }})
+            ])
+          ]),
+          h("div", { className: "lab-surface" }, [
+            h("div", { className: "lab-pdf-grid" }, [
+              h("div", { className: "lab-pdf-thumbs" }, L.pages.map(function (title, idx) {
+                return h("button", {
+                  type: "button", className: "lab-pdf-thumb" + (L.activeIdx === idx ? " is-active" : ""),
+                  text: title.split(" · ")[0], onClick: function () { L.activeIdx = idx; renderStage(); }
+                });
+              })),
+              h("div", { className: "lab-pdf-sheet", style: { transform: "rotate(" + L.rotation + "deg)" } }, [
+                h("div", {}, [
+                  h("span", { className: "mono", text: L.pages[L.activeIdx] }),
+                  h("p", { style: { margin: "8px 0 0", "font-size": "14px" }, text: "Documento manipulado por pdf-lib dentro de tu navegador sin backend ni cargas externas." })
+                ]),
+                L.signed ? h("span", { className: "lab-sig-mark", text: "D. Díaz" }) : h("span", { className: "mono", text: "[Sin firma]" })
+              ])
+            ])
+          ]),
+          h("div", { className: "lab-log", text: L.log })
+        ];
+      }
+      if (project.previewKind === "catalog") {
+        const cur = MERKAT_DOCS[L.cat];
+        const e = state.telemetry[project.slug];
+        const hint = e && e.status === "live" && e.latencyMs !== null ? ("API Railway live (" + e.latencyMs + " ms) · ") : "";
+        return [
+          h("div", { className: "lab-head" }, [
+            h("span", { className: "lab-title", text: "Merkat · Esquema polimórfico NoSQL" }),
+            h("div", { className: "lab-controls" }, ["joyeria", "textil", "fragancia"].map(function (k) {
+              return h("button", {
+                type: "button", className: "lab-btn", "aria-pressed": String(L.cat === k), text: MERKAT_DOCS[k].label,
+                onClick: function () {
+                  L.cat = k; L.cacheMiss = false; state.faultActive = false;
+                  state.faultNote = "Redis CQRS entregó la proyección de " + MERKAT_DOCS[k].label + " en ~4 ms sin joins.";
+                  renderStage();
+                }
+              });
+            }).concat([h("button", {
+              type: "button", className: "lab-btn lab-btn-alert", "aria-pressed": String(L.cacheMiss),
+              text: L.cacheMiss ? "Restaurar HIT Redis" : "Forzar Cache MISS",
+              onClick: function () {
+                L.cacheMiss = !L.cacheMiss; state.faultActive = L.cacheMiss;
+                state.faultNote = L.cacheMiss
+                  ? "Cache MISS: consulta directa a MongoDB BSON e hidratación asíncrona de TTL en Redis."
+                  : "Cache HIT restaurado en Redis CQRS.";
+                renderStage();
+              }
+            })]))
+          ]),
+          h("div", { className: "lab-surface" }, [
+            h("div", { className: "lab-cards-row" }, cur.items.map(function (it) {
+              return h("div", { className: "lab-mini-card" }, [h("strong", { text: it[0] }), h("div", { text: it[1] }), h("span", { className: "mono", text: it[2] })]);
+            })),
+            h("pre", { className: "lab-json-pre", text: JSON.stringify(cur.doc, null, 2) })
+          ]),
+          h("div", { className: "lab-log", text: hint + (L.cacheMiss
+            ? "MISS en Redis → Query MongoDB (atributos propios sin modelo EAV) → Cache warmup 28 ms."
+            : "HIT en Redis CQRS → Lectura de facetas polimórficas en 4 ms.") })
+        ];
+      }
+      if (project.previewKind === "kanban") {
+        const ctrls = [h("button", {
+          type: "button", className: "lab-btn lab-btn-alert", text: "Simular edición simultánea",
+          onClick: function () {
+            L.conflict = true; L.assignee = "Ana acaba de guardar v4 (colisión con tu v3)";
+            state.faultActive = true;
+            state.faultNote = "HTTP 409 ERR-OPTIMISTIC-LOCK: tu PATCH traía version=3 pero el servidor ya avanzó a version=4.";
+            renderStage();
+          }
+        })];
+        if (L.conflict) {
+          ctrls.push(
+            h("button", { type: "button", className: "lab-btn", text: "Aceptar v4 (Ana)", onClick: function () {
+              L.conflict = false; L.version = 4; L.assignee = "Sincronizado con Ana (v4)";
+              state.faultActive = false; state.faultNote = "Resolución limpia: adoptaste v4 de Ana sin sobrescribir cambios."; renderStage();
+            }}),
+            h("button", { type: "button", className: "lab-btn lab-btn-primary", text: "Reaplicar → v5", onClick: function () {
+              L.conflict = false; L.version = 5; L.assignee = "Reaplicado sobre v4 → v5 publicado";
+              state.faultActive = false; state.faultNote = "CAS exitoso sobre v4 → nuevo commit v5 emitido por SSE a los demás editores."; renderStage();
+            }})
+          );
+        }
+        return [
+          h("div", { className: "lab-head" }, [h("span", { className: "lab-title", text: "PulseFlow · Concurrencia en vivo" }), h("div", { className: "lab-controls" }, ctrls)]),
+          h("div", { className: "lab-surface" }, [
+            h("div", { className: "lab-head" }, [
+              h("span", { className: "mono", text: "Tarjeta #PF-42 · Tablero Producto" }),
+              h("span", { className: "mono", text: L.conflict ? "Estado: 409 OCC CAS" : ("Versión actual: v" + L.version) })
+            ]),
+            h("div", { className: "lab-kanban-card" + (L.conflict ? " is-conflict" : "") }, [
+              h("strong", { text: "Actualizar pasarela de cobro" }),
+              h("p", { style: { margin: "6px 0 0", "font-size": "13px", opacity: "0.88" }, text: L.assignee })
+            ])
+          ]),
+          h("div", { className: "lab-log", text: L.conflict
+            ? "PATCH /incidents/42 (expected_version=3) → 409 CONFLICT · Trabajo de ambos preservado."
+            : ("Bitácora append-only íntegra · último evento SSE emitido para versión v" + L.version + ".") })
+        ];
+      }
+      if (project.previewKind === "chat") {
+        const g = L.mode === "grounded";
+        return [
+          h("div", { className: "lab-head" }, [
+            h("span", { className: "lab-title", text: "Cortex · Guardrail con citas" }),
+            h("div", { className: "lab-controls" }, [
+              h("button", { type: "button", className: "lab-btn lab-btn-primary", "aria-pressed": String(g), text: "Pregunta con soporte", onClick: function () {
+                L.mode = "grounded"; state.faultActive = false;
+                state.faultNote = "BM25 + vector RRF recupera fragmento exacto (score 0.91) con cita obligatoria."; renderStage();
+              }}),
+              h("button", { type: "button", className: "lab-btn lab-btn-alert", "aria-pressed": String(!g), text: "Pregunta fuera de corpus", onClick: function () {
+                L.mode = "ungrounded"; state.faultActive = true;
+                state.faultNote = "Similitud por debajo de umbral (0.14): guardrail bloquea la generación para no alucinar."; renderStage();
+              }})
+            ])
+          ]),
+          h("div", { className: "lab-surface" }, g ? [
+            h("p", { style: { margin: "0", "font-weight": "600" }, text: "Pregunta: ¿Cada cuánto se reemplaza el filtro de alta presión?" }),
+            h("div", { className: "lab-cite-box" }, [
+              h("strong", { text: "Respuesta verificada: " }),
+              "Cada 500 horas de uso continuo o al notar caída de presión.",
+              h("br"),
+              h("span", { className: "mono", text: "Fuente literal [manual-planta.pdf · p. 12 · RRF 0.91]" })
+            ])
+          ] : [
+            h("p", { style: { margin: "0", "font-weight": "600" }, text: "Pregunta: ¿Cuál será la tarifa oficial del repuesto en 2027?" }),
+            h("div", { className: "lab-cite-box is-refusal" }, [
+              h("strong", { text: "Respuesta bloqueada por guardrail: " }),
+              "No existen fragmentos en los documentos indexados que mencionen tarifas de 2027 (similitud máxima 0.14 < umbral 0.55)."
+            ])
+          ]),
+          h("div", { className: "lab-log", text: g
+            ? "Eval Citation Groundedness: 100 % respaldado por manual-planta.pdf · p. 12."
+            : "Hallucination Guardrail: negativa verificable en vez de inventar un precio." })
+        ];
+      }
+      if (project.previewKind === "wallet") {
+        return [
+          h("div", { className: "lab-head" }, [
+            h("span", { className: "lab-title", text: "LedgerCore · Idempotencia y Saga" }),
+            h("div", { className: "lab-controls" }, [
+              h("button", { type: "button", className: "lab-btn lab-btn-primary", text: "Enviar $120 (Doble clic x2)", onClick: function () {
+                L.balance -= 120;
+                L.entries = [
+                  { label: "Envío a Ana (2ª petición: replay idempotente)", amount: "$0.00 extra", note: "Misma llave k-9f2a · sin doble cargo" },
+                  { label: "Envío a Ana (1ª petición ejecutada)", amount: "− $120.00", note: "Asiento Débito/Crédito ∑=0" }
+                ].concat(L.entries.slice(0, 2));
+                state.faultActive = false;
+                state.faultNote = "Dos envíos con idempotency-key k-9f2a producen exactamente 1 débito y 1 replay.";
+                L.status = "Doble clic absorbido: 1 débito real (−$120.00) + 1 replay idempotente.";
+                renderStage();
+              }}),
+              h("button", { type: "button", className: "lab-btn lab-btn-alert", text: "Simular fallo y reverso", onClick: function () {
+                state.faultActive = true;
+                state.faultNote = "Cámara de liquidación rechazó: la Saga orquestada ejecuta asiento compensatorio +$120.00.";
+                L.entries = [
+                  { label: "Reverso automático Saga (compensación)", amount: "+ $120.00", note: "Saldo devuelto al instante" },
+                  { label: "Reserva fallida en cámara externa", amount: "− $120.00", note: "Compensado" }
+                ].concat(L.entries.slice(0, 2));
+                L.status = "Fallo compensado por Saga · ∑(débitos + créditos) = $0.00.";
+                renderStage();
+              }}),
+              h("button", { type: "button", className: "lab-btn", text: "Reiniciar", onClick: function () { resetLabState(project.slug); renderStage(); } })
+            ])
+          ]),
+          h("div", { className: "lab-surface" }, [
+            h("div", { className: "lab-head" }, [
+              h("div", { className: "lab-wallet-balance", text: "$ " + L.balance.toLocaleString("en-US", { minimumFractionDigits: 2 }) }),
+              h("span", { className: "mono", text: "Suma de asientos: $0.00" })
+            ]),
+            h("div", { className: "lab-wallet-rows" }, L.entries.map(function (it) {
+              return h("div", { className: "lab-wallet-row" }, [
+                h("span", {}, [h("strong", { text: it.label }), " · " + it.note]),
+                h("strong", { text: it.amount })
+              ]);
+            }))
+          ]),
+          h("div", { className: "lab-log", text: L.status })
+        ];
+      }
+      const phoneChildren = [
+        h("div", { className: "mono", style: { "font-size": "10px", color: "#9a3412", "font-weight": "700" },
+          text: L.offline ? ("SIN SEÑAL · " + L.queueCount + " EN COLA SQLITE") : "EN LÍNEA · SINCRONIZADO" })
+      ].concat(L.notes.slice(0, 3).map(function (it) {
+        return h("div", { className: "lab-note-item" }, [h("span", { text: it }), h("span", { className: "mono", text: L.offline ? "local" : "sync" })]);
+      }));
+      if (L.conflict) {
+        phoneChildren.push(h("div", { style: { "padding-top": "6px", "border-top": "1px solid #9a3412" } }, [
+          h("span", { className: "mono", text: "Choque en Válvula B:" }),
+          h("div", { className: "lab-controls", style: { "margin-top": "6px" } }, [
+            ["Mía", "Conservar mía", "lab-btn"], ["Servidor", "Servidor", "lab-btn"], ["Ambas", "Ambas", "lab-btn lab-btn-primary"]
+          ].map(function (opt) {
+            return h("button", { type: "button", className: opt[2], text: opt[1], onClick: function () {
+              L.conflict = false; L.offline = false; L.queueCount = 0; state.faultActive = false;
+              state.faultNote = "Resolución \"" + opt[0] + "\" aplicada y replicada sin pérdida silenciosa.";
+              L.status = "Choque resuelto (" + opt[0] + ") · Cola sincronizada.";
+              renderStage();
+            }});
+          }))
+        ]));
+      }
+      return [
+        h("div", { className: "lab-head" }, [
+          h("span", { className: "lab-title", text: "FieldNotes · Móvil sin internet" }),
+          h("div", { className: "lab-controls" }, [
+            h("button", { type: "button", role: "switch", "aria-checked": String(L.offline), className: "lab-switch",
+              text: L.offline ? "Modo avión: ON" : "Modo avión: OFF", onClick: function () {
+                L.offline = !L.offline;
+                if (!L.offline && !L.conflict) {
+                  L.queueCount = 0; state.faultActive = false;
+                  state.faultNote = "Conexión restaurada: cola SQLite drenada con reloj Lamport incremental.";
+                  L.status = "Sincronización completa al reconectar · 0 pendientes.";
+                } else {
+                  state.faultActive = L.offline;
+                  state.faultNote = "Sin cobertura celular: mutaciones van directo a la cola SQLite local.";
+                  L.status = "Modo avión activo · escribiendo sin conexión.";
+                }
+                renderStage();
+              }}),
+            h("button", { type: "button", className: "lab-btn lab-btn-primary", text: "+ Nota offline", onClick: function () {
+              L.notes = ["Inspección #" + (L.notes.length + 1) + " · Lectura verificada"].concat(L.notes);
+              if (L.offline) {
+                L.queueCount += 1; state.faultActive = true;
+                state.faultNote = "Nota guardada en SQLite local (cola pendiente: " + L.queueCount + ").";
+                L.status = "Nota guardada offline · " + L.queueCount + " pendientes en SQLite.";
+              } else {
+                state.faultActive = false;
+                state.faultNote = "Nota sincronizada en el acto hacia el backend de campo.";
+                L.status = "Nota enviada directo a Sync API.";
+              }
+              renderStage();
+            }}),
+            h("button", { type: "button", className: "lab-btn lab-btn-alert", text: "Provocar choque", onClick: function () {
+              L.conflict = true; state.faultActive = true;
+              state.faultNote = "Choque 3-Way detectado: edición local vs servidor requieren decisión explícita.";
+              L.status = "Conflicto en Válvula B: elige si conservas tu nota, la del servidor o ambas.";
+              renderStage();
+            }})
+          ])
+        ]),
+        h("div", { className: "lab-surface" }, [h("div", { className: "lab-phone-bezel" }, phoneChildren)]),
+        h("div", { className: "lab-log", text: L.status })
+      ];
+    }
+
+    function buildDiagram(project) {
+      const diag = project.diagram;
+      const byId = {};
+      diag.nodes.forEach(function (n) { byId[n.id] = n; });
+      const activeMode = state.faultActive ? "fault" : "normal";
+
+      const svg = s("svg", {
+        className: "diagram-svg", viewBox: "0 0 420 220", role: "img",
+        "aria-label": diag.title + ": " + (state.faultActive ? diag.faultCaption : diag.normalCaption)
+      }, [
+        s("defs", {}, [
+          s("pattern", { id: "diag-dots-static", width: 16, height: 16, patternUnits: "userSpaceOnUse" }, [
+            s("circle", { cx: 2, cy: 2, r: 0.8, fill: "#d4d4d8" })
+          ])
+        ]),
+        s("rect", { x: 0, y: 0, width: 420, height: 220, fill: "url(#diag-dots-static)" })
+      ]);
+
+      diag.edges.forEach(function (edge, idx) {
+        const from = byId[edge.from], to = byId[edge.to];
+        if (!from || !to) return;
+        const isActive = edge.mode === activeMode;
+        const isH = Math.abs(from.y - to.y) < 4;
+        const isV = Math.abs(from.x - to.x) < 4;
+        let d;
+        if (isH || isV) { d = "M " + from.x + " " + from.y + " L " + to.x + " " + to.y; }
+        else {
+          const offset = idx % 2 === 0 ? 18 : -18;
+          const cx = (from.x + to.x) / 2 + offset;
+          const cy = (from.y + to.y) / 2 - offset;
+          d = "M " + from.x + " " + from.y + " Q " + cx + " " + cy + " " + to.x + " " + to.y;
+        }
+        const stroke = isActive ? (state.faultActive ? "#b45309" : project.plate.accent) : "#d4d4d8";
+        svg.appendChild(s("path", { d: d, className: "diag-edge-base" }));
+        if (isActive) {
+          svg.appendChild(s("path", { d: d, className: "diag-edge-active", stroke: stroke }));
+          svg.appendChild(s("path", { d: d, className: "diag-pulse", pathLength: 100, stroke: stroke }));
+        }
+        svg.appendChild(s("text", {
+          x: (from.x + to.x) / 2 + (isV ? (from.x > 210 ? -42 : 42) : 0),
+          y: (from.y + to.y) / 2 + (isV ? 4 : -8),
+          "text-anchor": "middle", "font-size": 9.5, "font-family": "var(--f-mono)",
+          "paint-order": "stroke", stroke: "#ffffff", "stroke-width": 4, "stroke-linejoin": "round",
+          fill: isActive ? stroke : "#71717a", text: edge.label
+        }));
+      });
+
+      diag.nodes.forEach(function (n) {
+        const g = s("g", {}, [
+          s("rect", {
+            x: n.x - 62, y: n.y - 23, width: 124, height: 46, rx: 2,
+            className: "diag-node-rect" + (n.kind === "guard" ? " is-guard" : ""),
+            style: (state.faultActive && n.kind === "guard") ? { stroke: "#b45309", "stroke-width": "2" } : {}
+          }),
+          s("text", { x: n.x, y: n.y - 4, "text-anchor": "middle", "font-size": 11.5, "font-weight": 700, "font-family": "var(--f-display)", fill: "#0a0a0a", text: n.label }),
+          s("text", { x: n.x, y: n.y + 12, "text-anchor": "middle", "font-size": 9.5, "font-family": "var(--f-mono)", fill: "#52525b", text: n.sub })
+        ]);
+        svg.appendChild(g);
+      });
+
+      return h("div", { className: "diagram-card" }, [
+        h("div", { className: "diagram-head" }, [
+          h("span", { className: "mono", text: diag.title }),
+          h("span", { className: "diagram-state " + (state.faultActive ? "is-fault" : "is-normal"), text: state.faultActive ? "Ruta de falla / defensa" : "Flujo nominal" })
+        ]),
+        svg,
+        h("p", { className: "diag-caption", text: state.faultNote }),
+        h("div", { className: "hero-actions", style: { "margin-top": "10px" } }, [
+          h("button", { type: "button", className: "pulse-ping-btn", text: state.faultActive ? "Volver a ruta nominal" : "Probar ruta de falla", onClick: function () {
+            state.faultActive = !state.faultActive;
+            state.faultNote = state.faultActive ? diag.faultCaption : diag.normalCaption;
+            renderStage();
+          }})
+        ])
+      ]);
+    }
+
+    function selectLab(slug, shouldScroll) {
+      if (state.activeSlug !== slug) {
+        state.activeSlug = slug;
+        resetLabState(slug);
+      }
+      renderStage();
+      if (shouldScroll) {
+        const el = document.getElementById("laboratorio");
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    function renderStage() {
+      const mount = document.getElementById("interactive-stage");
+      const active = PROJECTS.find(function (p) { return p.slug === state.activeSlug; }) || PROJECTS[0];
+      const e = state.telemetry[active.slug];
+      const badgeText = !active.healthUrl ? "Ejecución local · 0 B a red" : (e && e.status === "live" && e.latencyMs !== null ? ("Railway 200 OK · " + e.latencyMs + " ms") : (e ? e.detail : "Comprobando salud…"));
+      const trade = active.tradeOffs[0];
+
+      const rail = h("div", { className: "stage-rail", role: "tablist", "aria-label": "Seleccionar laboratorio interactivo" }, PROJECTS.map(function (p, idx) {
+        return h("button", {
+          type: "button", role: "tab", className: "stage-tab", "aria-selected": String(p.slug === active.slug),
+          style: { "--tab-accent": p.plate.accent },
+          onClick: function () { selectLab(p.slug, false); },
+          onKeydown: function (ev) {
+            if (ev.key !== "ArrowRight" && ev.key !== "ArrowLeft") return;
+            ev.preventDefault();
+            const step = ev.key === "ArrowRight" ? 1 : -1;
+            selectLab(PROJECTS[(idx + step + PROJECTS.length) % PROJECTS.length].slug, false);
+          }
+        }, [
+          h("div", { className: "stage-tab-kicker mono" }, [h("span", { text: "N.º " + p.inventory }), h("span", { text: p.categoryLabel })]),
+          h("strong", { text: p.name }),
+          h("span", { className: "stage-sub", text: p.everydayName })
+        ]);
+      }));
+
+      const panel = h("div", {
+        className: "stage-shell", role: "tabpanel", "aria-label": "Laboratorio de " + active.name,
+        style: { "--stage-accent": active.plate.accent }
+      }, [
+        h("div", { className: "stage-banner" }, [
+          h("div", {}, [
+            h("span", { className: "mono", text: "Sala " + active.inventory + " · " + active.matrix.paradigm }),
+            h("h3", { text: active.name + " — " + active.everydayName }),
+            h("p", { text: active.labPrompt })
+          ]),
+          h("div", { className: "stage-banner-right" }, [
+            h("span", { className: "stage-telemetry-badge" }, [
+              h("span", { className: dotClass(active), "aria-hidden": "true" }),
+              badgeText
+            ])
+          ])
+        ]),
+        h("div", { className: "stage-grid" }, [
+          h("div", {
+            className: "stage-lab" + (active.previewKind === "kanban" ? " is-dark" : ""),
+            style: {
+              "--p-bg": active.plate.bg, "--p-surface": active.plate.surface, "--p-ink": active.plate.ink,
+              "--p-muted": active.plate.muted, "--p-accent": active.plate.accent, "--p-display": "\"" + active.plate.displayFont + "\", sans-serif"
+            }
+          }, buildLabNodes(active)),
+          h("div", { className: "stage-arch" }, [
+            buildDiagram(active),
+            h("div", { className: "stage-decision" }, [
+              h("div", { className: "stage-decision-grid" }, [
+                h("div", {}, [h("span", { className: "mono label", text: "Elegido" }), trade.chosen]),
+                h("div", {}, [h("span", { className: "mono label", text: "Descartado" }), h("s", { text: trade.rejected })])
+              ]),
+              h("div", { className: "exhibit-actions" }, [
+                h("button", { type: "button", className: "link-case", text: "Leer ficha de caso →", onClick: function () { openCase(active.slug); } }),
+                extLink("link-live", active.liveUrl, "Abrir en vivo ↗"),
+                extLink("link-plain", active.repoUrl, "Código")
+              ])
+            ])
+          ])
+        ])
+      ]);
+
+      mount.replaceChildren(h("div", { style: { "--stage-accent": active.plate.accent } }, [rail, panel]));
+    }
+
     function plate(project) {
       const p = project.plate;
       return h("div", {
-        className: "pv pv-" + project.previewKind,
-        role: "img",
+        className: "pv pv-" + project.previewKind, role: "img",
         "aria-label": "Miniatura de " + project.name + " en su paleta y tipografía " + p.displayFont,
-        style: {
-          "--p-bg": p.bg, "--p-surface": p.surface, "--p-ink": p.ink, "--p-muted": p.muted,
-          "--p-accent": p.accent, "--p-display": "\"" + p.displayFont + "\", serif"
-        }
+        style: { "--p-bg": p.bg, "--p-surface": p.surface, "--p-ink": p.ink, "--p-muted": p.muted, "--p-accent": p.accent, "--p-display": "\"" + p.displayFont + "\", serif" }
       }, PREVIEWS[project.previewKind]());
     }
 
-    function extLink(className, href, text) {
-      return h("a", { className: className, href: href, target: "_blank", rel: "noopener noreferrer", text: text });
-    }
-
-    function specRow(label, value) {
-      return h("div", {}, [h("dt", { text: label }), h("dd", {}, value)]);
-    }
+    function specRow(label, value) { return h("div", {}, [h("dt", { text: label }), h("dd", {}, value)]); }
 
     function card(project) {
       return h("article", { className: "exhibit", "aria-labelledby": "title-" + project.slug }, [
@@ -247,7 +889,8 @@
             specRow("Identidad", [h("span", { className: "swatch", style: { background: project.plate.accent } }), project.plate.displayFont])
           ]),
           h("div", { className: "exhibit-actions" }, [
-            h("button", { type: "button", className: "link-case", text: "Leer ficha de caso →", onClick: function () { openCase(project.slug); } }),
+            h("button", { type: "button", className: "link-case", text: "Ficha →", onClick: function () { openCase(project.slug); } }),
+            h("button", { type: "button", className: "link-plain", text: "Lab vivo", onClick: function () { selectLab(project.slug, true); } }),
             extLink("link-live", project.liveUrl, "En vivo"),
             extLink("link-plain", project.repoUrl, "Código")
           ])
@@ -255,9 +898,7 @@
       ]);
     }
 
-    function block(title, children) {
-      return h("section", { className: "case-block" }, [h("h4", { text: title })].concat(children));
-    }
+    function block(title, children) { return h("section", { className: "case-block" }, [h("h4", { text: title })].concat(children)); }
 
     function caseStudy(project) {
       const trade = project.tradeOffs.map(function (t) {
@@ -270,14 +911,14 @@
       });
       return h("div", { className: "case-body" }, [
         h("p", { className: "mono", text: "N.º " + project.inventory + " · " + project.categoryLabel + " · " + project.hosting }),
-        h("h2", { className: "case-title", id: "case-title", text: project.name }),
+        h("h2", { className: "case-title", text: project.name }),
         h("p", { className: "case-sub", text: project.everydayName + ". " + project.oneLiner }),
         block("El problema", [h("p", { text: project.problem }), h("p", {}, [h("strong", { text: "Para quién: " }), project.audience])]),
         block("Qué entrega", [h("p", { text: project.outcome })]),
         block("Decisión de arquitectura", trade),
-        block("Flujo", [h("ol", { className: "flow" }, project.flow.map(function (s) { return h("li", { text: s }); }))]),
+        block("Flujo", [h("ol", { className: "flow" }, project.flow.map(function (st) { return h("li", { text: st }); }))]),
         block("Evidencia", [h("ul", { className: "case-list" }, [h("li", { text: "Pruebas automatizadas: " + project.testsLabel })].concat(project.evidence.map(function (e) { return h("li", { text: e }); })))]),
-        block("Stack", [h("ul", { className: "stack-list" }, project.stack.map(function (s) { return h("li", { text: s }); }))]),
+        block("Stack", [h("ul", { className: "stack-list" }, project.stack.map(function (st) { return h("li", { text: st }); }))]),
         block("Retrospectiva", [h("p", { text: project.retrospective }), h("p", {}, [h("strong", { text: "Siguiente evolución: " }), project.nextEvolution])]),
         h("div", { className: "exhibit-actions" }, [
           extLink("btn btn-solid", project.liveUrl, "Abrir en vivo ↗"),
@@ -288,70 +929,158 @@
 
     const drawerRoot = document.getElementById("drawer-root");
     let lastFocus = null;
-
-    function onKey(event) { if (event.key === "Escape") { closeCase(); } }
-
+    function onDrawerKey(ev) { if (ev.key === "Escape") closeCase(); }
     function closeCase() {
       drawerRoot.replaceChildren();
       document.body.style.overflow = "";
-      document.removeEventListener("keydown", onKey);
-      if (location.hash.indexOf("#caso-") === 0) { history.replaceState(null, "", location.pathname + location.search); }
-      if (lastFocus) { lastFocus.focus(); }
+      document.removeEventListener("keydown", onDrawerKey);
+      if (location.hash.indexOf("#caso-") === 0) history.replaceState(null, "", location.pathname + location.search);
+      if (lastFocus) lastFocus.focus();
     }
-
     function openCase(slug) {
       const project = PROJECTS.find(function (p) { return p.slug === slug; });
-      if (!project) { return; }
+      if (!project) return;
       lastFocus = document.activeElement;
       const closeBtn = h("button", { type: "button", className: "btn", text: "Cerrar (Esc)", onClick: closeCase });
       drawerRoot.replaceChildren(
         h("div", { className: "drawer-backdrop", "aria-hidden": "true", onClick: closeCase }),
         h("aside", { className: "drawer", role: "dialog", "aria-modal": "true", "aria-label": "Ficha de caso: " + project.name }, [
           h("div", { className: "drawer-head" }, [h("span", { className: "mono", text: "Ficha de caso" }), closeBtn]),
-          h("div", { className: "drawer-body" }, [caseStudy(project)])
+          caseStudy(project)
         ])
       );
       document.body.style.overflow = "hidden";
-      document.addEventListener("keydown", onKey);
+      document.addEventListener("keydown", onDrawerKey);
       history.replaceState(null, "", "#caso-" + slug);
       closeBtn.focus();
     }
 
-    let activeFilter = "all";
+    const cmdkRoot = document.getElementById("cmdk-root");
+    let cmdkQuery = "";
+    let cmdkIdx = 0;
+
+    function cmdkItems() {
+      const base = [
+        { label: "Re-ping en vivo a los 5 servicios en Railway", sub: "CORS GET /api/v1/health", run: function () { closeCmdk(); pingAll(); } },
+        { label: "Hero shader: Señales sobre retícula (grid-pulse)", sub: state.heroEffect === "grid-pulse" ? "Activo" : "Cambiar", run: function () { setHeroEffect("grid-pulse"); closeCmdk(); } },
+        { label: "Hero shader: Curvas topográficas GLSL (contour-lines)", sub: state.heroEffect === "contour-lines" ? "Activo" : "Cambiar", run: function () { setHeroEffect("contour-lines"); closeCmdk(); } },
+        { label: "Hero estático sin animación WebGL/Canvas", sub: state.heroEffect === "off" ? "Activo" : "Papel limpio", run: function () { setHeroEffect("off"); closeCmdk(); } }
+      ];
+      const more = [];
+      PROJECTS.forEach(function (p) {
+        const e = state.telemetry[p.slug];
+        const lat = !p.healthUrl ? "local" : (e && e.latencyMs !== null ? (e.latencyMs + " ms") : p.hosting);
+        more.push({ label: "Probar " + p.name + " — " + p.everydayName, sub: p.matrix.paradigm + " · " + lat, run: function () { closeCmdk(); selectLab(p.slug, true); } });
+        more.push({ label: "Ficha de arquitectura: " + p.name, sub: p.testsLabel, run: function () { closeCmdk(); openCase(p.slug); } });
+      });
+      const all = base.concat(more);
+      const q = cmdkQuery.trim().toLowerCase();
+      if (!q) return all;
+      return all.filter(function (it) { return it.label.toLowerCase().indexOf(q) !== -1 || it.sub.toLowerCase().indexOf(q) !== -1; });
+    }
+
+    function onCmdkKey(ev) { if (ev.key === "Escape") closeCmdk(); }
+    function closeCmdk() {
+      cmdkRoot.replaceChildren();
+      document.body.style.overflow = "";
+      document.removeEventListener("keydown", onCmdkKey);
+      if (location.hash === "#cmdk") history.replaceState(null, "", location.pathname + location.search);
+    }
+    function renderCmdkList(listEl) {
+      const items = cmdkItems();
+      if (items.length === 0) {
+        listEl.replaceChildren(h("div", { className: "cmdk-group-label mono", text: "Sin coincidencias para \"" + cmdkQuery + "\"" }));
+        return;
+      }
+      if (cmdkIdx >= items.length) cmdkIdx = 0;
+      listEl.replaceChildren.apply(listEl, items.map(function (it, idx) {
+        return h("button", {
+          type: "button", role: "option", "aria-selected": String(idx === cmdkIdx), className: "cmdk-item",
+          onMouseenter: function () { cmdkIdx = idx; renderCmdkList(listEl); },
+          onClick: it.run
+        }, [h("span", { text: it.label }), h("span", { className: "cmdk-item-sub", text: it.sub })]);
+      }));
+    }
+    function openCmdk() {
+      cmdkQuery = ""; cmdkIdx = 0;
+      const listEl = h("div", { className: "cmdk-list", role: "listbox", "aria-label": "Comandos disponibles" });
+      const inputEl = h("input", {
+        type: "text", className: "cmdk-input", placeholder: "Buscar proyecto, paradigma, Redis, Saga, shader o ping…",
+        "aria-label": "Filtrar comandos",
+        onInput: function (ev) { cmdkQuery = ev.target.value; cmdkIdx = 0; renderCmdkList(listEl); },
+        onKeydown: function (ev) {
+          const items = cmdkItems();
+          if (!items.length) return;
+          if (ev.key === "ArrowDown") { ev.preventDefault(); cmdkIdx = (cmdkIdx + 1) % items.length; renderCmdkList(listEl); }
+          else if (ev.key === "ArrowUp") { ev.preventDefault(); cmdkIdx = (cmdkIdx - 1 + items.length) % items.length; renderCmdkList(listEl); }
+          else if (ev.key === "Enter") { ev.preventDefault(); items[cmdkIdx].run(); }
+        }
+      });
+      renderCmdkList(listEl);
+      cmdkRoot.replaceChildren(h("div", { className: "cmdk-backdrop", onClick: closeCmdk }, [
+        h("div", { className: "cmdk-dialog", role: "dialog", "aria-modal": "true", "aria-label": "Paleta de comandos y telemetría", onClick: function (ev) { ev.stopPropagation(); } }, [
+          h("div", { className: "cmdk-input-row" }, [h("span", { className: "mono", text: "⌘K" }), inputEl, h("button", { type: "button", className: "pulse-ping-btn", text: "Esc", onClick: closeCmdk })]),
+          listEl,
+          h("div", { className: "cmdk-foot mono" }, [h("span", { text: "↑↓ navegar · Enter ejecutar · Esc cerrar" }), h("span", { text: "6 productos · 5 APIs Railway" })])
+        ])
+      ]));
+      document.body.style.overflow = "hidden";
+      document.addEventListener("keydown", onCmdkKey);
+      inputEl.focus();
+    }
+
     function renderFilters() {
-      document.getElementById("filters").replaceChildren.apply(
-        document.getElementById("filters"),
-        FILTERS.map(function (f) {
-          return h("button", {
-            type: "button", role: "tab", "aria-selected": String(activeFilter === f.id), text: f.label,
-            onClick: function () { activeFilter = f.id; renderFilters(); renderGrid(); }
-          });
-        })
-      );
+      const fbox = document.getElementById("filters");
+      fbox.replaceChildren.apply(fbox, FILTERS.map(function (f) {
+        return h("button", {
+          type: "button", role: "tab", "aria-selected": String(state.activeFilter === f.id), text: f.label,
+          onClick: function () { state.activeFilter = f.id; renderFilters(); renderGrid(); }
+        });
+      }));
     }
     function renderGrid() {
       const grid = document.getElementById("exhibit-grid");
-      grid.replaceChildren.apply(grid, PROJECTS
-        .filter(function (p) { return activeFilter === "all" || p.category === activeFilter; })
-        .map(card));
+      grid.replaceChildren.apply(grid, PROJECTS.filter(function (p) {
+        return state.activeFilter === "all" || p.category === state.activeFilter;
+      }).map(card));
     }
     function renderMatrix() {
       const body = document.getElementById("matrix-body");
       body.replaceChildren.apply(body, PROJECTS.map(function (p) {
+        const e = state.telemetry[p.slug];
+        const liveNote = !p.healthUrl ? "Estático" : (e && e.status === "live" && e.latencyMs !== null ? (e.latencyMs + " ms") : "Live");
         return h("tr", {}, [
           h("td", {}, [h("span", { className: "swatch", style: { background: p.plate.accent } }), p.name]),
           h("td", { text: p.matrix.paradigm }), h("td", { text: p.matrix.persistence }),
-          h("td", { text: p.matrix.consistency }), h("td", { text: p.hosting }), h("td", { text: p.testsLabel })
+          h("td", { text: p.matrix.consistency }),
+          h("td", {}, [p.hosting + " · ", h("span", { className: "mono", text: liveNote })]),
+          h("td", { text: p.testsLabel })
         ]);
       }));
     }
 
     document.getElementById("fig-live").textContent = String(PROJECTS.length);
     document.getElementById("fig-paradigms").textContent = String(new Set(PROJECTS.map(function (p) { return p.matrix.paradigm; })).size);
+    document.getElementById("nav-cmdk").addEventListener("click", openCmdk);
+    document.getElementById("hero-cmdk").addEventListener("click", openCmdk);
+    document.getElementById("ping-all-btn").addEventListener("click", pingAll);
+    window.addEventListener("keydown", function (ev) {
+      if ((ev.metaKey || ev.ctrlKey) && ev.key.toLowerCase() === "k") {
+        ev.preventDefault();
+        if (cmdkRoot.childElementCount > 0) closeCmdk();
+        else openCmdk();
+      }
+    });
+
+    renderShaderSwitch();
+    renderPulseRail();
+    renderStage();
     renderFilters();
     renderGrid();
     renderMatrix();
-    if (location.hash.indexOf("#caso-") === 0) { openCase(location.hash.slice(6)); }
+    pingAll();
+    if (location.hash.indexOf("#caso-") === 0) openCase(location.hash.slice(6));
+    else if (location.hash === "#cmdk") openCmdk();
   </script>
 </body>
 </html>

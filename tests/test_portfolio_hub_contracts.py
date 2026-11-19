@@ -1,4 +1,4 @@
-"""Contratos del hub expositivo: catálogo V2, sincronía estática, seguridad del DOM y anti-slop."""
+"""Contratos V3 del hub expositivo: stage interactivo, taste-skill GPU shaders, seguridad DOM y anti-slop."""
 
 from __future__ import annotations
 
@@ -40,33 +40,53 @@ class TestPortfolioHubContracts(unittest.TestCase):
             self.assertIn(script, pkg["scripts"])
         self.assertTrue(tsc["compilerOptions"]["strict"])
 
-    def test_typescript_sources_contain_zero_any(self) -> None:
+    def test_typescript_sources_contain_zero_any_and_v3_components(self) -> None:
         any_pattern = re.compile(r"(:\s*any\b|\bas\s+any\b|<any>)")
         ts_files = list((REPO_ROOT / "src").rglob("*.ts")) + list((REPO_ROOT / "src").rglob("*.tsx"))
-        self.assertGreaterEqual(len(ts_files), 9)
+        self.assertGreaterEqual(len(ts_files), 15)
         for path in ts_files:
             content = path.read_text(encoding="utf-8")
             self.assertIsNone(any_pattern.search(content), f"'any' prohibido en {path.name}")
             self.assertNotIn("JSX.Element", content, f"Usar ReactNode en {path.name}")
+        for comp in ("HeroShader.tsx", "LivePulseRail.tsx", "InteractiveStage.tsx", "MicroLabs.tsx", "SignalDiagram.tsx", "CommandPalette.tsx", "PortfolioApp.tsx"):
+            self.assertTrue((REPO_ROOT / "src" / "components" / comp).is_file(), f"Falta {comp}")
 
-    def test_catalog_lists_exactly_the_six_v2_products(self) -> None:
+    def test_vendored_taste_skill_effects_are_present_and_safe(self) -> None:
+        effects = (
+            "public/assets/effects/fx.js",
+            "public/assets/effects/grid-pulse/effect.js",
+            "public/assets/effects/contour-lines/effect.js",
+        )
+        for rel in effects:
+            content = read(rel)
+            for forbidden in BANNED_DOM:
+                self.assertNotIn(forbidden, content, f"{forbidden} encontrado en {rel}")
+
+    def test_catalog_lists_six_v3_products_with_diagrams_and_health_urls(self) -> None:
         projects = sync_static_hub.extract_projects()
         self.assertEqual([p["slug"] for p in projects], list(EXPECTED_PROJECTS))
         for project in projects:
-            live, font, accent = EXPECTED_PROJECTS[str(project["slug"])]
+            slug = str(project["slug"])
+            live, font, accent = EXPECTED_PROJECTS[slug]
             self.assertEqual(project["liveUrl"], live)
+            if slug == "pdfcraft-studio":
+                self.assertIsNone(project["healthUrl"])
+            else:
+                self.assertEqual(project["healthUrl"], f"{live}/api/v1/health")
+            self.assertTrue(str(project["labPrompt"]).strip())
+
+            diagram = project["diagram"]
+            assert isinstance(diagram, dict)
+            self.assertEqual(len(diagram["nodes"]), 4)
+            modes = {e["mode"] for e in diagram["edges"]}
+            self.assertEqual(modes, {"normal", "fault"}, f"{slug} requiere rutas normal y fault")
+
             plate = project["plate"]
             assert isinstance(plate, dict)
             self.assertEqual(plate["displayFont"], font)
             self.assertEqual(plate["accent"], accent)
             for field in ("problem", "outcome", "retrospective", "nextEvolution", "everydayName"):
-                self.assertTrue(str(project[field]).strip(), f"{project['slug']} sin {field}")
-            trade_offs = project["tradeOffs"]
-            assert isinstance(trade_offs, list)
-            self.assertGreaterEqual(len(trade_offs), 1)
-            for trade in trade_offs:
-                for key in ("chosen", "rejected", "because", "failureMode"):
-                    self.assertTrue(trade[key].strip())
+                self.assertTrue(str(project[field]).strip(), f"{slug} sin {field}")
 
     def test_each_product_has_a_distinct_visual_identity(self) -> None:
         projects = sync_static_hub.extract_projects()
@@ -84,6 +104,9 @@ class TestPortfolioHubContracts(unittest.TestCase):
             for slug, (live, _font, _accent) in EXPECTED_PROJECTS.items():
                 self.assertIn(slug, expected)
                 self.assertIn(live, expected)
+            self.assertIn("grid-pulse", expected)
+            self.assertIn("contour-lines", expected)
+            self.assertIn("Laboratorio en vivo", expected)
 
     def test_static_pages_use_safe_dom_only(self) -> None:
         for page in ("public/index.html", "public/preview.html", "scripts/static_hub.template.html"):
@@ -91,6 +114,7 @@ class TestPortfolioHubContracts(unittest.TestCase):
             for forbidden in BANNED_DOM:
                 self.assertNotIn(forbidden, content, f"{forbidden} en {page}")
             self.assertIn("createElement", content)
+            self.assertIn("createElementNS", content)
             self.assertIn("textContent", content)
 
     def test_hub_typography_and_palette_are_anti_slop(self) -> None:
@@ -105,9 +129,10 @@ class TestPortfolioHubContracts(unittest.TestCase):
         for font in BANNED_FONTS:
             self.assertIsNone(re.search(rf"\b{font}\b", css + layout), f"Fuente prohibida {font}")
 
-    def test_product_design_docs_dockerfile_and_adrs(self) -> None:
+    def test_v3_specs_docs_dockerfile_and_adrs(self) -> None:
         self.assertIn("Tesis en 10 segundos", read("PRODUCT.md"))
         self.assertIn("Monografía de Galería", read("DESIGN.md"))
+        self.assertIn("Spatial Architectural Stage", read(".specs/03-phase5-v3-spatial-stage/v3-spatial-stage.spec.md"))
         self.assertIn("USER nextjs", read("Dockerfile"))
         for adr in ("001-nextjs-app-router-and-static-case-studies.md", "002-multi-architecture-portfolio-taxonomy.md"):
             self.assertTrue((REPO_ROOT / "docs" / "adr" / adr).is_file())

@@ -1,37 +1,33 @@
-# PRODUCT — Portafolio Hub (Exposición de Ingeniería)
+# PRODUCT — Portafolio Hub V3 (Spatial Architectural Stage)
 
 ## 1. Rol del hub
-El hub **no** es otro producto: es la **sala de exposición** que presenta seis productos independientes,
-cada uno con su propia identidad visual, su propio paradigma de arquitectura y su propio despliegue en vivo.
-Su trabajo es **explicar**, no impresionar con ruido: en 10 segundos un visitante debe saber quién soy,
-qué construyo y dónde está la evidencia.
+El hub **no** es otro producto aislado ni una galería pasiva de tarjetas: es un **escenario interactivo de exposición de ingeniería** (`Spatial Architectural Stage`) que presenta seis productos independientes, cada uno con su propia identidad visual, su propio paradigma de arquitectura y su propio despliegue en vivo.
+Su trabajo es **demostrar y explicar en segundos**: el visitante puede probar los mecanismos clave de cada sistema sin abandonar la portada y verificar su salud real contra producción.
 
 ## 2. Audiencias y su pregunta principal
-| Audiencia | Tiempo disponible | Pregunta | Respuesta del hub |
+| Audiencia | Tiempo disponible | Pregunta | Respuesta del hub V3 |
 |---|---|---|---|
-| Reclutador / talento | 10–30 s | ¿Qué hace esta persona y es real? | Tesis de una línea + 6 productos con enlace en vivo |
-| Líder de ingeniería | 2–5 min | ¿Cómo decide? ¿Entiende trade-offs? | Ficha de caso: decisión elegida vs descartada, modo de falla, retrospectiva |
-| Par técnico | 10+ min | ¿El código respalda lo que dice? | Repositorio, número de pruebas, matriz de paradigmas |
+| Reclutador / talento | 10–30 s | ¿Qué hace esta persona y es real? | Tesis de una línea + pulsos en vivo contra 5 APIs Railway + 6 productos probables en vivo |
+| Líder de ingeniería | 2–5 min | ¿Cómo decide? ¿Entiende trade-offs y fallas? | Micro-Lab interactivo + diagrama de señales que conmuta a ruta de falla + ficha *Elegido vs Descartado* |
+| Par técnico | 10+ min | ¿El código respalda lo que dice? | Código en vivo, paleta `⌘K` con telemetría real, matriz de paradigmas y suite de contratos |
 
 ## 3. Convenciones investigadas (portafolios senior 2025–2026)
-1. **Tesis en 10 segundos**: rol + especialidad + prueba, sin adjetivos vacíos ("apasionado", "innovador").
-2. **Pocos proyectos, bien explicados**: 4–6 casos curados en lugar de una lista de 20 repos.
-3. **Resultado primero**: cada tarjeta abre con el problema cotidiano que resuelve, no con el stack.
-4. **Casos de estudio con decisiones**: problema → restricciones → decisión (X sobre Y) → modo de falla → evidencia → qué haría distinto.
-5. **Evidencia verificable**: demo en vivo, código fuente y pruebas automatizadas enlazadas.
-6. **Escaneable**: filtros por tipo de sistema y una matriz comparativa para lectura rápida.
-7. **Colofón honesto**: cómo se hizo el sitio, tipografías y herramientas.
+1. **Tesis en 10 segundos**: rol + especialidad + prueba verificable, sin adjetivos vacíos.
+2. **El prototipo es la exhibición**: en vez de texto descriptivo plano, un Micro-Lab manipulable para cada sistema.
+3. **Pocos proyectos, bien explicados**: 6 casos curados con arquitectura y persistencia distintas.
+4. **Resultado primero**: cada placa y cada laboratorio abren con el problema cotidiano que resuelve.
+5. **Casos de estudio con decisiones**: problema → restricciones → decisión (X sobre Y) → modo de falla aceptado → evidencia → qué haría distinto.
+6. **Telemetría y evidencia verificable**: ping CORS real a producción, repositorios y pruebas automatizadas.
+7. **Ergonomía de herramienta (`⌘K`) y colofón honesto**: navegación por teclado, créditos explícitos de tipografías y shaders.
 
-## 4. Estructura de la página
-1. **Portada (Tesis)** — nombre, una línea de posicionamiento, tres cifras verificables, CTA a la exposición.
-2. **Exposición** — 6 placas, cada una con una vista previa codificada en la paleta y tipografía exacta del producto,
-   filtros por categoría (Web · Tiempo real · IA · Fintech · Móvil · Datos).
-3. **Ficha de caso** (panel lateral + página `/projects/[slug]`) — Problema, Para quién, Decisiones (elegido vs descartado,
-   por qué, modo de falla), Flujo, Evidencia, Retrospectiva.
-4. **Matriz de paradigmas** — tabla comparativa: paradigma, persistencia, consistencia, despliegue, pruebas.
-5. **Método** — cómo trabajo (Spec-Driven Development, arquitectura limpia, pruebas antes del merge, GitFlow).
-6. **Colofón y contacto**.
+## 4. Estructura de la página V3
+1. **Portada (`100svh` con shader GPU maestro)** — tesis editorial, fondo óptico `grid-pulse` / `contour-lines` de `tasteskill 2.5.1`, tres cifras verificables y riel de pulso en vivo con latencias reales.
+2. **I — Laboratorio en Vivo (Chameleon Stage)** — selector de 6 capítulos, atmósfera adaptada a la paleta de cada obra, Micro-Lab operable en sitio, diagrama SVG animado que reacciona a simulaciones de falla y decisión *Elegido vs Descartado*.
+3. **II — Exposición completa** — 6 placas codificadas con filtros por categoría (`role="tablist"`) y acceso al panel lateral o ruta `/projects/[slug]`.
+4. **III — Matriz de paradigmas** — tabla comparativa enriquecida con estado en vivo.
+5. **IV — Método** y **V — Colofón**.
+6. **Paleta Global `⌘K`** — búsqueda instantánea, `Ping en vivo (5 APIs Railway)` y conmutador de shader.
 
 ## 5. No-objetivos
-- No es un dashboard ni un informe de métricas.
-- No reutiliza el estilo de ningún producto expuesto: el hub es neutro para que cada placa luzca su identidad.
+- No es un dashboard saturado ni un muro de widgets con múltiples efectos WebGL simultáneos.
+- No reutiliza una única estética para los 6 productos: el hub es un lienzo neutro de galería que cede el protagonismo cromático a cada obra.
