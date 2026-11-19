@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { AnimatePresence, motion } from "motion/react";
@@ -22,6 +23,11 @@ import { useSmoothScroll } from "@/components/SmoothScrollProvider";
 gsap.registerPlugin(ScrollTrigger);
 
 const HERO_TITLE_WORDS = ["Software", "claro", "para", "usar,", "sólido", "por", "dentro."];
+
+const RAW_BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+const NORMALIZED_BASE_PATH =
+  RAW_BASE_PATH && RAW_BASE_PATH !== "/" ? RAW_BASE_PATH.replace(/\/$/, "") : "";
+const PROFILE_PORTRAIT_SRC = `${NORMALIZED_BASE_PATH}/images/daniel-diaz.jpg`;
 
 const CRITERIA: readonly CriterionItem[] = [
   {
@@ -175,6 +181,22 @@ export default function PortfolioApp() {
           clearProps: "transform,opacity",
         },
       );
+      const portraitEl = scope.querySelector<HTMLElement>(".hero-portrait");
+      if (portraitEl) {
+        gsap.fromTo(
+          portraitEl,
+          { y: 22, opacity: 0, clipPath: "inset(10% 0% 0% 0% round 18px)" },
+          {
+            y: 0,
+            opacity: 1,
+            clipPath: "inset(0% 0% 0% 0% round 18px)",
+            duration: 0.9,
+            delay: 0.14,
+            ease: "power3.out",
+            clearProps: "transform,opacity,clipPath",
+          },
+        );
+      }
     }, scope);
 
     return () => ctx.revert();
@@ -221,6 +243,18 @@ export default function PortfolioApp() {
             opacity: 0,
             y: 12,
             duration: 0.3,
+            ease: "none",
+          },
+          0,
+        );
+      }
+
+      const portraitEl = heroInner.querySelector<HTMLElement>(".hero-portrait");
+      if (portraitEl) {
+        heroTl.to(
+          portraitEl,
+          {
+            y: -18,
             ease: "none",
           },
           0,
@@ -354,39 +388,62 @@ export default function PortfolioApp() {
       <main ref={mainRef} className="cinema-main">
         <section ref={heroSectionRef} className="hero" aria-labelledby="hero-title">
           <div className="shell hero-inner" ref={heroInnerRef}>
-            <h1 id="hero-title" className="hero-title">
-              {HERO_TITLE_WORDS.map((word, idx) => (
-                <span key={`${word}-${idx}`}>
-                  <span className="hero-word-mask">
-                    <span className="hero-word-inner">{word}</span>
-                  </span>
-                  {idx < HERO_TITLE_WORDS.length - 1 ? " " : ""}
-                </span>
-              ))}
-            </h1>
-            <p className="hero-thesis">
-              Soy {OWNER.name}, ingeniero full-stack. Diseñé seis aplicaciones cotidianas —cada una
-              con su propia arquitectura y base de datos— que puedes probar en vivo aquí mismo.
-            </p>
-            <div className="hero-actions">
-              <MagneticButton>
-                <a
-                  className="btn btn-solid"
-                  href="#proyectos"
-                  onClick={(event) => handleHeroScrollLink(event, "proyectos")}
-                >
-                  <span>Explorar las obras</span>
-                  <ArrowDown size={15} aria-hidden="true" />
-                </a>
-              </MagneticButton>
-              <a
-                className="link-action"
-                href="#criterio"
-                onClick={(event) => handleHeroScrollLink(event, "criterio")}
-              >
-                <span>Cómo trabajo</span>
-                <ArrowRight size={15} aria-hidden="true" />
-              </a>
+            <div className="hero-layout">
+              <div className="hero-copy">
+                <h1 id="hero-title" className="hero-title">
+                  {HERO_TITLE_WORDS.map((word, idx) => (
+                    <span key={`${word}-${idx}`}>
+                      <span className="hero-word-mask">
+                        <span className="hero-word-inner">{word}</span>
+                      </span>
+                      {idx < HERO_TITLE_WORDS.length - 1 ? " " : ""}
+                    </span>
+                  ))}
+                </h1>
+                <p className="hero-thesis">
+                  Soy {OWNER.name}, ingeniero full-stack. Diseñé seis aplicaciones cotidianas —cada
+                  una con su propia arquitectura y base de datos— que puedes probar en vivo aquí
+                  mismo.
+                </p>
+                <div className="hero-actions">
+                  <MagneticButton>
+                    <a
+                      className="btn btn-solid"
+                      href="#proyectos"
+                      onClick={(event) => handleHeroScrollLink(event, "proyectos")}
+                    >
+                      <span>Explorar las obras</span>
+                      <ArrowDown size={15} aria-hidden="true" />
+                    </a>
+                  </MagneticButton>
+                  <a
+                    className="link-action"
+                    href="#criterio"
+                    onClick={(event) => handleHeroScrollLink(event, "criterio")}
+                  >
+                    <span>Cómo trabajo</span>
+                    <ArrowRight size={15} aria-hidden="true" />
+                  </a>
+                </div>
+              </div>
+
+              <figure className="hero-portrait">
+                <div className="hero-portrait-frame">
+                  <Image
+                    src={PROFILE_PORTRAIT_SRC}
+                    alt={`Retrato de ${OWNER.name}`}
+                    width={880}
+                    height={1100}
+                    priority
+                    unoptimized
+                    className="hero-portrait-img"
+                  />
+                </div>
+                <figcaption className="hero-portrait-caption">
+                  <span className="hero-portrait-name">{OWNER.name}</span>
+                  <span className="mono hero-portrait-role">Full-stack · Arquitectura</span>
+                </figcaption>
+              </figure>
             </div>
           </div>
           <div className="hero-scroll-cue" aria-hidden="true">
