@@ -23,15 +23,42 @@ interface FxModule {
   ) => Promise<FxHandle>;
 }
 
-const GALLERY_PALETTE: FxPalette = {
-  bg: "#f7f7f5",
+const KINETIC_PALETTE: FxPalette = {
+  bg: "#fafaf8",
   surface: "#ffffff",
-  ink: "#0a0a0a",
-  muted: "#3f3f46",
-  accent: "#0044cc",
+  ink: "#0b0f19",
+  muted: "#475569",
+  accent: "#2563eb",
 };
 
 const EFFECT_PARAMS: Record<Exclude<HeroEffectId, "off">, Record<string, number>> = {
+  "fluted-glass": {
+    ribWidth: 30,
+    angle: -6,
+    distortion: 0.34,
+    highlight: 0.14,
+    shadow: 0.08,
+    background: 0,
+    blur: 0.18,
+    speed: 0.025,
+    clear: 0.38,
+    calm: 0.56,
+    calmX: 0.24,
+    calmY: 0.48,
+  },
+  "grain-gradient": {
+    speed: 0.35,
+    softness: 0.55,
+    warp: 0.42,
+    grain: 0.38,
+    scatter: 0.4,
+    tint: 0.35,
+    contrast: 0.32,
+    calm: 0.62,
+    calmX: 0.24,
+    calmY: 0.5,
+    grainMotion: 1,
+  },
   "grid-pulse": {
     cell: 56,
     lineOpacity: 0.09,
@@ -39,8 +66,8 @@ const EFFECT_PARAMS: Record<Exclude<HeroEffectId, "off">, Record<string, number>
     tail: 2.4,
     speed: 110,
     calm: 0.62,
-    calmX: 0.3,
-    calmY: 0.45,
+    calmX: 0.28,
+    calmY: 0.46,
   },
   "contour-lines": {
     levels: 20,
@@ -49,8 +76,8 @@ const EFFECT_PARAMS: Record<Exclude<HeroEffectId, "off">, Record<string, number>
     speed: 0.02,
     tint: 0.55,
     calm: 0.62,
-    calmX: 0.3,
-    calmY: 0.45,
+    calmX: 0.28,
+    calmY: 0.46,
   },
 };
 
@@ -77,13 +104,15 @@ export default function HeroShader({ effect }: { effect: HeroEffectId }) {
 
     let cancelled = false;
     let handle: FxHandle | null = null;
-    const baseDir = window.location.origin + window.location.pathname.replace(/[^/]*$/, "");
-    const fxUrl = new URL("assets/effects/fx.js", baseDir).href;
+    const rawBase = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+    const normalizedBase =
+      rawBase && rawBase !== "/" ? rawBase.replace(/\/$/, "") : "";
+    const fxUrl = `${window.location.origin}${normalizedBase}/assets/effects/fx.js`;
 
     loadFxRuntime(fxUrl)
       .then((fx) =>
         fx.mount(el, effect, {
-          palette: GALLERY_PALETTE,
+          palette: KINETIC_PALETTE,
           params: EFFECT_PARAMS[effect],
           seed: 7,
         }),
@@ -96,7 +125,7 @@ export default function HeroShader({ effect }: { effect: HeroEffectId }) {
         handle = mounted;
       })
       .catch(() => {
-        // Permanece el lienzo de papel #F7F7F5
+        // Permanece el lienzo luminoso #FAFAF8
       });
 
     return () => {

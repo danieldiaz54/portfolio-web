@@ -2,11 +2,19 @@
 
 import { useEffect, useState, type CSSProperties } from "react";
 import Link from "next/link";
+import { AnimatePresence, motion } from "motion/react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, RefreshCw, X } from "lucide-react";
 import type { Project, TelemetryMap } from "@/types/project";
 import MicroLabs from "@/components/MicroLabs";
 import SignalDiagram from "@/components/SignalDiagram";
 
 type StudioTabId = "try" | "how" | "eng";
+
+const STUDIO_TABS: readonly { id: StudioTabId; label: string }[] = [
+  { id: "try", label: "Pruébalo" },
+  { id: "how", label: "Cómo funciona" },
+  { id: "eng", label: "Ingeniería y código" },
+];
 
 interface ProjectStudioProps {
   project: Project;
@@ -69,197 +77,214 @@ export default function ProjectStudio({
         <div className="studio-header-actions">
           {mode === "modal" ? (
             <Link className="studio-nav-btn" href={`/projects/${project.slug}`}>
-              Vista dedicada ↗
+              <span>Vista dedicada</span>
+              <ArrowUpRight size={14} aria-hidden="true" />
             </Link>
           ) : (
             <Link className="studio-nav-btn" href="/#proyectos">
-              ← Todos los proyectos
+              <ArrowLeft size={14} aria-hidden="true" />
+              <span>Todos los proyectos</span>
             </Link>
           )}
           {mode === "modal" && onClose ? (
             <button type="button" className="studio-nav-btn" onClick={onClose}>
-              Cerrar (Esc)
+              <span>Cerrar (Esc)</span>
+              <X size={14} aria-hidden="true" />
             </button>
           ) : null}
         </div>
       </div>
 
       <div className="studio-tabs" role="tablist" aria-label="Capas de profundidad del proyecto">
-        <button
-          type="button"
-          role="tab"
-          aria-selected={tab === "try"}
-          className="studio-tab"
-          onClick={() => setTab("try")}
-        >
-          Pruébalo
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={tab === "how"}
-          className="studio-tab"
-          onClick={() => setTab("how")}
-        >
-          Cómo funciona
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={tab === "eng"}
-          className="studio-tab"
-          onClick={() => setTab("eng")}
-        >
-          Ingeniería y código
-        </button>
+        {STUDIO_TABS.map((item) => {
+          const isSelected = tab === item.id;
+          return (
+            <button
+              key={item.id}
+              type="button"
+              role="tab"
+              aria-selected={isSelected}
+              className="studio-tab"
+              onClick={() => setTab(item.id)}
+            >
+              {isSelected ? (
+                <motion.span
+                  layoutId="studio-tab-pill"
+                  className="studio-tab-bg"
+                  transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                  aria-hidden="true"
+                />
+              ) : null}
+              <span>{item.label}</span>
+            </button>
+          );
+        })}
       </div>
 
       <div className="studio-panel" style={labTheme}>
-        {tab === "try" ? (
-          <>
-            <p className="studio-lead">{project.labPrompt}</p>
-            <div className={`stage-lab ${project.previewKind === "kanban" ? "is-dark" : ""}`}>
-              <MicroLabs
-                key={project.slug}
-                project={project}
-                telemetry={entry}
-                faultActive={faultActive}
-                onFaultChange={(next, note) => {
-                  setFaultActive(next);
-                  setStatusNote(note);
-                }}
-              />
-            </div>
-            <div className="stage-preview-actions">
-              <a
-                className="btn btn-solid"
-                href={project.liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Abrir app completa ↗
-              </a>
-              <button type="button" className="link-action" onClick={() => setTab("how")}>
-                Ver diagrama y fallas →
-              </button>
-            </div>
-          </>
-        ) : null}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={`${project.slug}-${tab}`}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+            style={{ display: "flex", flexDirection: "column", gap: "20px" }}
+          >
+            {tab === "try" ? (
+              <>
+                <p className="studio-lead">{project.labPrompt}</p>
+                <div className={`stage-lab ${project.previewKind === "kanban" ? "is-dark" : ""}`}>
+                  <MicroLabs
+                    key={project.slug}
+                    project={project}
+                    telemetry={entry}
+                    faultActive={faultActive}
+                    onFaultChange={(next, note) => {
+                      setFaultActive(next);
+                      setStatusNote(note);
+                    }}
+                  />
+                </div>
+                <div className="stage-preview-actions">
+                  <a
+                    className="btn btn-solid"
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span>Abrir app completa</span>
+                    <ArrowUpRight size={15} aria-hidden="true" />
+                  </a>
+                  <button type="button" className="link-action" onClick={() => setTab("how")}>
+                    <span>Ver diagrama y fallas</span>
+                    <ArrowRight size={15} aria-hidden="true" />
+                  </button>
+                </div>
+              </>
+            ) : null}
 
-        {tab === "how" ? (
-          <>
-            <p className="studio-lead">
-              <strong>El problema:</strong> {project.problem} ({project.audience})
-            </p>
-            <SignalDiagram
-              diagram={project.diagram}
-              accent={project.plate.accent}
-              faultActive={faultActive}
-              statusNote={statusNote}
-              onToggleFault={() => {
-                const next = !faultActive;
-                setFaultActive(next);
-                setStatusNote(next ? project.diagram.faultCaption : project.diagram.normalCaption);
-              }}
-            />
-            {project.tradeOffs.map((tradeOff) => (
-              <div className="tradeoff" key={tradeOff.chosen}>
-                <div>
-                  <span className="mono label">Qué elegí</span>
-                  {tradeOff.chosen}
-                </div>
-                <div>
-                  <span className="mono label">Qué descarté</span>
-                  <s>{tradeOff.rejected}</s>
-                </div>
-                <div className="tradeoff-note">
-                  <span className="mono label">Por qué y riesgo aceptado</span>
-                  {tradeOff.because} {tradeOff.failureMode}
-                </div>
-              </div>
-            ))}
-            <ol className="flow-list">
-              {project.flow.map((step) => (
-                <li key={step}>{step}</li>
-              ))}
-            </ol>
-          </>
-        ) : null}
-
-        {tab === "eng" ? (
-          <>
-            <div className="telemetry-banner">
-              <span className="telemetry-status">
-                <span
-                  className={`live-dot ${project.healthUrl ? (entry?.status === "live" ? "is-live" : "is-degraded") : "is-local"}`}
-                  aria-hidden="true"
+            {tab === "how" ? (
+              <>
+                <p className="studio-lead">
+                  <strong>El problema:</strong> {project.problem} ({project.audience})
+                </p>
+                <SignalDiagram
+                  diagram={project.diagram}
+                  accent={project.plate.accent}
+                  faultActive={faultActive}
+                  statusNote={statusNote}
+                  onToggleFault={() => {
+                    const next = !faultActive;
+                    setFaultActive(next);
+                    setStatusNote(
+                      next ? project.diagram.faultCaption : project.diagram.normalCaption,
+                    );
+                  }}
                 />
-                {healthSummary}
-              </span>
-              {project.healthUrl && onPingProject ? (
-                <button
-                  type="button"
-                  className="studio-nav-btn"
-                  onClick={() => onPingProject(project.slug)}
-                >
-                  Comprobar ahora
-                </button>
-              ) : null}
-            </div>
+                {project.tradeOffs.map((tradeOff) => (
+                  <div className="tradeoff" key={tradeOff.chosen}>
+                    <div>
+                      <span className="mono label">Qué elegí</span>
+                      {tradeOff.chosen}
+                    </div>
+                    <div>
+                      <span className="mono label">Qué descarté</span>
+                      <s>{tradeOff.rejected}</s>
+                    </div>
+                    <div className="tradeoff-note">
+                      <span className="mono label">Por qué y riesgo aceptado</span>
+                      {tradeOff.because} {tradeOff.failureMode}
+                    </div>
+                  </div>
+                ))}
+                <ol className="flow-list">
+                  {project.flow.map((step) => (
+                    <li key={step}>{step}</li>
+                  ))}
+                </ol>
+              </>
+            ) : null}
 
-            <dl className="eng-specs">
-              <div>
-                <dt>Paradigma</dt>
-                <dd>{project.matrix.paradigm}</dd>
-              </div>
-              <div>
-                <dt>Persistencia</dt>
-                <dd>{project.matrix.persistence}</dd>
-              </div>
-              <div>
-                <dt>Consistencia</dt>
-                <dd>{project.matrix.consistency}</dd>
-              </div>
-              <div>
-                <dt>Pruebas</dt>
-                <dd>{project.testsLabel}</dd>
-              </div>
-            </dl>
+            {tab === "eng" ? (
+              <>
+                <div className="telemetry-banner">
+                  <span className="telemetry-status">
+                    <span
+                      className={`live-dot ${project.healthUrl ? (entry?.status === "live" ? "is-live" : "is-degraded") : "is-local"}`}
+                      aria-hidden="true"
+                    />
+                    {healthSummary}
+                  </span>
+                  {project.healthUrl && onPingProject ? (
+                    <button
+                      type="button"
+                      className="studio-nav-btn"
+                      onClick={() => onPingProject(project.slug)}
+                    >
+                      <RefreshCw size={13} aria-hidden="true" />
+                      <span>Comprobar ahora</span>
+                    </button>
+                  ) : null}
+                </div>
 
-            <ul className="stack-list">
-              {project.stack.map((tech) => (
-                <li key={tech}>{tech}</li>
-              ))}
-            </ul>
+                <dl className="eng-specs">
+                  <div>
+                    <dt>Paradigma</dt>
+                    <dd>{project.matrix.paradigm}</dd>
+                  </div>
+                  <div>
+                    <dt>Persistencia</dt>
+                    <dd>{project.matrix.persistence}</dd>
+                  </div>
+                  <div>
+                    <dt>Consistencia</dt>
+                    <dd>{project.matrix.consistency}</dd>
+                  </div>
+                  <div>
+                    <dt>Pruebas</dt>
+                    <dd>{project.testsLabel}</dd>
+                  </div>
+                </dl>
 
-            <div className="retro-box">
-              <h4>Retrospectiva</h4>
-              <p>{project.retrospective}</p>
-              <p>
-                <strong>Siguiente evolución:</strong> {project.nextEvolution}
-              </p>
-            </div>
+                <ul className="stack-list">
+                  {project.stack.map((tech) => (
+                    <li key={tech}>{tech}</li>
+                  ))}
+                </ul>
 
-            <div className="stage-preview-actions">
-              <a
-                className="btn btn-solid"
-                href={project.repoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Ver código en GitHub ↗
-              </a>
-              <a
-                className="link-action"
-                href={project.liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Abrir despliegue en vivo ↗
-              </a>
-            </div>
-          </>
-        ) : null}
+                <div className="retro-box">
+                  <h4>Retrospectiva</h4>
+                  <p>{project.retrospective}</p>
+                  <p>
+                    <strong>Siguiente evolución:</strong> {project.nextEvolution}
+                  </p>
+                </div>
+
+                <div className="stage-preview-actions">
+                  <a
+                    className="btn btn-solid"
+                    href={project.repoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span>Ver código en GitHub</span>
+                    <ArrowUpRight size={15} aria-hidden="true" />
+                  </a>
+                  <a
+                    className="link-action"
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span>Abrir despliegue en vivo</span>
+                    <ArrowUpRight size={15} aria-hidden="true" />
+                  </a>
+                </div>
+              </>
+            ) : null}
+          </motion.div>
+        </AnimatePresence>
       </div>
 
       <div className="studio-footer">
@@ -270,23 +295,27 @@ export default function ProjectStudio({
               className="studio-nav-btn"
               onClick={() => onNavigate(prevProject.slug)}
             >
-              ← Anterior: {prevProject.name}
+              <ArrowLeft size={14} aria-hidden="true" />
+              <span>Anterior: {prevProject.name}</span>
             </button>
             <button
               type="button"
               className="studio-nav-btn"
               onClick={() => onNavigate(nextProject.slug)}
             >
-              Siguiente: {nextProject.name} →
+              <span>Siguiente: {nextProject.name}</span>
+              <ArrowRight size={14} aria-hidden="true" />
             </button>
           </>
         ) : (
           <>
             <Link className="studio-nav-btn" href={`/projects/${prevProject.slug}`}>
-              ← Anterior: {prevProject.name}
+              <ArrowLeft size={14} aria-hidden="true" />
+              <span>Anterior: {prevProject.name}</span>
             </Link>
             <Link className="studio-nav-btn" href={`/projects/${nextProject.slug}`}>
-              Siguiente: {nextProject.name} →
+              <span>Siguiente: {nextProject.name}</span>
+              <ArrowRight size={14} aria-hidden="true" />
             </Link>
           </>
         )}

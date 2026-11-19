@@ -11,6 +11,7 @@ import {
   Sora,
   Source_Serif_4,
 } from "next/font/google";
+import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 import "./globals.css";
 
 const archivo = Archivo({ subsets: ["latin"], variable: "--font-archivo", display: "swap" });
@@ -52,13 +53,15 @@ const fontVariables = [
 export const metadata: Metadata = {
   title: "Daniel Díaz — Exposición de ingeniería: seis productos, seis arquitecturas",
   description:
-    "Portafolio de ingeniería de software: seis productos en vivo, cada uno con su propia arquitectura, identidad visual y ficha de decisiones técnicas.",
+    "Portafolio de ingeniería de software: seis productos en vivo, cada uno con su propia arquitectura, identidad visual y estudio interactivo.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="es" className={fontVariables}>
-      <body>{children}</body>
+      <body>
+        <SmoothScrollProvider>{children}</SmoothScrollProvider>
+      </body>
     </html>
   );
 }

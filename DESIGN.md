@@ -1,23 +1,22 @@
-# DESIGN — Monografía de Galería V4 (Divulgación Progresiva & Carga Cognitiva Mínima)
+# DESIGN — Kinetic Light Studio V5 (`portfolio-web`)
 
-Skills aplicadas: `impeccable` (`craft-floor.md` + `critique-rubric.md`), `design-taste-frontend` (`Leonxlnx/taste-skill 2.5.1`), `frontend-design` y `web-design-guidelines`.
+Skills y librerías aplicadas: `design-taste-frontend` (`Leonxlnx/taste-skill 2.5.1`), `impeccable` (`craft-floor.md` + `critique-rubric.md`), `frontend-design`, `gsap`, `lenis` y `motion`.
 
-## Principios visuales
-- **Lienzo sereno:** papel `#F7F7F5`, placas `#FFFFFF`, tinta `#0A0A0A`, grafito `#3F3F46`, filetes `#E4E4E7`, acento único `#0044CC` y punto vivo `#15803D`.
-- **Cero hábitos plantilla rechazados por `craft-floor.md`:**
-  - Sin eyebrows/kickers en mayúsculas sobre titulares.
-  - Sin numeración falsa `01 / 02 / 03` ni números romanos decorativos.
-  - Sin tarjetas anidadas ni grilla cliché de métricas hero (`6 / 6 / 100%`).
-  - Sin etiquetas técnicas ni URLs crudas en la portada principal.
-- **Un único efecto GPU silencioso (`taste-skill 2.5.1`):** `grid-pulse` atenuado (`lineOpacity: 0.09`, `pulses: 4`, `calm: 0.62`) detrás del Hero, sin botones de control visibles; conmuta vía atajo `⌘K` y respeta `prefers-reduced-motion: reduce`.
-- **Superficies de navegador estilizadas:** `::selection`, `scrollbar-color`, `:focus-visible`, `text-underline-offset: 4px`, y `tabular-nums` restringido a cifras y latencias reales.
-- **Índice Maestro-Detalle:** filetes `1px` a la izquierda, vista previa `16:10` a tamaño generoso sticky a la derecha.
-- **Estudio de 3 pestañas:** cada capa recibe ancho completo sin competir visualmente entre sí.
+## Principios visuales (Dirección 1 — Kinetic Light Studio)
+- **Lienzo luminoso de estudio:** papel cálido `#FAFAF8`, superficies `#FFFFFF` con borde sutil `rgba(11, 15, 25, 0.08)` y elevación suave de estudio, tinta `#0B0F19`, grafito `#475569`, acento eléctrico `#2563EB` y punto vivo `#16A34A`.
+- **Geometría táctil moderna:** botones píldora (`999px`) con física magnética sutil (`MagneticButton`), placas `24px–28px` redondeadas y transiciones spring calibradas.
+- **Atmósfera WebGL (`taste-skill 2.5.1`):** `fluted-glass` (vidrio arquitectónico estriado con refracción cromática suave) por defecto detrás del Hero, más `grain-gradient`, `grid-pulse`, `contour-lines` y `off` accesibles mediante `⌘K`. Respeta siempre `prefers-reduced-motion: reduce`.
+- **Coreografía de scroll e interacción:**
+  - `Lenis` sincronizado al ticker de `GSAP` (`ScrollTrigger`).
+  - Barra de progreso superior (`motion/react` `useScroll` + `useSpring`).
+  - Vista previa camaleónica (`ProjectIndex`) que adopta el color de fondo, tinta y acento de cada producto (`project.plate`) mediante `AnimatePresence`.
+  - Manifiesto revelado por palabras al avanzar por `#criterio`.
+- **Disciplina anti-slop conservada:** cero eyebrows en mayúsculas sobre titulares, cero numeración decorativa `01 / 02`, cero tarjetas anidadas, cero KPIs cosméticos y cero duplicación del listado de proyectos.
 
 ## Tipografía
-- **Display**: `Archivo` (700–800, tracking `-0.03em` máx., medida <= 15ch en Hero).
-- **Cuerpo**: `Hanken Grotesk` (400–600, 17px, interlineado 1.6, medida <= 65ch).
-- **Datos y código**: `JetBrains Mono` (solo donde existen mediciones, nodos o código real).
+- **Display**: `Archivo` (700–800, tracking controlado `-0.03em` máx., medida `<= 15ch` en Hero).
+- **Cuerpo**: `Hanken Grotesk` (400–600, `17px`, interlineado `1.6`, medida `<= 65ch`).
+- **Datos y código**: `JetBrains Mono` (exclusivamente en métricas de latencia reales, nodos y artefactos técnicos).
 
 ## Seguridad del DOM
-Cero `innerHTML`, `outerHTML`, `insertAdjacentHTML` ni `eval`. DOM y SVG construidos exclusivamente mediante `createElement`, `createElementNS` y `textContent`.
+Cero `innerHTML`, `outerHTML`, `insertAdjacentHTML`, `eval` o `document.write`. Shaders vendored auditados en `public/assets/effects/` usando exclusivamente DOM/WebGL seguro.
