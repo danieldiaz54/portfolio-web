@@ -264,17 +264,39 @@ export default function PortfolioApp() {
   const studioProject = PROJECTS.find((project) => project.slug === studioSlug) ?? null;
   const anyModalOpen = Boolean(studioProject) || cmdkOpen;
 
-  // Congela completamente Lenis y el scroll nativo de documento y cuerpo mientras un modal está abierto
+  // Congela Lenis, bloquea el scroll nativo vía clase root y detiene fugas de wheel fuera o en límites del modal
   useEffect(() => {
     if (!anyModalOpen) {
       return undefined;
     }
     stop();
-    document.documentElement.style.overflowY = "hidden";
-    document.body.style.overflowY = "hidden";
+    const root = document.documentElement;
+    root.classList.add("is-modal-open");
+
+    const handleModalWheel = (event: WheelEvent) => {
+      const target = event.target instanceof Element ? event.target : null;
+      const matched = target?.closest(".studio-sheet, .cmdk-list");
+      const container = matched instanceof HTMLElement ? matched : null;
+      if (!container) {
+        event.preventDefault();
+        return;
+      }
+      const maxScroll = container.scrollHeight - container.clientHeight;
+      if (maxScroll <= 1) {
+        event.preventDefault();
+        return;
+      }
+      const atTop = container.scrollTop <= 0 && event.deltaY < 0;
+      const atBottom = container.scrollTop >= maxScroll - 1 && event.deltaY > 0;
+      if (atTop || atBottom) {
+        event.preventDefault();
+      }
+    };
+
+    window.addEventListener("wheel", handleModalWheel, { passive: false, capture: true });
     return () => {
-      document.documentElement.style.overflowY = "";
-      document.body.style.overflowY = "";
+      window.removeEventListener("wheel", handleModalWheel, { capture: true });
+      root.classList.remove("is-modal-open");
       start();
     };
   }, [anyModalOpen, stop, start]);
