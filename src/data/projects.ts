@@ -55,6 +55,7 @@ export const PROJECTS: ProjectCaseStudy[] = [
       },
     ],
     repoUrl: `https://github.com/${GITHUB_USERNAME}/pulseflow-collab`,
+    liveUrl: "https://pulseflow-collab-production.up.railway.app",
   },
   {
     slug: "cortex-rag-agent",
@@ -109,6 +110,7 @@ export const PROJECTS: ProjectCaseStudy[] = [
       },
     ],
     repoUrl: `https://github.com/${GITHUB_USERNAME}/cortex-rag-agent`,
+    liveUrl: "https://cortex-rag-agent-production.up.railway.app",
   },
   {
     slug: "ledgercore-distributed",
@@ -160,6 +162,7 @@ export const PROJECTS: ProjectCaseStudy[] = [
       },
     ],
     repoUrl: `https://github.com/${GITHUB_USERNAME}/ledgercore-distributed`,
+    liveUrl: "https://ledgercore-distributed-production.up.railway.app",
   },
   {
     slug: "cloudops-gitops-platform",
@@ -211,6 +214,7 @@ export const PROJECTS: ProjectCaseStudy[] = [
       },
     ],
     repoUrl: `https://github.com/${GITHUB_USERNAME}/cloudops-gitops-platform`,
+    liveUrl: "https://cloudops-gitops-platform-production.up.railway.app",
   },
   {
     slug: "fieldnotes-mobile",
@@ -262,6 +266,7 @@ export const PROJECTS: ProjectCaseStudy[] = [
       },
     ],
     repoUrl: `https://github.com/${GITHUB_USERNAME}/fieldnotes-mobile`,
+    liveUrl: "https://fieldnotes-mobile-production.up.railway.app",
   },
 ];
 
