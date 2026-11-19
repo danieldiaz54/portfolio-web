@@ -13,8 +13,8 @@ interface NavbarProps {
 }
 
 const NAV_ITEMS: readonly { id: Exclude<ActiveSectionId, "hero">; href: string; label: string }[] = [
-  { id: "proyectos", href: "/#proyectos", label: "Proyectos" },
-  { id: "criterio", href: "/#criterio", label: "Criterio" },
+  { id: "proyectos", href: "/#proyectos", label: "Obras" },
+  { id: "criterio", href: "/#criterio", label: "Método" },
   { id: "contacto", href: "/#contacto", label: "Contacto" },
 ];
 
@@ -35,46 +35,44 @@ export default function Navbar({ activeSection = "hero", onOpenCmdk }: NavbarPro
 
   return (
     <motion.header
-      className="masthead-floating"
-      initial={{ y: -16, opacity: 0 }}
+      className="hud-nav"
+      initial={{ y: -12, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div className="shell">
-        <div className="masthead-pill">
-          <Link href="/" className="wordmark">
-            Daniel Díaz
-          </Link>
+      <div className="shell hud-nav-inner">
+        <Link href="/" className="wordmark">
+          Daniel Díaz
+        </Link>
 
-          <nav aria-label="Navegación principal">
-            {NAV_ITEMS.map((item) => {
-              const isActive = activeSection === item.id;
-              return (
-                <Link
-                  key={item.id}
-                  href={item.href}
-                  className={`nav-link ${isActive ? "is-active" : ""}`}
-                  aria-current={isActive ? "page" : undefined}
-                  onClick={(event) => handleAnchor(event, item.id)}
-                >
-                  {isActive ? (
-                    <motion.span
-                      layoutId="nav-active-pill"
-                      className="nav-active-pill"
-                      transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                      aria-hidden="true"
-                    />
-                  ) : null}
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
-          </nav>
+        <nav aria-label="Navegación principal">
+          {NAV_ITEMS.map((item) => {
+            const isActive = activeSection === item.id;
+            return (
+              <Link
+                key={item.id}
+                href={item.href}
+                className={`hud-link ${isActive ? "is-active" : ""}`}
+                aria-current={isActive ? "page" : undefined}
+                onClick={(event) => handleAnchor(event, item.id)}
+              >
+                <span>{item.label}</span>
+                {isActive ? (
+                  <motion.span
+                    layoutId="hud-underline"
+                    className="hud-underline"
+                    transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                    aria-hidden="true"
+                  />
+                ) : null}
+              </Link>
+            );
+          })}
 
           {onOpenCmdk ? (
             <button
               type="button"
-              className="cmdk-chip mono"
+              className="hud-cmdk mono"
               onClick={onOpenCmdk}
               aria-label="Abrir paleta de comandos"
               title="Navegación rápida (Ctrl/⌘ K)"
@@ -82,7 +80,7 @@ export default function Navbar({ activeSection = "hero", onOpenCmdk }: NavbarPro
               ⌘K
             </button>
           ) : null}
-        </div>
+        </nav>
       </div>
     </motion.header>
   );

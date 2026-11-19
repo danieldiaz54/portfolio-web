@@ -49,9 +49,10 @@ export default function SignalDiagram({
       >
         <defs>
           <pattern id="diag-dots" width="16" height="16" patternUnits="userSpaceOnUse">
-            <circle cx="2" cy="2" r="0.8" fill="#d4d4d8" />
+            <circle cx="2" cy="2" r="0.8" fill="#1e293b" />
           </pattern>
         </defs>
+        <rect x="0" y="0" width="420" height="220" fill="#0b101b" />
         <rect x="0" y="0" width="420" height="220" fill="url(#diag-dots)" />
 
         {diagram.edges.map((edge, idx) => {
@@ -62,7 +63,8 @@ export default function SignalDiagram({
           }
           const isActive = edge.mode === activeMode;
           const d = edgePath(from, to, idx);
-          const stroke = isActive ? (faultActive ? "#b45309" : accent) : "#d4d4d8";
+          const stroke = isActive ? (faultActive ? "#f59e0b" : accent) : "#334155";
+          const labelFill = isActive ? (faultActive ? "#fbbf24" : "#f8fafc") : "#64748b";
           const isVertical = Math.abs(from.x - to.x) < 4;
           const midX = (from.x + to.x) / 2 + (isVertical ? (from.x > 210 ? -42 : 42) : 0);
           const midY = (from.y + to.y) / 2 + (isVertical ? 4 : -8);
@@ -88,10 +90,10 @@ export default function SignalDiagram({
                 fontSize="9.5"
                 fontFamily="var(--f-mono)"
                 paintOrder="stroke"
-                stroke="#ffffff"
+                stroke="#0b101b"
                 strokeWidth="4"
                 strokeLinejoin="round"
-                fill={isActive ? stroke : "#71717a"}
+                fill={labelFill}
               >
                 {edge.label}
               </text>
@@ -99,50 +101,53 @@ export default function SignalDiagram({
           );
         })}
 
-        {diagram.nodes.map((node) => (
-          <g key={node.id}>
-            <rect
-              x={node.x - 62}
-              y={node.y - 23}
-              width="124"
-              height="46"
-              rx="2"
-              className={`diag-node-rect ${node.kind === "guard" ? "is-guard" : ""}`}
-              style={
-                faultActive && node.kind === "guard"
-                  ? { stroke: "#b45309", strokeWidth: 2 }
-                  : undefined
-              }
-            />
-            <text
-              x={node.x}
-              y={node.y - 4}
-              textAnchor="middle"
-              fontSize="11.5"
-              fontWeight="700"
-              fontFamily="var(--f-display)"
-              fill="#0a0a0a"
-            >
-              {node.label}
-            </text>
-            <text
-              x={node.x}
-              y={node.y + 12}
-              textAnchor="middle"
-              fontSize="9.5"
-              fontFamily="var(--f-mono)"
-              fill="#52525b"
-            >
-              {node.sub}
-            </text>
-          </g>
-        ))}
+        {diagram.nodes.map((node) => {
+          const isAlertGuard = faultActive && node.kind === "guard";
+          return (
+            <g key={node.id}>
+              <rect
+                x={node.x - 62}
+                y={node.y - 23}
+                width="124"
+                height="46"
+                rx="4"
+                className={`diag-node-rect ${node.kind === "guard" ? "is-guard" : ""}`}
+                style={
+                  isAlertGuard
+                    ? { stroke: "#f59e0b", strokeWidth: 2, fill: "#1c1509" }
+                    : undefined
+                }
+              />
+              <text
+                x={node.x}
+                y={node.y - 4}
+                textAnchor="middle"
+                fontSize="11.5"
+                fontWeight="700"
+                fontFamily="var(--f-display)"
+                fill="#f8fafc"
+              >
+                {node.label}
+              </text>
+              <text
+                x={node.x}
+                y={node.y + 12}
+                textAnchor="middle"
+                fontSize="9.5"
+                fontFamily="var(--f-mono)"
+                fill="#94a3b8"
+              >
+                {node.sub}
+              </text>
+            </g>
+          );
+        })}
       </svg>
 
       <p className="diag-caption">{statusNote}</p>
       {onToggleFault ? (
-        <div className="hero-actions" style={{ marginTop: 10 }}>
-          <button type="button" className="pulse-ping-btn" onClick={onToggleFault}>
+        <div className="diag-toggle-row">
+          <button type="button" className="studio-nav-btn" onClick={onToggleFault}>
             {faultActive ? "Volver a ruta nominal" : "Probar ruta de falla"}
           </button>
         </div>

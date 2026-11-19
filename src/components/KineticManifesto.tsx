@@ -38,7 +38,7 @@ export default function KineticManifesto({ text }: KineticManifestoProps) {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: stage,
-          start: "top 22%",
+          start: "top 20%",
           end: "+=360",
           pin: true,
           scrub: 0.55,
@@ -48,7 +48,7 @@ export default function KineticManifesto({ text }: KineticManifestoProps) {
 
       tl.fromTo(
         targets,
-        { opacity: 0.14, y: 10 },
+        { opacity: 0.16, y: 10 },
         {
           opacity: 1,
           y: 0,
@@ -71,14 +71,14 @@ export default function KineticManifesto({ text }: KineticManifestoProps) {
     mm.add("(max-width: 959px) and (prefers-reduced-motion: no-preference)", () => {
       const tween = gsap.fromTo(
         targets,
-        { opacity: 0.36 },
+        { opacity: 0.42 },
         {
           opacity: 1,
           stagger: 0.04,
           ease: "none",
           scrollTrigger: {
             trigger: stage,
-            start: "top 90%",
+            start: "top 92%",
             end: "top 44%",
             scrub: 0.5,
           },
