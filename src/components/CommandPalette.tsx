@@ -56,8 +56,35 @@ export default function CommandPalette({
         },
       },
       {
+        id: "fx-prism",
+        label: "Atmósfera: Prisma espectral WebGL",
+        sub: heroEffect === "prism-dispersion" ? "Activo" : "Cambiar",
+        run: () => {
+          onChangeHeroEffect("prism-dispersion");
+          onClose();
+        },
+      },
+      {
+        id: "fx-spotlight",
+        label: "Atmósfera: Reflector escénico WebGL",
+        sub: heroEffect === "spotlight-cone" ? "Activo" : "Cambiar",
+        run: () => {
+          onChangeHeroEffect("spotlight-cone");
+          onClose();
+        },
+      },
+      {
+        id: "fx-rays",
+        label: "Atmósfera: Haces de luz WebGL",
+        sub: heroEffect === "god-rays" ? "Activo" : "Cambiar",
+        run: () => {
+          onChangeHeroEffect("god-rays");
+          onClose();
+        },
+      },
+      {
         id: "fx-fluted",
-        label: "Fondo portada: Vidrio estriado WebGL",
+        label: "Atmósfera: Vidrio estriado WebGL",
         sub: heroEffect === "fluted-glass" ? "Activo" : "Cambiar",
         run: () => {
           onChangeHeroEffect("fluted-glass");
@@ -65,26 +92,8 @@ export default function CommandPalette({
         },
       },
       {
-        id: "fx-silk",
-        label: "Fondo portada: Seda arquitectónica WebGL",
-        sub: heroEffect === "silk-folds" ? "Activo" : "Cambiar",
-        run: () => {
-          onChangeHeroEffect("silk-folds");
-          onClose();
-        },
-      },
-      {
-        id: "fx-grain",
-        label: "Fondo portada: Degradado orgánico con grano",
-        sub: heroEffect === "grain-gradient" ? "Activo" : "Cambiar",
-        run: () => {
-          onChangeHeroEffect("grain-gradient");
-          onClose();
-        },
-      },
-      {
         id: "fx-grid",
-        label: "Fondo portada: Señales sobre retícula",
+        label: "Atmósfera: Señales sobre retícula",
         sub: heroEffect === "grid-pulse" ? "Activo" : "Cambiar",
         run: () => {
           onChangeHeroEffect("grid-pulse");
@@ -93,7 +102,7 @@ export default function CommandPalette({
       },
       {
         id: "fx-contour",
-        label: "Fondo portada: Curvas topográficas GLSL",
+        label: "Atmósfera: Curvas topográficas GLSL",
         sub: heroEffect === "contour-lines" ? "Activo" : "Cambiar",
         run: () => {
           onChangeHeroEffect("contour-lines");
@@ -102,7 +111,7 @@ export default function CommandPalette({
       },
       {
         id: "fx-off",
-        label: "Fondo portada: Papel limpio sin shader",
+        label: "Atmósfera: Obsidiana pura sin shader",
         sub: heroEffect === "off" ? "Activo" : "Cambiar",
         run: () => {
           onChangeHeroEffect("off");

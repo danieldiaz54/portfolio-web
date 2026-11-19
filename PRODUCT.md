@@ -1,16 +1,16 @@
-# PRODUCT — Portafolio Hub V6 (Pinned Scrollytelling Cinema & Next.js 15 Export)
+# PRODUCT — Portafolio Hub V7 (Obsidian Fixed-Backdrop Zero-Card Cinema)
 
 ## 1. Rol del hub
-El hub transforma la navegación tradicional en un recorrido cinematográfico guiado por scroll estático (`ScrollTrigger pin + scrub`), permitiendo explorar las seis aplicaciones reales sin perder simplicidad cognitiva: primero claridad humana en portada, luego exhibición interactiva paso a paso fijada en pantalla y finalmente el estudio profundo en 3 pestañas.
+El hub presenta seis productos reales de ingeniería como una **proyección cinematográfica continua sobre fondo estático**: la escena ambiental permanece fija mientras la tipografía editorial, las proyecciones flotantes sin tarjetas y las separaciones por filete `1px` se desplazan con ritmo de cine.
 
 ## 2. Audiencias y recorrido en 3 capas
 | Audiencia | Tiempo disponible | Capa que consume | Qué resuelve al instante |
 |---|---|---|---|
-| Cualquier visitante / talento | 10–20 s | Capa 1 (Hero Cortina Pinned) | **Tesis en 10 segundos**: qué construyo, para quién y entrada limpia hacia los proyectos sobre vidrio estriado / seda WebGL. |
-| Líder de producto / diseño | 1–2 min | Capa 2 (Escenario Fijado `#proyectos`) | Los 6 productos en una escena estática que avanza con el scroll (`1..6`), mostrando cada identidad visual real en vista previa 3D reactiva. |
-| Líder técnico / ingeniero par | 3–10 min | Capa 3 (`ProjectStudio`: 3 pestañas) | 1. **Pruébalo** (Micro-Lab) → 2. **Cómo funciona** (Diagrama interactivo + Trade-offs) → 3. **Ingeniería y código** (Salud real Railway, retrospectiva y GitHub). |
+| Cualquier visitante / talento | 10–20 s | Acto I (Portada abierta sobre haz WebGL) | **Tesis en 10 segundos**: qué construyo, para quién y entrada directa a `Obras`. |
+| Líder de producto / diseño | 1–2 min | Acto II (`CinemaStage` `#proyectos` sin tarjetas) | Recorrido fijado en 6 capítulos con tira inferior, donde cada producto proyecta su identidad real en 3D sin cajas. |
+| Líder técnico / ingeniero par | 3–10 min | Capa 3 (`ProjectStudio`: 3 pestañas) | 1. **Pruébalo** (Micro-Lab) → 2. **Cómo funciona** (Diagrama oscuro + Trade-offs) → 3. **Ingeniería y código** (Salud real Railway, retrospectiva y GitHub). |
 
-## 3. Evolución clave en V6
-1. **Scroll estático coreografiado (`pin + scrub`):** en escritorio, Hero funciona como telón de entrada; `#proyectos` fija el índice y la vista previa 3D para recorrer los 6 productos mediante scroll continuo, clic en filas o salto por segmentos; `#criterio` fija el manifiesto y apila las tarjetas de método; `#contacto` revela un portal interactivo con foco luminoso.
-2. **Navegación sincronizada a spacers fijados:** `Navbar` flotante con píldora compartida (`layoutId`) conectado al contexto global de `Lenis` (`useSmoothScroll()`), garantizando saltos exactos pese a las alturas reservadas por `ScrollTrigger`.
-3. **Degradación elegante en móvil y accesibilidad:** bajo `960px` o con `prefers-reduced-motion: reduce`, el recorrido pasa a flujo vertical fluido con revelados suaves sin bloqueo de scroll ni desbordamiento horizontal (`390px`).
+## 3. Reformulación V7 desde cero
+1. **Fondo estático único e ininterrumpido:** `FixedBackdrop` mantiene el lienzo `#06080D` + haz de luz WebGL (`prism-dispersion` / `spotlight-cone` / `god-rays`) fijo en toda la visita, tiñendo su atmósfera según el producto activo.
+2. **Eliminación total de tarjetas en portada:** sin píldoras flotantes ni cajas contenedoras en barra superior, lista de proyectos, vista previa, principios de método ni sección de contacto. Solo tipografía marfil, filetes `1px`, aire negativo y proyecciones flotantes.
+3. **Interacción física intacta:** scroll suave (`Lenis`), *dolly* de cámara en Hero, proyección fijada en `#proyectos`, dibujo de filetes en `EditorialMethod` y estudio técnico interactivo con telemetría CORS en vivo.

@@ -109,8 +109,8 @@ export default function ProjectStudio({
             >
               {isSelected ? (
                 <motion.span
-                  layoutId="studio-tab-pill"
-                  className="studio-tab-bg"
+                  layoutId="studio-tab-line"
+                  className="studio-tab-line"
                   transition={{ type: "spring", stiffness: 380, damping: 32 }}
                   aria-hidden="true"
                 />

@@ -23,57 +23,75 @@ interface FxModule {
   ) => Promise<FxHandle>;
 }
 
-const KINETIC_PALETTE: FxPalette = {
-  bg: "#fafaf8",
-  surface: "#ffffff",
-  ink: "#0b0f19",
-  muted: "#475569",
-  accent: "#2563eb",
+const CINEMA_PALETTE: FxPalette = {
+  bg: "#06080d",
+  surface: "#0c111d",
+  ink: "#f8fafc",
+  muted: "#94a3b8",
+  accent: "#3b82f6",
 };
 
 const EFFECT_PARAMS: Record<Exclude<HeroEffectId, "off">, Record<string, number>> = {
+  "prism-dispersion": {
+    splitX: 0.68,
+    splitY: 0.34,
+    bend: 32,
+    fanSpread: 0.44,
+    hueSpread: 45,
+    beamWidth: 0.006,
+    haze: 0.46,
+    intensity: 1.05,
+    sway: 0.025,
+    calm: 0.58,
+    calmX: 0.24,
+    calmY: 0.5,
+  },
+  "spotlight-cone": {
+    x: 0.68,
+    lean: 0.34,
+    width: 0.24,
+    poolY: 0.84,
+    haze: 0.46,
+    edge: 0.55,
+    intensity: 1.05,
+    breathe: 0.18,
+    speed: 0.14,
+    calm: 0.58,
+    calmX: 0.24,
+    calmY: 0.48,
+  },
+  "god-rays": {
+    originX: 0.72,
+    originY: -0.18,
+    tilt: -18,
+    spread: 58,
+    density: 0.38,
+    intensity: 0.78,
+    falloff: 1.25,
+    speed: 0.04,
+    dust: 0.34,
+    tint: 0.55,
+    calm: 0.58,
+    calmX: 0.24,
+    calmY: 0.5,
+  },
   "fluted-glass": {
     ribWidth: 30,
     angle: -6,
-    distortion: 0.34,
-    highlight: 0.14,
-    shadow: 0.08,
+    distortion: 0.36,
+    highlight: 0.16,
+    shadow: 0.12,
     background: 0,
     blur: 0.18,
     speed: 0.025,
     clear: 0.42,
     calm: 0.6,
-    calmX: 0.28,
+    calmX: 0.26,
     calmY: 0.48,
-  },
-  "silk-folds": {
-    tone: 2,
-    scale: 1.15,
-    folds: 0.52,
-    sheen: 0.55,
-    speed: 0.04,
-    grain: 0.02,
-    angle: 22,
-    calm: 0.62,
-    calmX: 0.28,
-    calmY: 0.5,
-  },
-  "grain-gradient": {
-    speed: 0.35,
-    softness: 0.55,
-    warp: 0.42,
-    grain: 0.38,
-    scatter: 0.4,
-    tint: 0.35,
-    contrast: 0.32,
-    calm: 0.62,
-    calmX: 0.24,
-    calmY: 0.5,
-    grainMotion: 1,
   },
   "grid-pulse": {
     cell: 56,
-    lineOpacity: 0.09,
+    lineOpacity: 0.1,
     pulses: 4,
     tail: 2.4,
     speed: 110,
@@ -83,7 +101,7 @@ const EFFECT_PARAMS: Record<Exclude<HeroEffectId, "off">, Record<string, number>
   },
   "contour-lines": {
     levels: 20,
-    opacity: 0.24,
+    opacity: 0.22,
     indexEvery: 5,
     speed: 0.02,
     tint: 0.55,
@@ -124,7 +142,7 @@ export default function HeroShader({ effect }: { effect: HeroEffectId }) {
     loadFxRuntime(fxUrl)
       .then((fx) =>
         fx.mount(el, effect, {
-          palette: KINETIC_PALETTE,
+          palette: CINEMA_PALETTE,
           params: EFFECT_PARAMS[effect],
           seed: 7,
         }),
@@ -137,7 +155,7 @@ export default function HeroShader({ effect }: { effect: HeroEffectId }) {
         handle = mounted;
       })
       .catch(() => {
-        // Permanece el lienzo luminoso #FAFAF8
+        // Permanece el lienzo obsidiana #06080D
       });
 
     return () => {
