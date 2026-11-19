@@ -23,6 +23,8 @@ export interface ScrollToOptions {
 
 interface ScrollContextValue {
   scrollTo: (target: string | number, opts?: ScrollToOptions) => void;
+  stop: () => void;
+  start: () => void;
 }
 
 function nativeScrollFallback(target: string | number, opts?: ScrollToOptions) {
@@ -43,6 +45,8 @@ function nativeScrollFallback(target: string | number, opts?: ScrollToOptions) {
 
 const ScrollContext = createContext<ScrollContextValue>({
   scrollTo: nativeScrollFallback,
+  stop: () => {},
+  start: () => {},
 });
 
 export function useSmoothScroll(): ScrollContextValue {
@@ -65,7 +69,7 @@ export default function SmoothScrollProvider({ children }: { children: ReactNode
     }
 
     const lenis = new Lenis({
-      duration: 1.05,
+      duration: 1.0,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
     });
@@ -81,9 +85,17 @@ export default function SmoothScrollProvider({ children }: { children: ReactNode
     gsap.ticker.lagSmoothing(0);
 
     let cancelled = false;
+    const rafId = window.requestAnimationFrame(() => {
+      if (!cancelled) {
+        ScrollTrigger.sort();
+        ScrollTrigger.refresh();
+      }
+    });
+
     if (document.fonts && typeof document.fonts.ready?.then === "function") {
       void document.fonts.ready.then(() => {
         if (!cancelled) {
+          ScrollTrigger.sort();
           ScrollTrigger.refresh();
         }
       });
@@ -91,6 +103,7 @@ export default function SmoothScrollProvider({ children }: { children: ReactNode
 
     return () => {
       cancelled = true;
+      window.cancelAnimationFrame(rafId);
       lenisRef.current = null;
       gsap.ticker.remove(tick);
       lenis.destroy();
@@ -109,7 +122,18 @@ export default function SmoothScrollProvider({ children }: { children: ReactNode
     nativeScrollFallback(target, opts);
   }, []);
 
-  const value = useMemo<ScrollContextValue>(() => ({ scrollTo }), [scrollTo]);
+  const stop = useCallback(() => {
+    lenisRef.current?.stop();
+  }, []);
+
+  const start = useCallback(() => {
+    lenisRef.current?.start();
+  }, []);
+
+  const value = useMemo<ScrollContextValue>(
+    () => ({ scrollTo, stop, start }),
+    [scrollTo, stop, start],
+  );
 
   return (
     <ScrollContext.Provider value={value}>
