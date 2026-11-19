@@ -1,24 +1,16 @@
-# PRODUCT — Portafolio Hub V5 (Kinetic Light Studio & Real Next.js Export)
+# PRODUCT — Portafolio Hub V6 (Pinned Scrollytelling Cinema & Next.js 15 Export)
 
 ## 1. Rol del hub
-El hub guía al visitante con claridad inmediata desde una tesis limpia hasta la prueba interactiva de cada producto real, combinando la arquitectura de información en 3 capas con una experiencia cinética, táctil y luminosa ejecutada directamente sobre Next.js 15 + React 19 (sin plantillas estáticas paralelas).
+El hub transforma la navegación tradicional en un recorrido cinematográfico guiado por scroll estático (`ScrollTrigger pin + scrub`), permitiendo explorar las seis aplicaciones reales sin perder simplicidad cognitiva: primero claridad humana en portada, luego exhibición interactiva paso a paso fijada en pantalla y finalmente el estudio profundo en 3 pestañas.
 
 ## 2. Audiencias y recorrido en 3 capas
 | Audiencia | Tiempo disponible | Capa que consume | Qué resuelve al instante |
 |---|---|---|---|
-| Cualquier visitante / talento | 10–20 s | Capa 1 (Entrada) | **Tesis en 10 segundos**: qué construyo, para quién y dos rutas claras (`Explorar los proyectos`, `Cómo trabajo`). |
-| Líder de producto / diseño | 1–2 min | Capa 2 (Índice Maestro-Detalle `#proyectos`) | Los 6 proyectos en una sola lista sincronizada con el scroll, con vista previa camaleónica en la identidad visual de cada producto. |
+| Cualquier visitante / talento | 10–20 s | Capa 1 (Hero Cortina Pinned) | **Tesis en 10 segundos**: qué construyo, para quién y entrada limpia hacia los proyectos sobre vidrio estriado / seda WebGL. |
+| Líder de producto / diseño | 1–2 min | Capa 2 (Escenario Fijado `#proyectos`) | Los 6 productos en una escena estática que avanza con el scroll (`1..6`), mostrando cada identidad visual real en vista previa 3D reactiva. |
 | Líder técnico / ingeniero par | 3–10 min | Capa 3 (`ProjectStudio`: 3 pestañas) | 1. **Pruébalo** (Micro-Lab) → 2. **Cómo funciona** (Diagrama interactivo + Trade-offs) → 3. **Ingeniería y código** (Salud real Railway, retrospectiva y GitHub). |
 
-## 3. Decisiones clave de UX V5
-1. **Un único punto de verdad compilado con Next.js 15 (`output: "export"`):** GitHub Pages publica el mismo bundle React (`gsap`, `lenis`, `motion`, `fluted-glass`) compilado por Next.js bajo `./out` con `public/.nojekyll`.
-2. **Hero sin distracciones (<= 4 señales):** entrada tipográfica coreografiada sobre vidrio estriado WebGL sutil (`fluted-glass`), cero eyebrows, cero KPIs decorativos y cero toolbars técnicas en portada.
-3. **Exploración táctil en `#proyectos`:** selección reactiva por hover, clic, teclado o scroll (`ScrollTrigger`), píldora deslizante (`layoutId`), transiciones camaleónicas (`AnimatePresence`) y cursor contextual (`Explorar estudio`).
-4. **Estudio y cierre vivo (`ProjectStudio`, `#criterio` y `#contacto`):** divulgación en 3 pestañas con desplazamiento aislado (`data-lenis-prevent`), manifiesto de criterio revelado con el scroll y copia instantánea del enlace en `#contacto`.
-
-## 4. Estructura final
-1. **Barra de progreso & Masthead flotante** (`ScrollProgressBar` + `Daniel Díaz` · `Proyectos` · `Criterio` · `Contacto`).
-2. **Hero cinético** (`fluted-glass` WebGL silencioso · entrada tipográfica · `Explorar los proyectos` · `Cómo trabajo` magnéticos).
-3. **Proyectos (`#proyectos`)** — Índice Maestro-Detalle de 6 filas con `ScrollTrigger` + vista previa camaleónica sticky 16:10 + Estudio en drawer/ruta `/projects/[slug]`.
-4. **Criterio (`#criterio`)** — Manifiesto kinetic word-by-word + síntesis en 3 principios de arquitectura.
-5. **Contacto (`#contacto`)** + colofón y paleta rápida `⌘K` (incluye selector de 5 shaders).
+## 3. Evolución clave en V6
+1. **Scroll estático coreografiado (`pin + scrub`):** en escritorio, Hero funciona como telón de entrada; `#proyectos` fija el índice y la vista previa 3D para recorrer los 6 productos mediante scroll continuo, clic en filas o salto por segmentos; `#criterio` fija el manifiesto y apila las tarjetas de método; `#contacto` revela un portal interactivo con foco luminoso.
+2. **Navegación sincronizada a spacers fijados:** `Navbar` flotante con píldora compartida (`layoutId`) conectado al contexto global de `Lenis` (`useSmoothScroll()`), garantizando saltos exactos pese a las alturas reservadas por `ScrollTrigger`.
+3. **Degradación elegante en móvil y accesibilidad:** bajo `960px` o con `prefers-reduced-motion: reduce`, el recorrido pasa a flujo vertical fluido con revelados suaves sin bloqueo de scroll ni desbordamiento horizontal (`390px`).

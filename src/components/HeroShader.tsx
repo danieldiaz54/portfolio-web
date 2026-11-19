@@ -46,6 +46,18 @@ const EFFECT_PARAMS: Record<Exclude<HeroEffectId, "off">, Record<string, number>
     calmX: 0.28,
     calmY: 0.48,
   },
+  "silk-folds": {
+    tone: 2,
+    scale: 1.15,
+    folds: 0.52,
+    sheen: 0.55,
+    speed: 0.04,
+    grain: 0.02,
+    angle: 22,
+    calm: 0.62,
+    calmX: 0.28,
+    calmY: 0.5,
+  },
   "grain-gradient": {
     speed: 0.35,
     softness: 0.55,

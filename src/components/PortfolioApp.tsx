@@ -1,12 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowDown, ArrowRight, ArrowUpRight, Check, Copy } from "lucide-react";
+import { ArrowDown, ArrowRight } from "lucide-react";
 import type { HeroEffectId, Project, TelemetryEntry, TelemetryMap } from "@/types/project";
 import { OWNER, PROJECTS, SUPPORTING_REPO } from "@/data/projects";
-import Navbar from "@/components/Navbar";
+import Navbar, { type ActiveSectionId } from "@/components/Navbar";
 import HeroShader from "@/components/HeroShader";
 import ProjectIndex from "@/components/ProjectIndex";
 import ProjectStudio from "@/components/ProjectStudio";
@@ -14,19 +15,27 @@ import CommandPalette from "@/components/CommandPalette";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import MagneticButton from "@/components/MagneticButton";
 import KineticManifesto from "@/components/KineticManifesto";
+import CriteriaStack, { type CriterionItem } from "@/components/CriteriaStack";
+import ContactPortal from "@/components/ContactPortal";
+import { useSmoothScroll } from "@/components/SmoothScrollProvider";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const HERO_TITLE_WORDS = ["Software", "claro", "para", "usar,", "sólido", "por", "dentro."];
 
-const CRITERIA: readonly { title: string; text: string }[] = [
+const CRITERIA: readonly CriterionItem[] = [
   {
+    id: "human",
     title: "Primero la persona, después la arquitectura",
     text: "Si alguien no entiende para qué sirve una aplicación en los primeros cinco segundos, la ingeniería de respaldo no importa. Cada proyecto resuelve un problema cotidiano real antes de hablar de patrones.",
   },
   {
+    id: "spec",
     title: "Especificar y probar antes de publicar",
     text: "Cada repositorio separa el dominio puro de la infraestructura y define contratos escritos antes de escribir código. Las ramas se integran por dev y solo llegan a producción con CI en verde.",
   },
   {
+    id: "ops",
     title: "Operación pensada para producción",
     text: "Cinco servicios viven en contenedores sin privilegios sobre Railway, uno corre 100 % en el navegador y el repositorio complementario CloudOps GitOps Platform documenta su despliegue en Kubernetes.",
   },
@@ -57,8 +66,13 @@ async function probeService(project: Project): Promise<TelemetryEntry> {
 }
 
 export default function PortfolioApp() {
-  const heroRef = useRef<HTMLDivElement>(null);
+  const { scrollTo } = useSmoothScroll();
+  const mainRef = useRef<HTMLElement>(null);
+  const heroSectionRef = useRef<HTMLElement>(null);
+  const heroInnerRef = useRef<HTMLDivElement>(null);
+
   const [heroEffect, setHeroEffect] = useState<HeroEffectId>("fluted-glass");
+  const [activeSection, setActiveSection] = useState<ActiveSectionId>("hero");
   const [selectedSlug, setSelectedSlug] = useState<string>(PROJECTS[0].slug);
   const [studioSlug, setStudioSlug] = useState<string | null>(null);
   const [cmdkOpen, setCmdkOpen] = useState<boolean>(false);
@@ -119,8 +133,9 @@ export default function PortfolioApp() {
     };
   }, []);
 
+  // Entrada tipográfica 3D de Hero en montaje inicial
   useEffect(() => {
-    const scope = heroRef.current;
+    const scope = heroInnerRef.current;
     if (!scope || typeof window === "undefined") {
       return undefined;
     }
@@ -136,25 +151,26 @@ export default function PortfolioApp() {
       const subElements = scope.querySelectorAll<HTMLElement>(".hero-thesis, .hero-actions");
       gsap.fromTo(
         words,
-        { yPercent: 110, opacity: 0 },
+        { yPercent: 115, rotateX: 22, opacity: 0 },
         {
           yPercent: 0,
+          rotateX: 0,
           opacity: 1,
-          duration: 0.72,
-          stagger: 0.045,
+          duration: 0.78,
+          stagger: 0.048,
           ease: "power3.out",
           clearProps: "transform,opacity",
         },
       );
       gsap.fromTo(
         subElements,
-        { y: 16, opacity: 0 },
+        { y: 18, opacity: 0 },
         {
           y: 0,
           opacity: 1,
           duration: 0.65,
-          delay: 0.2,
-          stagger: 0.08,
+          delay: 0.22,
+          stagger: 0.09,
           ease: "power3.out",
           clearProps: "transform,opacity",
         },
@@ -162,6 +178,102 @@ export default function PortfolioApp() {
     }, scope);
 
     return () => ctx.revert();
+  }, []);
+
+  // Coreografía global: Hero Cortina Fijada + rastreo de sección activa
+  useEffect(() => {
+    const heroEl = heroSectionRef.current;
+    const heroInner = heroInnerRef.current;
+    const mainEl = mainRef.current;
+    if (!heroEl || !heroInner || !mainEl || typeof window === "undefined") {
+      return undefined;
+    }
+
+    const shaderEl = heroEl.querySelector<HTMLElement>(".hero-shader");
+    const cueEl = heroEl.querySelector<HTMLElement>(".hero-scroll-cue");
+
+    const mm = gsap.matchMedia();
+
+    mm.add("(min-width: 960px) and (prefers-reduced-motion: no-preference)", () => {
+      const heroTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: heroEl,
+          start: "top top",
+          end: "bottom top",
+          pin: true,
+          pinSpacing: false,
+          scrub: true,
+        },
+      });
+
+      heroTl.to(
+        heroInner,
+        {
+          y: -64,
+          scale: 0.92,
+          opacity: 0.08,
+          filter: "blur(6px)",
+          ease: "none",
+        },
+        0,
+      );
+
+      if (shaderEl) {
+        heroTl.to(
+          shaderEl,
+          {
+            scale: 1.12,
+            y: 32,
+            ease: "none",
+          },
+          0,
+        );
+      }
+
+      if (cueEl) {
+        heroTl.to(
+          cueEl,
+          {
+            opacity: 0,
+            y: 14,
+            duration: 0.25,
+            ease: "none",
+          },
+          0,
+        );
+      }
+
+      return () => {
+        heroTl.kill();
+      };
+    });
+
+    const ctx = gsap.context(() => {
+      const sectionIds: readonly Exclude<ActiveSectionId, "hero">[] = [
+        "proyectos",
+        "criterio",
+        "contacto",
+      ];
+      sectionIds.forEach((id, idx) => {
+        const el = document.getElementById(id);
+        if (!el) {
+          return;
+        }
+        ScrollTrigger.create({
+          trigger: el,
+          start: "top 45%",
+          end: "bottom 45%",
+          onEnter: () => setActiveSection(id),
+          onEnterBack: () => setActiveSection(id),
+          onLeaveBack: idx === 0 ? () => setActiveSection("hero") : undefined,
+        });
+      });
+    }, mainEl);
+
+    return () => {
+      ctx.revert();
+      mm.revert();
+    };
   }, []);
 
   const studioProject = PROJECTS.find((project) => project.slug === studioSlug) ?? null;
@@ -198,18 +310,23 @@ export default function PortfolioApp() {
     window.setTimeout(() => setCopied(false), 2000);
   }, []);
 
+  const handleHeroScrollLink = (event: MouseEvent<HTMLAnchorElement>, targetId: string) => {
+    event.preventDefault();
+    scrollTo(`#${targetId}`, { duration: 0.95 });
+  };
+
   return (
     <>
       <ScrollProgressBar />
       <a className="skip-link" href="#proyectos">
         Saltar a los proyectos
       </a>
-      <Navbar />
+      <Navbar activeSection={activeSection} onOpenCmdk={() => setCmdkOpen(true)} />
 
-      <main>
-        <section className="hero" aria-labelledby="hero-title">
+      <main ref={mainRef}>
+        <section ref={heroSectionRef} className="hero" aria-labelledby="hero-title">
           <HeroShader effect={heroEffect} />
-          <div className="shell" ref={heroRef}>
+          <div className="shell hero-inner" ref={heroInnerRef}>
             <h1 id="hero-title" className="hero-title">
               {HERO_TITLE_WORDS.map((word, idx) => (
                 <span key={`${word}-${idx}`}>
@@ -226,28 +343,33 @@ export default function PortfolioApp() {
             </p>
             <div className="hero-actions">
               <MagneticButton>
-                <a className="btn btn-solid" href="#proyectos">
+                <a
+                  className="btn btn-solid"
+                  href="#proyectos"
+                  onClick={(event) => handleHeroScrollLink(event, "proyectos")}
+                >
                   <span>Explorar los proyectos</span>
                   <ArrowDown size={15} aria-hidden="true" />
                 </a>
               </MagneticButton>
-              <a className="link-action" href="#criterio">
+              <a
+                className="link-action"
+                href="#criterio"
+                onClick={(event) => handleHeroScrollLink(event, "criterio")}
+              >
                 <span>Cómo trabajo</span>
                 <ArrowRight size={15} aria-hidden="true" />
               </a>
             </div>
           </div>
+          <div className="hero-scroll-cue" aria-hidden="true">
+            <span className="hero-scroll-line" />
+            <span className="mono">Desliza</span>
+          </div>
         </section>
 
-        <section id="proyectos" className="section" aria-labelledby="proyectos-title">
-          <div className="shell">
-            <div className="section-intro">
-              <h2 id="proyectos-title">Proyectos</h2>
-              <p>
-                Recorre o selecciona cualquiera para ver qué resuelve y abre su estudio para probarlo
-                por dentro, explorar sus flujos de falla o revisar su código.
-              </p>
-            </div>
+        <div className="curtain-surface">
+          <section id="proyectos" className="projects-cinema-section" aria-labelledby="proyectos-title">
             <ProjectIndex
               projects={PROJECTS}
               selectedSlug={selectedSlug}
@@ -255,78 +377,42 @@ export default function PortfolioApp() {
               onSelect={setSelectedSlug}
               onOpenStudio={openStudio}
             />
-          </div>
-        </section>
+          </section>
 
-        <section id="criterio" className="section" aria-labelledby="criterio-title">
-          <div className="shell">
-            <div className="section-intro">
-              <h2 id="criterio-title">Cómo diseño y construyo software</h2>
-              <p>Un mismo método para las seis obras, sin repetir arquitectura ni estética.</p>
-            </div>
-            <KineticManifesto text="Cada producto empieza por el problema humano real, aísla su dominio puro de la infraestructura y demuestra su comportamiento bajo falla." />
-            <div className="criteria-list">
-              {CRITERIA.map((item) => (
-                <div className="criteria-row" key={item.title}>
-                  <h3>{item.title}</h3>
-                  <p>{item.text}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section id="contacto" className="section" aria-labelledby="contacto-title">
-          <div className="shell">
-            <div className="contact-band">
-              <div>
-                <h2 id="contacto-title">Conversemos</h2>
-                <p>
-                  Todos los repositorios son públicos, auditados y tienen despliegue activo en la nube.
-                </p>
+          <section id="criterio" className="section" aria-labelledby="criterio-title">
+            <div className="shell">
+              <div className="section-intro">
+                <h2 id="criterio-title">Cómo diseño y construyo software</h2>
+                <p>Un mismo método para las seis obras, sin repetir arquitectura ni estética.</p>
               </div>
-              <div className="contact-actions">
-                <MagneticButton>
-                  <a
-                    className="btn btn-solid"
-                    href={OWNER.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <span>GitHub</span>
-                    <ArrowUpRight size={15} aria-hidden="true" />
-                  </a>
-                </MagneticButton>
-                <button type="button" className="btn" onClick={copyPortfolioLink}>
-                  {copied ? (
-                    <>
-                      <Check size={15} aria-hidden="true" />
-                      <span>Enlace copiado</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy size={15} aria-hidden="true" />
-                      <span>Copiar enlace del portafolio</span>
-                    </>
-                  )}
-                </button>
-              </div>
+              <KineticManifesto text="Cada producto empieza por el problema humano real, aísla su dominio puro de la infraestructura y demuestra su comportamiento bajo falla." />
+              <CriteriaStack items={CRITERIA} />
             </div>
-          </div>
-        </section>
-      </main>
+          </section>
 
-      <footer className="shell">
-        <div className="footer">
-          <span>
-            © {OWNER.name} · Tipografías Archivo y Hanken Grotesk · Infraestructura{" "}
-            <a href={SUPPORTING_REPO.repoUrl} target="_blank" rel="noopener noreferrer">
-              {SUPPORTING_REPO.name} ↗
-            </a>
-          </span>
-          <span className="mono">Atajo ⌘K</span>
+          <section id="contacto" className="section" aria-labelledby="contacto-title">
+            <div className="shell">
+              <ContactPortal
+                githubUrl={OWNER.github}
+                copied={copied}
+                onCopyLink={copyPortfolioLink}
+              />
+            </div>
+          </section>
+
+          <footer className="shell">
+            <div className="footer">
+              <span>
+                © {OWNER.name} · Tipografías Archivo y Hanken Grotesk · Infraestructura{" "}
+                <a href={SUPPORTING_REPO.repoUrl} target="_blank" rel="noopener noreferrer">
+                  {SUPPORTING_REPO.name} ↗
+                </a>
+              </span>
+              <span className="mono">Atajo ⌘K</span>
+            </div>
+          </footer>
         </div>
-      </footer>
+      </main>
 
       <AnimatePresence>
         {studioProject ? (

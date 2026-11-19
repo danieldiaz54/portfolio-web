@@ -1,4 +1,4 @@
-"""Contratos V5 Kinetic Light Studio: exportación Next.js 15, shaders vendored, 0 any/DOM inseguro y 3 capas intactas."""
+"""Contratos V6 Pinned Scrollytelling Cinema: exportación Next.js 15, GSAP pinning, shaders vendored y 3 capas intactas."""
 
 from __future__ import annotations
 
@@ -30,11 +30,13 @@ NOISE_LABELS = ("Shader Hero", "Re-ping vivo", "I — Laboratorio", "II — Expo
 BANNED_FONTS = ("Inter", "Roboto", "Open Sans")
 BANNED_DOM = ("innerHTML", "outerHTML", "insertAdjacentHTML", "eval(", "document.write")
 
-REQUIRED_V5_COMPONENTS = (
+REQUIRED_COMPONENTS = (
     "SmoothScrollProvider.tsx",
     "ScrollProgressBar.tsx",
     "MagneticButton.tsx",
     "KineticManifesto.tsx",
+    "CriteriaStack.tsx",
+    "ContactPortal.tsx",
     "HeroShader.tsx",
     "Navbar.tsx",
     "ProjectIndex.tsx",
@@ -76,7 +78,7 @@ class TestPortfolioHubContracts(unittest.TestCase):
         pages_yml = read(".github/workflows/pages.yml")
         ci_yml = read(".github/workflows/ci.yml")
 
-        self.assertIn('STATIC_EXPORT', next_cfg)
+        self.assertIn("STATIC_EXPORT", next_cfg)
         self.assertIn('"export"', next_cfg)
         self.assertIn("trailingSlash: true", next_cfg)
         self.assertIn('STATIC_EXPORT: "1"', pages_yml)
@@ -87,10 +89,10 @@ class TestPortfolioHubContracts(unittest.TestCase):
         for obsolete in OBSOLETE_STATIC_FILES:
             self.assertFalse((REPO_ROOT / obsolete).exists(), f"Archivo estático obsoleto aún existe: {obsolete}")
 
-    def test_v5_typescript_sources_zero_any_safe_dom_and_components_present(self) -> None:
+    def test_v6_typescript_sources_zero_any_safe_dom_and_components_present(self) -> None:
         any_pattern = re.compile(r"(:\s*any\b|\bas\s+any\b|<any>)")
         ts_files = list((REPO_ROOT / "src").rglob("*.ts")) + list((REPO_ROOT / "src").rglob("*.tsx"))
-        self.assertGreaterEqual(len(ts_files), 15)
+        self.assertGreaterEqual(len(ts_files), 17)
         for path in ts_files:
             content = path.read_text(encoding="utf-8")
             self.assertIsNone(any_pattern.search(content), f"'any' prohibido en {path.name}")
@@ -102,13 +104,14 @@ class TestPortfolioHubContracts(unittest.TestCase):
                 self.assertFalse((REPO_ROOT / "src" / "components" / f"{deleted}.tsx").exists())
             for noise in NOISE_LABELS:
                 self.assertNotIn(noise, content, f"Ruido V3 residual encontrado en {path.name}: {noise}")
-        for comp in REQUIRED_V5_COMPONENTS:
+        for comp in REQUIRED_COMPONENTS:
             self.assertTrue((REPO_ROOT / "src" / "components" / comp).is_file(), f"Falta {comp}")
 
     def test_vendored_taste_skill_effects_are_present_and_safe(self) -> None:
         effects = (
             "public/assets/effects/fx.js",
             "public/assets/effects/fluted-glass/effect.js",
+            "public/assets/effects/silk-folds/effect.js",
             "public/assets/effects/grain-gradient/effect.js",
             "public/assets/effects/grid-pulse/effect.js",
             "public/assets/effects/contour-lines/effect.js",
@@ -151,25 +154,31 @@ class TestPortfolioHubContracts(unittest.TestCase):
         for group_name, values in (("bg", bgs), ("accent", accents), ("displayFont", fonts), ("paradigm", paradigms)):
             self.assertEqual(len(values), len(set(values)), f"'{group_name}' repetido entre productos")
 
-    def test_three_layer_progressive_disclosure_preserved_in_v5(self) -> None:
+    def test_v6_scrollytelling_contracts_and_three_layer_ia(self) -> None:
         app_src = read("src/components/PortfolioApp.tsx")
         studio_src = read("src/components/ProjectStudio.tsx")
         shader_src = read("src/components/HeroShader.tsx")
+        index_src = read("src/components/ProjectIndex.tsx")
+        provider_src = read("src/components/SmoothScrollProvider.tsx")
 
         for word in ("Software", "claro", "para", "usar,", "sólido", "por", "dentro."):
             self.assertIn(f'"{word}"', app_src)
         self.assertIn('heroEffect, setHeroEffect] = useState<HeroEffectId>("fluted-glass")', app_src)
-        self.assertIn("KineticManifesto", app_src)
-        self.assertIn("ScrollProgressBar", app_src)
-        self.assertIn("MagneticButton", app_src)
-        self.assertIn("Conversemos", app_src)
+        self.assertIn("CriteriaStack", app_src)
+        self.assertIn("ContactPortal", app_src)
+        self.assertIn("curtain-surface", app_src)
+        self.assertIn("pin: true", index_src)
+        self.assertIn("gsap.matchMedia", index_src)
+        self.assertIn("useSmoothScroll", provider_src)
         self.assertIn("NEXT_PUBLIC_BASE_PATH", shader_src)
+        self.assertIn("silk-folds", shader_src)
         for tab_label in ("Pruébalo", "Cómo funciona", "Ingeniería y código"):
             self.assertIn(tab_label, studio_src)
 
-    def test_kinetic_light_studio_palette_and_typography_are_anti_slop(self) -> None:
+    def test_kinetic_light_studio_palette_sticky_safety_and_typography(self) -> None:
         css = read("src/app/globals.css")
         layout = read("src/app/layout.tsx")
+        self.assertIn("overflow-x: clip", css)
         self.assertIn("#fafaf8", css)
         self.assertIn("#2563eb", css)
         self.assertIn("::selection", css)
@@ -180,11 +189,13 @@ class TestPortfolioHubContracts(unittest.TestCase):
         for font in BANNED_FONTS:
             self.assertIsNone(re.search(rf"\b{font}\b", css + layout), f"Fuente prohibida {font}")
 
-    def test_v5_specs_docs_dockerfile_and_adrs(self) -> None:
-        self.assertIn("Portafolio Hub V5 (Kinetic Light Studio", read("PRODUCT.md"))
-        self.assertIn("Kinetic Light Studio V5", read("DESIGN.md"))
+    def test_v6_specs_docs_icon_dockerfile_and_adrs(self) -> None:
+        self.assertIn("Portafolio Hub V6", read("PRODUCT.md"))
+        self.assertIn("Pinned Scrollytelling Cinema V6", read("DESIGN.md"))
         self.assertTrue((REPO_ROOT / "src" / "app" / "icon.svg").is_file(), "Falta src/app/icon.svg")
-        self.assertTrue((REPO_ROOT / ".specs" / "05-phase7-v5-kinetic-studio" / "v5-kinetic-light-studio.spec.md").is_file())
+        self.assertTrue(
+            (REPO_ROOT / ".specs" / "06-phase8-v6-scrollytelling" / "v6-pinned-scrollytelling.spec.md").is_file()
+        )
         self.assertIn("USER nextjs", read("Dockerfile"))
         for adr in ("001-nextjs-app-router-and-static-case-studies.md", "002-multi-architecture-portfolio-taxonomy.md"):
             self.assertTrue((REPO_ROOT / "docs" / "adr" / adr).is_file())
