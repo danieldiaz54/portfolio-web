@@ -264,15 +264,17 @@ export default function PortfolioApp() {
   const studioProject = PROJECTS.find((project) => project.slug === studioSlug) ?? null;
   const anyModalOpen = Boolean(studioProject) || cmdkOpen;
 
-  // Congela completamente Lenis y scroll de fondo mientras un modal está abierto
+  // Congela completamente Lenis y el scroll nativo de documento y cuerpo mientras un modal está abierto
   useEffect(() => {
     if (!anyModalOpen) {
       return undefined;
     }
     stop();
-    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflowY = "hidden";
+    document.body.style.overflowY = "hidden";
     return () => {
-      document.body.style.overflow = "";
+      document.documentElement.style.overflowY = "";
+      document.body.style.overflowY = "";
       start();
     };
   }, [anyModalOpen, stop, start]);
