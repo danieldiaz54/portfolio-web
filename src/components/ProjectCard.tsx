@@ -4,9 +4,10 @@ import PreviewPlate from "@/components/PreviewPlate";
 interface ProjectCardProps {
   project: Project;
   onOpenCase: (slug: string) => void;
+  onSelectLab?: (slug: string) => void;
 }
 
-export default function ProjectCard({ project, onOpenCase }: ProjectCardProps) {
+export default function ProjectCard({ project, onOpenCase, onSelectLab }: ProjectCardProps) {
   return (
     <article className="exhibit" aria-labelledby={`title-${project.slug}`}>
       <div className="exhibit-mount">
@@ -41,8 +42,13 @@ export default function ProjectCard({ project, onOpenCase }: ProjectCardProps) {
         </dl>
         <div className="exhibit-actions">
           <button type="button" className="link-case" onClick={() => onOpenCase(project.slug)}>
-            Leer ficha de caso →
+            Ficha →
           </button>
+          {onSelectLab ? (
+            <button type="button" className="link-plain" onClick={() => onSelectLab(project.slug)}>
+              Lab vivo
+            </button>
+          ) : null}
           <a className="link-live" href={project.liveUrl} target="_blank" rel="noopener noreferrer">
             En vivo
           </a>

@@ -9,21 +9,28 @@ import CaseStudy from "@/components/CaseStudy";
 
 type FilterId = ProjectCategory | "all";
 
-export default function ExhibitionHub() {
+interface ExhibitionHubProps {
+  onOpenCase?: (slug: string) => void;
+  onSelectLab?: (slug: string) => void;
+}
+
+export default function ExhibitionHub({ onOpenCase, onSelectLab }: ExhibitionHubProps) {
   const [filter, setFilter] = useState<FilterId>("all");
-  const [openSlug, setOpenSlug] = useState<string | null>(null);
+  const [localSlug, setLocalSlug] = useState<string | null>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
 
   const visible = useMemo(
     () => PROJECTS.filter((project) => filter === "all" || project.category === filter),
     [filter],
   );
-  const openProject = PROJECTS.find((project) => project.slug === openSlug);
+  const openProject = onOpenCase
+    ? undefined
+    : PROJECTS.find((project) => project.slug === localSlug);
 
-  const close = useCallback(() => setOpenSlug(null), []);
+  const close = useCallback(() => setLocalSlug(null), []);
 
   useEffect(() => {
-    if (!openSlug) {
+    if (!openProject) {
       return undefined;
     }
     closeRef.current?.focus();
@@ -38,7 +45,15 @@ export default function ExhibitionHub() {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [openSlug, close]);
+  }, [openProject, close]);
+
+  const handleOpen = (slug: string) => {
+    if (onOpenCase) {
+      onOpenCase(slug);
+    } else {
+      setLocalSlug(slug);
+    }
+  };
 
   return (
     <>
@@ -58,7 +73,12 @@ export default function ExhibitionHub() {
 
       <div className="exhibit-grid">
         {visible.map((project) => (
-          <ProjectCard key={project.slug} project={project} onOpenCase={setOpenSlug} />
+          <ProjectCard
+            key={project.slug}
+            project={project}
+            onOpenCase={handleOpen}
+            onSelectLab={onSelectLab}
+          />
         ))}
       </div>
 
@@ -79,7 +99,7 @@ export default function ExhibitionHub() {
                 Cerrar (Esc)
               </button>
             </div>
-            <div className="drawer-body">
+            <div className="case-body">
               <CaseStudy project={openProject} />
             </div>
           </aside>
