@@ -16,6 +16,42 @@ export type PreviewKind =
 
 export type Hosting = "GitHub Pages" | "Railway";
 
+export type HeroEffectId = "grid-pulse" | "contour-lines" | "off";
+
+export type TelemetryStatus = "idle" | "checking" | "live" | "local" | "degraded";
+
+export interface TelemetryEntry {
+  status: TelemetryStatus;
+  latencyMs: number | null;
+  detail: string;
+}
+
+export type TelemetryMap = Record<string, TelemetryEntry>;
+
+export interface DiagramNode {
+  id: string;
+  label: string;
+  sub: string;
+  x: number;
+  y: number;
+  kind: "client" | "core" | "store" | "guard";
+}
+
+export interface DiagramEdge {
+  from: string;
+  to: string;
+  label: string;
+  mode: "normal" | "fault";
+}
+
+export interface DiagramSpec {
+  title: string;
+  normalCaption: string;
+  faultCaption: string;
+  nodes: readonly DiagramNode[];
+  edges: readonly DiagramEdge[];
+}
+
 export interface PlateTheme {
   bg: string;
   surface: string;
@@ -53,12 +89,15 @@ export interface Project {
   categoryLabel: string;
   stack: readonly string[];
   liveUrl: string;
+  healthUrl: string | null;
   repoUrl: string;
   hosting: Hosting;
   testsLabel: string;
+  labPrompt: string;
   matrix: ParadigmRow;
   plate: PlateTheme;
   previewKind: PreviewKind;
+  diagram: DiagramSpec;
   tradeOffs: readonly TradeOff[];
   flow: readonly string[];
   evidence: readonly string[];
