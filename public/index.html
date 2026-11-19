@@ -1,721 +1,1817 @@
 <!doctype html>
-<html lang="es" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>portfolio-web · Vista Previa Interactiva del Portafolio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              surface: {
-                950: "#070b14",
-                900: "#0d1322",
-                800: "#151e33",
-              },
-            },
-          },
-        },
-      };
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
-    <style>
-      body {
-        background-color: #070b14;
-        color: #e2e8f0;
-      }
-      .mermaid svg {
-        max-width: 100%;
-        height: auto;
-      }
-    </style>
-  </head>
-  <body class="min-h-screen antialiased">
-    <!-- Header -->
-    <header
-      class="sticky top-0 z-30 border-b border-slate-800/80 bg-surface-950/90 backdrop-blur-md"
-    >
-      <div
-        class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6"
-      >
-        <div class="flex items-center gap-2.5">
-          <span
-            class="flex h-8 w-8 items-center justify-center rounded-lg border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 font-mono text-xs font-bold"
-          >
-            &lt;/&gt;
-          </span>
-          <span class="text-sm font-semibold tracking-tight text-white">
-            Daniel · Systems &amp; Architecture
-          </span>
-        </div>
-        <span
-          class="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 font-mono text-[11px] text-emerald-300"
-        >
-          Standalone Preview · portfolio-web
-        </span>
-      </div>
-    </header>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Daniel Díaz — Exposición de ingeniería: seis productos, seis arquitecturas</title>
+  <meta name="description" content="Portafolio de ingeniería de software: seis productos en vivo, cada uno con su propia arquitectura, identidad visual y ficha de decisiones técnicas." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Bricolage+Grotesque:wght@700&family=Bodoni+Moda:ital,wght@1,600&family=Sora:wght@700&family=Source+Serif+4:wght@400;700&family=Albert+Sans:wght@700&family=Bitter:wght@700&display=swap" />
+  <!-- Generado por scripts/sync_static_hub.py a partir de src/app/globals.css y src/data/projects.ts. No editar a mano. -->
+  <style>
+/* Monografía de Galería Arquitectónica — tokens (ver DESIGN.md) */
+:root {
+  --paper: #f7f7f5;
+  --plate: #ffffff;
+  --ink: #0a0a0a;
+  --graphite: #3f3f46;
+  --hairline: #e4e4e7;
+  --gallery: #0044cc;
+  --live: #15803d;
+  --f-display: var(--font-archivo, "Archivo"), "Helvetica Neue", sans-serif;
+  --f-body: var(--font-hanken, "Hanken Grotesk"), "Helvetica Neue", sans-serif;
+  --f-mono: var(--font-jetbrains, "JetBrains Mono"), ui-monospace, monospace;
+}
 
-    <main class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <!-- Hero -->
-      <section
-        class="rounded-3xl border border-slate-800 bg-gradient-to-br from-surface-900 via-surface-950 to-surface-900 p-7 sm:p-10"
-      >
-        <span
-          class="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-medium text-cyan-300"
-        >
-          6 Repositorios Públicos · 5 Arquitecturas Distintas
-        </span>
-        <h1 class="mt-4 max-w-3xl text-3xl font-bold tracking-tight text-white sm:text-4xl">
-          Portafolio de Ingeniería orientado a
-          <span class="text-cyan-400">arquitecturas reales</span> y problemas de
-          mercado.
-        </h1>
-        <p class="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300 sm:text-base">
-          Explora cada proyecto por área de mercado, inspecciona su diagrama de
-          arquitectura renderizado en vivo y revisa sus Architecture Decision
-          Records (ADRs).
-        </p>
-      </section>
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-      <!-- Filters -->
-      <section class="mt-10">
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p class="font-mono text-xs uppercase tracking-widest text-cyan-400">
-              Filtro por Área de Mercado
-            </p>
-            <h2 class="mt-1 text-xl font-bold text-white">
-              Case Studies y Diagramas
-            </h2>
-          </div>
-          <div id="filter-bar" class="flex flex-wrap gap-2"></div>
-        </div>
+html {
+  scroll-behavior: smooth;
+}
 
-        <div id="projects-grid" class="mt-6 grid gap-6 md:grid-cols-2"></div>
-      </section>
-    </main>
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
 
-    <!-- Case Study Modal -->
-    <div
-      id="case-study-modal"
-      class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
-      role="dialog"
-      aria-modal="true"
-    >
-      <div
-        class="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-3xl border border-slate-700 bg-surface-900 p-6 sm:p-8"
-      >
-        <div class="flex items-start justify-between gap-4 border-b border-slate-800 pb-4">
-          <div>
-            <div class="flex flex-wrap items-center gap-2">
-              <span
-                id="modal-area"
-                class="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-0.5 text-xs font-medium text-cyan-300"
-              ></span>
-              <span
-                id="modal-arch"
-                class="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-0.5 text-xs font-medium text-emerald-300"
-              ></span>
-              <span
-                id="modal-phase"
-                class="rounded bg-slate-800 px-2 py-0.5 font-mono text-xs text-slate-300"
-              ></span>
-            </div>
-            <h3 id="modal-title" class="mt-3 text-2xl font-bold text-white"></h3>
-            <p id="modal-tagline" class="mt-1 text-sm text-slate-300"></p>
-            <div id="modal-links" class="mt-4 flex flex-wrap gap-2.5"></div>
-          </div>
-          <button
-            id="modal-close"
-            type="button"
-            class="rounded-lg border border-slate-700 bg-surface-950 px-3 py-1.5 text-xs font-medium text-slate-300 hover:border-cyan-400 hover:text-white"
-          >
-            Cerrar ✕
-          </button>
-        </div>
+a {
+  color: inherit;
+}
 
-        <div id="modal-metrics" class="mt-5 grid gap-3 sm:grid-cols-3"></div>
+:focus-visible {
+  outline: 2px solid var(--gallery);
+  outline-offset: 3px;
+}
 
-        <div class="mt-6 grid gap-4 md:grid-cols-2">
-          <div class="rounded-2xl border border-slate-800 bg-surface-950/70 p-4">
-            <h4 class="text-xs font-semibold uppercase tracking-wider text-rose-300">
-              Problema de Ingeniería
-            </h4>
-            <p id="modal-problem" class="mt-2 text-sm leading-relaxed text-slate-300"></p>
-          </div>
-          <div class="rounded-2xl border border-slate-800 bg-surface-950/70 p-4">
-            <h4 class="text-xs font-semibold uppercase tracking-wider text-emerald-300">
-              Solución y Arquitectura
-            </h4>
-            <p id="modal-solution" class="mt-2 text-sm leading-relaxed text-slate-300"></p>
-          </div>
-        </div>
+.shell {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
 
-        <div class="mt-6 rounded-2xl border border-slate-800 bg-surface-950 p-5">
-          <h4 class="text-sm font-semibold text-white">
-            Diagrama de Arquitectura (Mermaid en vivo)
-          </h4>
-          <div
-            id="modal-diagram"
-            class="mermaid mt-4 flex justify-center overflow-x-auto"
-          ></div>
-        </div>
+@media (min-width: 900px) {
+  .shell {
+    padding: 0 48px;
+  }
+}
 
-        <div class="mt-6">
-          <h4 class="text-sm font-semibold text-white">
-            Architecture Decision Records (ADRs)
-          </h4>
-          <div id="modal-adrs" class="mt-3 space-y-3"></div>
-        </div>
-      </div>
+.mono {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+}
+
+.skip-link:focus {
+  left: 16px;
+  top: 16px;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 8px 12px;
+  z-index: 100;
+}
+
+/* ---------- Masthead ---------- */
+.masthead {
+  border-bottom: 1px solid var(--hairline);
+  background: var(--paper);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.masthead-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}
+
+.wordmark {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.masthead nav {
+  display: flex;
+  gap: 24px;
+}
+
+.masthead nav a {
+  text-decoration: none;
+  color: var(--graphite);
+}
+
+.masthead nav a:hover {
+  color: var(--gallery);
+}
+
+@media (max-width: 640px) {
+  .masthead nav a.hide-sm,
+  .wordmark .mono {
+    display: none;
+  }
+
+  .hero-figures strong {
+    font-size: 30px;
+  }
+}
+
+/* ---------- Hero / tesis ---------- */
+.hero {
+  padding: 72px 0 56px;
+  border-bottom: 2px solid var(--ink);
+}
+
+.hero-kicker {
+  color: var(--graphite);
+  margin-bottom: 28px;
+}
+
+.hero-title {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: clamp(44px, 8.4vw, 116px);
+  line-height: 0.94;
+  letter-spacing: -0.045em;
+  margin: 0;
+  max-width: 13ch;
+}
+
+.hero-title em {
+  font-style: normal;
+  color: var(--gallery);
+}
+
+.hero-grid {
+  display: grid;
+  gap: 40px;
+  margin-top: 48px;
+}
+
+@media (min-width: 900px) {
+  .hero-grid {
+    grid-template-columns: 7fr 5fr;
+    align-items: end;
+  }
+}
+
+.hero-thesis {
+  font-size: 21px;
+  line-height: 1.5;
+  max-width: 34ch;
+  margin: 0;
+  color: var(--graphite);
+}
+
+.hero-figures {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--ink);
+}
+
+.hero-figures div {
+  padding: 14px 12px 0 0;
+}
+
+.hero-figures strong {
+  display: block;
+  font-family: var(--f-display);
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.hero-figures span {
+  color: var(--graphite);
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 36px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--ink);
+  font-family: var(--f-body);
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  cursor: pointer;
+  background: transparent;
+  color: var(--ink);
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.btn-solid {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.btn:hover {
+  background: var(--gallery);
+  border-color: var(--gallery);
+  color: #ffffff;
+}
+
+/* ---------- Secciones ---------- */
+.section {
+  padding: 72px 0;
+}
+
+.section-head {
+  display: grid;
+  gap: 16px;
+  border-top: 2px solid var(--ink);
+  padding-top: 18px;
+  margin-bottom: 40px;
+}
+
+@media (min-width: 900px) {
+  .section-head {
+    grid-template-columns: 4fr 8fr;
+  }
+}
+
+.section-head h2 {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: clamp(30px, 4vw, 48px);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin: 0;
+}
+
+.section-head p {
+  margin: 0;
+  color: var(--graphite);
+  max-width: 60ch;
+}
+
+/* ---------- Filtros ---------- */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  border: 1px solid var(--ink);
+  width: fit-content;
+  margin-bottom: 32px;
+}
+
+.filters button {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 0;
+  border-right: 1px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.filters button:last-child {
+  border-right: 0;
+}
+
+.filters button[aria-selected="true"] {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* ---------- Exposición ---------- */
+.exhibit-grid {
+  display: grid;
+  gap: 32px 24px;
+}
+
+@media (min-width: 700px) {
+  .exhibit-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1080px) {
+  .exhibit-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.exhibit {
+  display: flex;
+  flex-direction: column;
+  background: var(--plate);
+  border: 1px solid var(--hairline);
+  transition: transform 200ms ease, border-color 200ms ease;
+}
+
+.exhibit:hover {
+  transform: translateY(-2px);
+  border-color: var(--ink);
+}
+
+.exhibit-mount {
+  padding: 14px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.exhibit-body {
+  padding: 18px 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.exhibit-top {
+  display: flex;
+  justify-content: space-between;
+  color: var(--graphite);
+}
+
+.exhibit h3 {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 26px;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  margin: 0;
+}
+
+.exhibit h3 small {
+  display: block;
+  font-family: var(--f-body);
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0;
+  color: var(--graphite);
+  margin-top: 4px;
+}
+
+.exhibit p {
+  margin: 0;
+  font-size: 16px;
+}
+
+.exhibit-spec {
+  margin: 4px 0 0;
+  border-top: 1px solid var(--hairline);
+}
+
+.exhibit-spec div {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 8px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--hairline);
+  font-size: 14px;
+}
+
+.exhibit-spec dt {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  padding-top: 2px;
+}
+
+.exhibit-spec dd {
+  margin: 0;
+}
+
+.exhibit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: auto;
+  padding-top: 8px;
+  align-items: center;
+}
+
+.link-live,
+.link-plain,
+.link-case {
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--f-body);
+}
+
+.link-case {
+  color: var(--gallery);
+}
+
+.link-case:hover,
+.link-plain:hover,
+.link-live:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.link-live::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--live);
+  margin-right: 6px;
+}
+
+/* ---------- Placas: miniaturas codificadas de cada producto ---------- */
+.pv {
+  aspect-ratio: 4 / 3;
+  background: var(--p-bg);
+  color: var(--p-ink);
+  font-family: var(--p-display);
+  overflow: hidden;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+}
+
+.pv-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pv-brand {
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+}
+
+.pv-chip {
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--p-accent);
+  color: #ffffff;
+}
+
+/* PdfCraft */
+.pv-pdf .pv-body {
+  display: grid;
+  grid-template-columns: 22% 1fr;
+  gap: 10px;
+  flex: 1;
+}
+
+.pv-thumbs {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pv-thumbs i {
+  flex: 1;
+  background: var(--p-surface);
+  border: 1px solid #cbd5e1;
+}
+
+.pv-thumbs i.on {
+  border: 2px solid var(--p-accent);
+}
+
+.pv-page {
+  background: var(--p-surface);
+  box-shadow: 0 1px 0 #cbd5e1, 0 6px 16px rgba(15, 23, 42, 0.08);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.pv-page b {
+  height: 6px;
+  background: #e2e8f0;
+  display: block;
+}
+
+.pv-page .w80 {
+  width: 80%;
+  height: 9px;
+  background: var(--p-ink);
+}
+
+.pv-page .w60 {
+  width: 60%;
+}
+
+.pv-page .w70 {
+  width: 70%;
+}
+
+.pv-page .hl {
+  width: 90%;
+  background: rgba(29, 78, 216, 0.22);
+}
+
+.pv-sign {
+  margin-top: auto;
+  align-self: flex-end;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--p-accent);
+  border-bottom: 1px solid var(--p-muted);
+  padding: 0 4px;
+}
+
+/* Merkat */
+.pv-catalog .pv-brand {
+  font-size: 20px;
+  font-weight: 600;
+  font-style: italic;
+}
+
+.pv-catalog .pv-chip {
+  background: transparent;
+  color: var(--p-accent);
+  border: 1px solid var(--p-accent);
+}
+
+.pv-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  flex: 1;
+}
+
+.pv-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+}
+
+.pv-tile i {
+  flex: 1;
+  background: linear-gradient(160deg, #f5f5f4, #e7e5e4);
+  position: relative;
+}
+
+.pv-tile i::after {
+  content: "";
+  position: absolute;
+  inset: 30% 30%;
+  border-radius: 50%;
+  border: 2px solid var(--p-accent);
+}
+
+.pv-tile em {
+  font-style: normal;
+  color: var(--p-muted);
+}
+
+/* PulseFlow */
+.pv-presence {
+  display: flex;
+}
+
+.pv-presence i {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--p-bg);
+  margin-left: -4px;
+  background: var(--p-accent);
+}
+
+.pv-presence i:nth-child(2) {
+  background: #38bdf8;
+}
+
+.pv-presence i:nth-child(3) {
+  background: #f59e0b;
+}
+
+.pv-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  flex: 1;
+}
+
+.pv-col {
+  background: var(--p-surface);
+  border-radius: 6px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pv-col span {
+  font-size: 10px;
+  color: var(--p-muted);
+}
+
+.pv-col i {
+  height: 26px;
+  border-radius: 4px;
+  background: #1f2937;
+}
+
+.pv-col i.on {
+  box-shadow: inset 3px 0 0 var(--p-accent);
+  background: #1f2a37;
+}
+
+/* Cortex */
+.pv-chat .pv-chip {
+  background: #e2e8f0;
+  color: var(--p-ink);
+}
+
+.pv-q {
+  align-self: flex-end;
+  max-width: 78%;
+  background: var(--p-ink);
+  color: #ffffff;
+  font-size: 12px;
+  padding: 8px 10px;
+  border-radius: 10px 10px 2px 10px;
+}
+
+.pv-a {
+  max-width: 88%;
+  background: var(--p-surface);
+  border: 1px solid #e2e8f0;
+  font-size: 14px;
+  line-height: 1.35;
+  padding: 10px 12px;
+  border-radius: 10px 10px 10px 2px;
+}
+
+.pv-cite {
+  display: inline-block;
+  font-size: 10px;
+  margin-left: 4px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(180, 83, 9, 0.12);
+  color: var(--p-accent);
+  font-weight: 700;
+}
+
+.pv-src {
+  margin-top: auto;
+  border-left: 3px solid var(--p-accent);
+  background: #fffbeb;
+  font-size: 11px;
+  font-style: italic;
+  line-height: 1.4;
+  padding: 8px 10px;
+  color: var(--p-ink);
+}
+
+.pv-actions {
+  margin-top: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.pv-actions span {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 7px 0;
+  border-radius: 6px;
+  border: 1px solid var(--p-accent);
+  color: var(--p-accent);
+}
+
+.pv-actions span:first-child {
+  background: var(--p-ink);
+  border-color: var(--p-ink);
+  color: #ffffff;
+}
+
+/* LedgerCore */
+.pv-wallet .pv-chip {
+  background: rgba(4, 120, 87, 0.12);
+  color: var(--p-accent);
+}
+
+.pv-balance {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  padding: 10px 0 6px;
+  border-bottom: 1px solid #d1ddd8;
+}
+
+.pv-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid #e3ebe8;
+}
+
+.pv-row em {
+  font-style: normal;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--p-accent);
+}
+
+/* FieldNotes */
+.pv-phone {
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 0;
+}
+
+.pv-device {
+  width: 52%;
+  height: 112%;
+  margin-top: 8%;
+  background: var(--p-surface);
+  border: 6px solid #292524;
+  border-bottom: 0;
+  border-radius: 22px 22px 0 0;
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+}
+
+.pv-offline {
+  font-size: 9px;
+  text-align: center;
+  background: var(--p-accent);
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 3px;
+}
+
+.pv-note {
+  border-bottom: 1px dashed #d6d3d1;
+  padding: 4px 2px;
+  display: flex;
+  flex-direction: column;
+}
+
+.pv-note b {
+  font-size: 12px;
+}
+
+.pv-note span {
+  font-size: 9px;
+  color: var(--p-muted);
+}
+
+.pv-fab {
+  position: absolute;
+  right: 8px;
+  bottom: 22%;
+  font-size: 9px;
+  background: #292524;
+  color: var(--p-surface);
+  padding: 4px 8px;
+  border-radius: 999px;
+}
+
+/* ---------- Matriz ---------- */
+.matrix-wrap {
+  overflow-x: auto;
+  border-top: 1px solid var(--ink);
+}
+
+.matrix {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 860px;
+  font-size: 15px;
+}
+
+.matrix th,
+.matrix td {
+  text-align: left;
+  padding: 12px 14px 12px 0;
+  border-bottom: 1px solid var(--hairline);
+  vertical-align: top;
+}
+
+.matrix th {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  font-weight: 500;
+}
+
+.matrix td:first-child {
+  font-family: var(--f-display);
+  font-weight: 700;
+}
+
+.swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  vertical-align: baseline;
+}
+
+/* ---------- Método ---------- */
+.method {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--ink);
+}
+
+@media (min-width: 800px) {
+  .method {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.method div {
+  padding: 18px 20px 18px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.method strong {
+  display: block;
+  font-family: var(--f-display);
+  font-size: 20px;
+  letter-spacing: -0.01em;
+  margin: 6px 0;
+}
+
+.method p {
+  margin: 0;
+  color: var(--graphite);
+  font-size: 15px;
+}
+
+/* ---------- Colofón ---------- */
+.colophon {
+  display: grid;
+  gap: 32px;
+}
+
+@media (min-width: 900px) {
+  .colophon {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.colophon h3 {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  font-weight: 500;
+  margin: 0 0 10px;
+}
+
+.colophon p {
+  margin: 0;
+  font-size: 15px;
+}
+
+.footer {
+  border-top: 2px solid var(--ink);
+  padding: 28px 0 48px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--graphite);
+}
+
+/* ---------- Ficha de caso (panel y página) ---------- */
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.4);
+  z-index: 40;
+  animation: fade 200ms ease;
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(680px, 100vw);
+  background: var(--plate);
+  z-index: 50;
+  overflow-y: auto;
+  border-left: 2px solid var(--ink);
+  animation: slide 240ms ease;
+}
+
+.drawer-head {
+  position: sticky;
+  top: 0;
+  background: var(--plate);
+  border-bottom: 1px solid var(--hairline);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 28px;
+  z-index: 2;
+}
+
+.case-body {
+  padding: 28px;
+}
+
+.case-title {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: clamp(34px, 5vw, 56px);
+  letter-spacing: -0.035em;
+  line-height: 1;
+  margin: 8px 0 6px;
+}
+
+.case-sub {
+  font-size: 19px;
+  color: var(--graphite);
+  margin: 0 0 24px;
+}
+
+.case-block {
+  border-top: 1px solid var(--ink);
+  padding: 16px 0 24px;
+}
+
+.case-block h4 {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--graphite);
+  margin: 0 0 10px;
+}
+
+.case-block p {
+  margin: 0 0 8px;
+}
+
+.tradeoff {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--hairline);
+}
+
+.tradeoff > div {
+  padding: 14px;
+}
+
+.tradeoff > div + div {
+  border-left: 1px solid var(--hairline);
+  color: var(--graphite);
+  text-decoration-color: var(--graphite);
+}
+
+.tradeoff .label {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.tradeoff-note {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--hairline);
+}
+
+.flow {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: step;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.flow li {
+  counter-increment: step;
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--hairline);
+}
+
+.flow li::before {
+  content: counter(step, decimal-leading-zero);
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--gallery);
+  padding-top: 3px;
+}
+
+.case-list {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.stack-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.stack-list li {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  border: 1px solid var(--hairline);
+  padding: 3px 8px;
+}
+
+.case-page {
+  padding: 48px 0 80px;
+}
+
+.case-page .case-body {
+  padding: 0;
+  max-width: 760px;
+}
+
+.case-page .exhibit-mount {
+  border: 1px solid var(--hairline);
+  background: var(--plate);
+  margin-bottom: 32px;
+  max-width: 760px;
+}
+
+@keyframes slide {
+  from {
+    transform: translateX(32px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#exposicion">Saltar a la exposición</a>
+  <header class="masthead">
+    <div class="shell masthead-inner">
+      <a href="#" class="wordmark">Daniel Díaz <span class="mono">/ Exposición</span></a>
+      <nav aria-label="Secciones" class="mono">
+        <a href="#exposicion">Exposición</a>
+        <a href="#matriz" class="hide-sm">Matriz</a>
+        <a href="#metodo" class="hide-sm">Método</a>
+        <a href="https://github.com/danieldiaz54" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </nav>
     </div>
+  </header>
 
-    <script>
-      const PROJECTS = [
-        {
-          slug: "pulseflow-collab",
-          title: "PulseFlow Collab",
-          filterKey: "Full-Stack",
-          area: "Full-Stack & Realtime",
-          architecture: "Monolito Modular + Event-Driven WebSockets",
-          phase: "v0.1.0 · Certificado",
-          tagline:
-            "Plataforma colaborativa de gestión de incidentes y operaciones en tiempo real (:8095).",
-          problem:
-            "Los equipos de ingeniería que coordinan incidentes sufren estado desactualizado entre múltiples pestañas, sobrescrituras silenciosas cuando dos operadores editan el mismo registro y ausencia de trazabilidad auditada.",
-          solution:
-            "Backend en monolito modular con separación estricta por dominios, control de concurrencia optimista CAS (ERR-409-OPTIMISTIC-LOCK), publicación de eventos en backplane Pub/Sub multi-nodo y bitácora append-only inmutable.",
-          techStack: [
-            "Next.js / Minimalist UI",
-            "TypeScript",
-            "Python 3.12 / aiohttp WS",
-            "PostgreSQL / SQLite CAS",
-            "Redis Pub/Sub Backplane",
-            "WebSockets & SSE",
-          ],
-          metrics: [
-            { label: "Concurrencia", value: "CAS · HTTP 409 OCC" },
-            { label: "Escalado WS", value: "Multi-nodo Pub/Sub" },
-            { label: "Suite QA", value: "17/17 Tests PASS" },
-          ],
-          mermaidDiagram: `flowchart LR
-    C1[Browser Client A] <-->|WebSocket| GW1[WS Gateway Node 1]
-    C2[Browser Client B] <-->|WebSocket| GW2[WS Gateway Node 2]
-    GW1 <-->|Pub/Sub| R[(Redis Event Bus)]
-    GW2 <-->|Pub/Sub| R
-    GW1 --> MOD[Modular Monolith Core]
-    MOD -->|Optimistic Lock + Audit| PG[(PostgreSQL)]`,
-          adrHighlights: [
-            {
-              id: "ADR-01",
-              title: "Monolito Modular antes que Microservicios",
-              decision:
-                "Estructurar el backend como un monolito modular con fronteras de dominio explícitas.",
-              rationale:
-                "Maximiza velocidad de iteración y transacciones ACID sin sobrecarga operacional en el dominio colaborativo.",
-            },
-            {
-              id: "ADR-02",
-              title: "Redis Pub/Sub como backplane de WebSockets",
-              decision:
-                "Desacoplar las conexiones WebSocket usando canales Pub/Sub en Redis.",
-              rationale:
-                "Permite escalar horizontalmente múltiples instancias detrás de un balanceador manteniendo sync en tiempo real.",
-            },
-          ],
-          repoUrl: "https://github.com/danieldiaz54/pulseflow-collab",
-          liveUrl: "https://pulseflow-collab-production.up.railway.app",
-        },
-        {
-          slug: "cortex-rag-agent",
-          title: "Cortex RAG Agent",
-          filterKey: "IA / RAG",
-          area: "Applied AI & Agents",
-          architecture: "Pipeline Multi-Agente + RAG Híbrido + Evals",
-          phase: "v0.1.0 · Certificado",
-          tagline:
-            "Copiloto multi-agente para análisis documental técnico con RAG híbrido y evaluación continua (:8090).",
-          problem:
-            "Los asistentes basados en RAG ingenuo fallan en consultas técnicas con acrónimos exactos, generan respuestas sin citas verificables y carecen de métricas objetivas para detectar regresiones.",
-          solution:
-            "Pipeline orquestado con grafo de 4 agentes (Router, Hybrid Retriever BM25 + Vector 64-D con RRF k=60, Synthesizer y Citation Guardrail) con streaming SSE y Eval Harness conectado a un ledger append-only.",
-          techStack: [
-            "Python 3.12",
-            "FastAPI / ThreadingHTTP",
-            "Multi-Agent Pipeline",
-            "pgvector + Okapi BM25",
-            "SSE Streaming",
-            "Eval Harness Ledger",
-          ],
-          metrics: [
-            { label: "Recuperación", value: "BM25 + Vector RRF" },
-            { label: "Golden Evals", value: "5/5 · Faithfulness 1.0" },
-            { label: "Suite QA", value: "15/15 Tests PASS" },
-          ],
-          mermaidDiagram: `flowchart TD
-    Q[User Query] --> R[Router Agent]
-    R --> V[Vector Search pgvector]
-    R --> K[Keyword Search BM25]
-    V --> RR[Reciprocal Rank Fusion]
-    K --> RR
-    RR --> G[Synthesizer + Citation Guardrail]
-    G -->|SSE Stream| UI[Next.js Streaming UI]
-    EV[Eval Harness CI] -.->|Faithfulness & Latency| G`,
-          adrHighlights: [
-            {
-              id: "ADR-01",
-              title: "Búsqueda Híbrida sobre pgvector + Full-Text",
-              decision:
-                "Unificar almacenamiento relacional, vectorial y léxico en PostgreSQL con pgvector.",
-              rationale:
-                "Evita sincronización dual con bases vectoriales externas y mejora la precisión en símbolos técnicos.",
-            },
-            {
-              id: "ADR-02",
-              title: "Eval Harness como compuerta de calidad",
-              decision:
-                "Versionar un conjunto de pruebas de evaluación con métricas de fidelidad, relevancia y costo.",
-              rationale:
-                "Permite iterar prompts y estrategias de chunking con evidencia cuantitativa.",
-            },
-          ],
-          repoUrl: "https://github.com/danieldiaz54/cortex-rag-agent",
-          liveUrl: "https://cortex-rag-agent-production.up.railway.app",
-        },
-        {
-          slug: "ledgercore-distributed",
-          title: "LedgerCore Distributed",
-          filterKey: "Sistemas Distribuidos",
-          area: "Distributed Systems",
-          architecture: "Microservicios Event-Driven (Saga + Outbox Pattern)",
-          phase: "v0.1.0 · Certificado",
-          tagline:
-            "Motor transaccional double-entry y orquestador Saga con Transactional Outbox e idempotencia (:8096).",
-          problem:
-            "En sistemas distribuidos de pagos o inventario, los reintentos de red y las fallas parciales entre base de datos y broker de mensajes provocan cobros duplicados o estados inconsistentes.",
-          solution:
-            "Motor contable de partida doble en centavos enteros exactos (Zero-Sum Invariant) con huella SHA-256 de Idempotency-Key, locks distribuidos con fencing tokens, Transactional Outbox hacia tópicos Kafka, compensación Saga + DLQ y blueprint Java 21 / Spring Boot 3.",
-          techStack: [
-            "Java 21 & Spring Boot 3",
-            "Python 3.12 Core Engine",
-            "Apache Kafka Outbox Relay",
-            "PostgreSQL / SQLite ACID",
-            "Redis Fencing Locks",
-            "Double-Entry Zero-Sum",
-          ],
-          metrics: [
-            { label: "Contabilidad", value: "Zero-Sum Imbalance $0" },
-            { label: "Idempotencia", value: "SHA-256 Replay / 409" },
-            { label: "Suite QA", value: "33/33 Tests PASS" },
-          ],
-          mermaidDiagram: `flowchart LR
-    API[Ledger API] -->|Idempotency Check| RD[(Redis Lock)]
-    API -->|ACID Tx: Ledger + Outbox| PG[(PostgreSQL)]
-    RL[Outbox Relay] -->|Publish Events| KF[[Apache Kafka]]
-    KF --> S1[Reservation Service]
-    KF --> S2[Settlement Service]
-    S2 -->|Failure Event| KF
-    KF -->|Compensating Action| API`,
-          adrHighlights: [
-            {
-              id: "ADR-01",
-              title: "Transactional Outbox frente a 2PC",
-              decision:
-                "Persistir eventos de dominio en una tabla outbox dentro de la misma transacción local del ledger.",
-              rationale:
-                "Garantiza entrega al menos una vez hacia Kafka sin transacciones distribuidas bloqueantes.",
-            },
-            {
-              id: "ADR-02",
-              title: "Idempotencia por clave cliente y deduplicación",
-              decision:
-                "Exigir Idempotency-Key en comandos críticos y registrar IDs procesados en consumidores.",
-              rationale:
-                "Neutraliza reintentos de red y entregas duplicadas en semántica at-least-once.",
-            },
-          ],
-          repoUrl: "https://github.com/danieldiaz54/ledgercore-distributed",
-          liveUrl: "https://ledgercore-distributed-production.up.railway.app",
-        },
-        {
-          slug: "cloudops-gitops-platform",
-          title: "CloudOps GitOps Platform",
-          filterKey: "Cloud / DevOps",
-          area: "Cloud & DevOps",
-          architecture: "IaC + GitOps + Full Observability (OTel)",
-          phase: "v0.1.0 · Certificado",
-          tagline:
-            "Plataforma de infraestructura Terraform, control plane GitOps y observabilidad OpenTelemetry (:8098).",
-          problem:
-            "Desplegar múltiples servicios manualmente genera deriva de configuración entre entornos, caídas durante actualizaciones y diagnóstico lento ante degradaciones en producción.",
-          solution:
-            "Módulos Terraform multi-entorno, manifiestos Kubernetes endurecidos (PSS Restricted) sincronizados con ArgoCD ApplicationSet, stack OpenTelemetry + Prometheus + Grafana para los 5 servicios y motor Canary con auto-rollback por Golden Signals.",
-          techStack: [
-            "Terraform IaC",
-            "Kubernetes & ArgoCD",
-            "OpenTelemetry Collector",
-            "Prometheus & Grafana",
-            "Python 3.12 Control Plane",
-            "PSS Restricted Policy Gate",
-          ],
-          metrics: [
-            { label: "Flota GitOps", value: "5/5 Servicios Synced" },
-            { label: "Canary Gate", value: "Auto-Rollback SLO 99.9%" },
-            { label: "Suite QA", value: "31/31 Tests PASS" },
-          ],
-          mermaidDiagram: `flowchart LR
-    GH[GitHub Actions CI] -->|Build + Scan + Push| REG[(Container Registry)]
-    GH -->|Update Manifests| GIT[GitOps Config Repo]
-    ARGO[ArgoCD Controller] -->|Sync State| K8S[Kubernetes Cluster]
-    TF[Terraform IaC] -->|Provision| K8S
-    K8S -->|OTLP Metrics/Logs/Traces| OTEL[OTel Collector]
-    OTEL --> PROM[Prometheus / Loki]
-    PROM --> GRAF[Grafana Dashboards]`,
-          adrHighlights: [
-            {
-              id: "ADR-01",
-              title: "Modelo Pull GitOps con ArgoCD",
-              decision:
-                "Separar el pipeline de CI del controlador CD dentro del clúster Kubernetes.",
-              rationale:
-                "Evita exponer credenciales administrativas en runners externos y detecta drift automáticamente.",
-            },
-            {
-              id: "ADR-02",
-              title: "Estándar OpenTelemetry transversal",
-              decision:
-                "Instrumentar los servicios del portafolio mediante OTel Collector agnóstico.",
-              rationale:
-                "Correlaciona trazas distribuidas entre Next.js, FastAPI y Spring Boot bajo un mismo Trace ID.",
-            },
-          ],
-          repoUrl: "https://github.com/danieldiaz54/cloudops-gitops-platform",
-          liveUrl: "https://cloudops-gitops-platform-production.up.railway.app",
-        },
-        {
-          slug: "fieldnotes-mobile",
-          title: "FieldNotes Mobile",
-          filterKey: "Mobile",
-          area: "Mobile Offline-First",
-          architecture: "Clean Architecture + Offline-First Sync Engine",
-          phase: "v0.1.0 · Certificado",
-          tagline:
-            "Aplicación móvil multiplataforma offline-first con cola SQLite, relojes de Lamport y resolución de conflictos (:8097).",
-          problem:
-            "Las aplicaciones móviles dependientes de red fallan en zonas sin cobertura, pierden formularios capturados en campo o generan conflictos destructivos al reconectar.",
-          solution:
-            "App en React Native (Expo 52 + TypeScript estricto) y motor de sincronización con almacenamiento SQLite local-first, cola persistente de mutaciones, relojes lógicos de Lamport y resolución determinística de conflictos (KEEP_LOCAL, ACCEPT_REMOTE, MANUAL_MERGE).",
-          techStack: [
-            "React Native & Expo 52",
-            "TypeScript Strict (0 any)",
-            "SQLite Local Outbox",
-            "Lamport Logical Clocks",
-            "Python 3.12 Sync Engine",
-            "Clean Architecture",
-          ],
-          metrics: [
-            { label: "Operación", value: "100% Offline + Outbox" },
-            { label: "Conflictos", value: "Lamport + 3-Way Merge" },
-            { label: "Suite QA", value: "45/45 Tests PASS" },
-          ],
-          mermaidDiagram: `flowchart TD
-    UI[React Native Screens] --> UC[Domain Use Cases]
-    UC --> REPO[Repository Interfaces]
-    REPO --> DB[(Local SQLite / WatermelonDB)]
-    DB --> Q[Pending Mutation Queue]
-    NET[Network Monitor] -->|Online Trigger| SYNC[Background Sync Engine]
-    Q --> SYNC
-    SYNC <-->|Delta Push/Pull| API[Remote Sync API]`,
-          adrHighlights: [
-            {
-              id: "ADR-01",
-              title: "Local-First como fuente de verdad de la UI",
-              decision:
-                "Toda lectura y escritura de UI opera contra SQLite local, delegando la red al motor de sync.",
-              rationale:
-                "Garantiza respuesta instantánea y elimina estados rotos ante pérdida intermitente de cobertura.",
-            },
-            {
-              id: "ADR-02",
-              title: "Clean Architecture para aislar el motor de sync",
-              decision:
-                "Separar casos de uso de adaptadores Expo, SQLite y transporte HTTP.",
-              rationale:
-                "Permite probar la lógica de resolución de conflictos con tests unitarios rápidos sin emulador.",
-            },
-          ],
-          repoUrl: "https://github.com/danieldiaz54/fieldnotes-mobile",
-          liveUrl: "https://fieldnotes-mobile-production.up.railway.app",
-        },
-      ];
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="shell">
+        <p class="hero-kicker mono">Daniel Díaz — Ingeniero de software full-stack</p>
+        <h1 id="hero-title" class="hero-title">Seis problemas cotidianos. <em>Seis arquitecturas.</em></h1>
+        <div class="hero-grid">
+          <div>
+            <p class="hero-thesis">Diseño y construyo sistemas completos —del dominio a la interfaz— y explico cada decisión con su costo.</p>
+            <div class="hero-actions">
+              <a class="btn btn-solid" href="#exposicion">Ver la exposición ↓</a>
+              <a class="btn" href="https://github.com/danieldiaz54" target="_blank" rel="noopener noreferrer">GitHub</a>
+            </div>
+          </div>
+          <div class="hero-figures">
+            <div><strong id="fig-live">6</strong><span class="mono">Productos en vivo</span></div>
+            <div><strong id="fig-paradigms">6</strong><span class="mono">Paradigmas</span></div>
+            <div><strong>100%</strong><span class="mono">Con CI y pruebas</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-      const FILTERS = [
-        "Todos",
-        "Full-Stack",
-        "IA / RAG",
-        "Sistemas Distribuidos",
-        "Cloud / DevOps",
-        "Mobile",
-      ];
+    <section id="exposicion" class="section" aria-labelledby="exposicion-title">
+      <div class="shell">
+        <div class="section-head">
+          <h2 id="exposicion-title">I — Exposición</h2>
+          <p>Cada placa muestra el producto con su propia paleta y tipografía. Ábrela para leer la ficha: el problema, la decisión que tomé, la alternativa que descarté y lo que cambiaría.</p>
+        </div>
+        <div class="filters" role="tablist" aria-label="Filtrar por tipo de sistema" id="filters"></div>
+        <div class="exhibit-grid" id="exhibit-grid"></div>
+      </div>
+    </section>
 
-      let activeFilter = "Todos";
+    <section id="matriz" class="section" aria-labelledby="matriz-title">
+      <div class="shell">
+        <div class="section-head">
+          <h2 id="matriz-title">II — Matriz de paradigmas</h2>
+          <p>Ningún proyecto repite arquitectura. La matriz resume cómo cada uno guarda sus datos y qué garantía de consistencia ofrece.</p>
+        </div>
+        <div class="matrix-wrap">
+          <table class="matrix">
+            <thead>
+              <tr>
+                <th scope="col">Producto</th><th scope="col">Paradigma</th><th scope="col">Persistencia</th>
+                <th scope="col">Consistencia</th><th scope="col">Despliegue</th><th scope="col">Pruebas</th>
+              </tr>
+            </thead>
+            <tbody id="matrix-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
 
-      mermaid.initialize({
-        startOnLoad: false,
-        theme: "dark",
-        securityLevel: "strict",
+    <section id="metodo" class="section" aria-labelledby="metodo-title">
+      <div class="shell">
+        <div class="section-head">
+          <h2 id="metodo-title">III — Método</h2>
+          <p>El mismo proceso para los seis productos, sin importar el lenguaje o la base de datos.</p>
+        </div>
+        <div class="method">
+          <div><span class="mono">01</span><strong>Problema antes que stack</strong><p>Cada producto parte de una molestia cotidiana concreta y de quién la sufre.</p></div>
+          <div><span class="mono">02</span><strong>Especificación escrita</strong><p>Spec-Driven Development: el contrato y las reglas de dominio se escriben antes del código.</p></div>
+          <div><span class="mono">03</span><strong>Dominio aislado</strong><p>Arquitectura limpia: la lógica de negocio no depende de frameworks ni de la base de datos.</p></div>
+          <div><span class="mono">04</span><strong>Pruebas antes del merge</strong><p>GitFlow con dev como único origen; main solo recibe versiones con CI en verde.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="colofon" class="section" aria-labelledby="colofon-title">
+      <div class="shell">
+        <div class="section-head">
+          <h2 id="colofon-title">IV — Colofón</h2>
+          <p>Cómo está hecho este sitio y qué hay detrás del telón.</p>
+        </div>
+        <div class="colophon">
+          <div><h3>Tipografía</h3><p>Archivo para titulares, Hanken Grotesk para texto y JetBrains Mono para metadatos. Las placas usan la tipografía real de cada producto.</p></div>
+          <div><h3>Construcción</h3><p>Next.js 15, React 19 y TypeScript estricto. Esta versión estática en GitHub Pages construye el DOM nodo a nodo, sin inyectar HTML.</p></div>
+          <div><h3>Infraestructura</h3><p>Infraestructura como código, manifiestos GitOps y señales doradas que documentan cómo se operaría el ecosistema en Kubernetes. <a href="https://github.com/danieldiaz54/cloudops-gitops-platform" target="_blank" rel="noopener noreferrer">CloudOps GitOps Platform ↗</a></p></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="shell">
+    <div class="footer mono">
+      <span>© Daniel Díaz</span>
+      <a href="https://github.com/danieldiaz54" target="_blank" rel="noopener noreferrer">github.com/danieldiaz54</a>
+    </div>
+  </footer>
+
+  <div id="drawer-root"></div>
+
+  <script>
+    "use strict";
+    const PROJECTS = [
+  {
+    "slug": "pdfcraft-studio",
+    "inventory": "01",
+    "name": "PdfCraft Studio",
+    "everydayName": "Editor de PDF privado",
+    "oneLiner": "Une, reordena, anota y firma PDFs sin subirlos a ningún servidor.",
+    "problem": "Para firmar o unir un PDF solemos subir contratos y documentos de identidad a servicios web ajenos.",
+    "audience": "Cualquier persona que maneja documentos sensibles: contratos, facturas, trámites.",
+    "outcome": "Todo el procesamiento ocurre dentro del navegador; el archivo nunca sale del equipo.",
+    "category": "web",
+    "categoryLabel": "Web local",
+    "stack": [
+      "React 19",
+      "TypeScript",
+      "Vite",
+      "pdf-lib",
+      "pdf.js",
+      "Vitest"
+    ],
+    "liveUrl": "https://danieldiaz54.github.io/pdfcraft-studio/",
+    "repoUrl": "https://github.com/danieldiaz54/pdfcraft-studio",
+    "hosting": "GitHub Pages",
+    "testsLabel": "7 Vitest + 5 contratos",
+    "matrix": {
+      "paradigm": "Local-first / SPA sin backend",
+      "persistence": "Memoria del navegador",
+      "consistency": "Local, inmediata"
+    },
+    "plate": {
+      "bg": "#EAEEF2",
+      "surface": "#FFFFFF",
+      "ink": "#0F172A",
+      "muted": "#64748B",
+      "accent": "#1D4ED8",
+      "displayFont": "Bricolage Grotesque",
+      "bodyFont": "Public Sans",
+      "displayVar": "--font-bricolage"
+    },
+    "previewKind": "pdf",
+    "tradeOffs": [
+      {
+        "chosen": "Procesar el PDF en el navegador",
+        "rejected": "API de conversión en servidor",
+        "because": "Privacidad por diseño y costo de infraestructura cero.",
+        "failureMode": "Archivos muy grandes quedan limitados por la memoria del dispositivo."
+      }
+    ],
+    "flow": [
+      "Arrastras el PDF",
+      "pdf.js dibuja miniaturas",
+      "Reordenas, anotas o firmas",
+      "pdf-lib genera el nuevo archivo",
+      "Descarga local"
+    ],
+    "evidence": [
+      "Pipeline de CI: ESLint, tsc --noEmit, Vitest y build de Vite",
+      "Desplegado como sitio estático en GitHub Pages"
+    ],
+    "retrospective": "Separar el motor de edición de la interfaz desde el día uno permitió probarlo sin navegador.",
+    "nextEvolution": "Mover el renderizado a un Web Worker para documentos de cientos de páginas."
+  },
+  {
+    "slug": "merkat-catalog",
+    "inventory": "02",
+    "name": "Merkat",
+    "everydayName": "Catálogo de boutique",
+    "oneLiner": "Vitrina con filtros instantáneos para productos que no se parecen entre sí.",
+    "problem": "Una tienda que vende ropa, joyería y perfumes no cabe en una tabla rígida: cada producto tiene atributos propios.",
+    "audience": "Comercios pequeños con catálogos variados.",
+    "outcome": "Catálogo documental polimórfico con lecturas servidas desde caché y escrituras separadas (CQRS).",
+    "category": "data",
+    "categoryLabel": "Datos",
+    "stack": [
+      "Node.js 22",
+      "TypeScript",
+      "MongoDB",
+      "Redis",
+      "Docker"
+    ],
+    "liveUrl": "https://merkat-catalog-production.up.railway.app",
+    "repoUrl": "https://github.com/danieldiaz54/merkat-catalog",
+    "hosting": "Railway",
+    "testsLabel": "4 contratos + suite TS",
+    "matrix": {
+      "paradigm": "NoSQL documental + CQRS",
+      "persistence": "MongoDB + caché Redis",
+      "consistency": "Eventual en lecturas (TTL)"
+    },
+    "plate": {
+      "bg": "#FAFAF9",
+      "surface": "#FFFFFF",
+      "ink": "#1C1917",
+      "muted": "#78716C",
+      "accent": "#A16207",
+      "displayFont": "Bodoni Moda",
+      "bodyFont": "Figtree",
+      "displayVar": "--font-bodoni"
+    },
+    "previewKind": "catalog",
+    "tradeOffs": [
+      {
+        "chosen": "Documentos MongoDB con atributos por tipo",
+        "rejected": "Tablas relacionales con modelo EAV",
+        "because": "Cada producto se lee completo en una consulta, sin joins de atributos.",
+        "failureMode": "Si la caché no se invalida, un precio puede verse desactualizado hasta que vence el TTL."
+      }
+    ],
+    "flow": [
+      "El visitante filtra",
+      "Consulta a la caché de lectura",
+      "Si falla: MongoDB",
+      "Respuesta + recarga de caché"
+    ],
+    "evidence": [
+      "Arquitectura hexagonal: dominio sin dependencias de infraestructura",
+      "Contenedor sin privilegios (usuario no root)"
+    ],
+    "retrospective": "Modelar las variantes de producto como tipos explícitos evitó un documento “cajón de sastre”.",
+    "nextEvolution": "Invalidación por eventos en lugar de TTL fijo."
+  },
+  {
+    "slug": "pulseflow-collab",
+    "inventory": "03",
+    "name": "PulseFlow",
+    "everydayName": "Tablero Kanban en vivo",
+    "oneLiner": "Un tablero donde dos personas editan a la vez sin pisarse.",
+    "problem": "Cuando dos personas editan la misma tarjeta, una sobrescribe el trabajo de la otra sin enterarse.",
+    "audience": "Equipos pequeños que organizan trabajo en tarjetas.",
+    "outcome": "Presencia en vivo y detección de ediciones simultáneas: el conflicto se muestra en lugar de perderse.",
+    "category": "realtime",
+    "categoryLabel": "Tiempo real",
+    "stack": [
+      "Python 3.12",
+      "Server-Sent Events",
+      "Backplane de eventos",
+      "Bitácora de auditoría"
+    ],
+    "liveUrl": "https://pulseflow-collab-production.up.railway.app",
+    "repoUrl": "https://github.com/danieldiaz54/pulseflow-collab",
+    "hosting": "Railway",
+    "testsLabel": "18 pruebas",
+    "matrix": {
+      "paradigm": "Orientado a eventos + concurrencia optimista",
+      "persistence": "Bitácora append-only",
+      "consistency": "Fuerte por versión (409)"
+    },
+    "plate": {
+      "bg": "#090D16",
+      "surface": "#111827",
+      "ink": "#E5E7EB",
+      "muted": "#9CA3AF",
+      "accent": "#10B981",
+      "displayFont": "Sora",
+      "bodyFont": "Manrope",
+      "displayVar": "--font-sora"
+    },
+    "previewKind": "kanban",
+    "tradeOffs": [
+      {
+        "chosen": "Concurrencia optimista con número de versión",
+        "rejected": "Bloqueos pesimistas por tarjeta",
+        "because": "Nadie queda bloqueado esperando; el choque solo se resuelve cuando ocurre.",
+        "failureMode": "Con muchísima contención en una sola tarjeta aumentan los reintentos."
+      }
+    ],
+    "flow": [
+      "Editas una tarjeta (versión n)",
+      "El servidor compara versiones",
+      "Coincide: guarda y emite evento",
+      "No coincide: 409 y aviso de conflicto"
+    ],
+    "evidence": [
+      "Demo de un clic: “Simular edición simultánea” provoca un 409 real",
+      "Cada cambio queda en una bitácora de auditoría consultable"
+    ],
+    "retrospective": "SSE resultó suficiente para la presencia; WebSockets queda como adaptador opcional.",
+    "nextEvolution": "Fusión automática de campos que no chocan (CRDT por campo)."
+  },
+  {
+    "slug": "cortex-rag-agent",
+    "inventory": "04",
+    "name": "Cortex",
+    "everydayName": "Chat con tus documentos",
+    "oneLiner": "Pregunta a tus manuales y recibe la respuesta con la cita exacta.",
+    "problem": "Los asistentes de IA responden con seguridad aunque inventen, y no dicen de qué página salió la respuesta.",
+    "audience": "Estudiantes, analistas y equipos con documentación extensa.",
+    "outcome": "Cada respuesta va acompañada del fragmento que la respalda; si no hay evidencia, lo dice.",
+    "category": "ai",
+    "categoryLabel": "IA",
+    "stack": [
+      "Python 3.12",
+      "Recuperación (RAG)",
+      "Indexado por fragmentos",
+      "Evals automáticos"
+    ],
+    "liveUrl": "https://cortex-rag-agent-production.up.railway.app",
+    "repoUrl": "https://github.com/danieldiaz54/cortex-rag-agent",
+    "hosting": "Railway",
+    "testsLabel": "16 pruebas + evals",
+    "matrix": {
+      "paradigm": "Recuperación aumentada (RAG)",
+      "persistence": "Índice de fragmentos",
+      "consistency": "Respuesta anclada a fuente"
+    },
+    "plate": {
+      "bg": "#F8FAFC",
+      "surface": "#FFFFFF",
+      "ink": "#1E3A5F",
+      "muted": "#64748B",
+      "accent": "#B45309",
+      "displayFont": "Source Serif 4",
+      "bodyFont": "Atkinson Hyperlegible",
+      "displayVar": "--font-source-serif"
+    },
+    "previewKind": "chat",
+    "tradeOffs": [
+      {
+        "chosen": "Citas obligatorias y negarse sin evidencia",
+        "rejected": "Generación libre más fluida",
+        "because": "Una respuesta verificable vale más que una respuesta elocuente.",
+        "failureMode": "Preguntas fuera del corpus reciben “no encontrado” en lugar de una conjetura."
+      }
+    ],
+    "flow": [
+      "Subes un documento",
+      "Se divide en fragmentos indexados",
+      "Preguntas",
+      "Se recuperan los fragmentos relevantes",
+      "Respuesta + cita"
+    ],
+    "evidence": [
+      "Suite de evaluación ejecutable desde la interfaz",
+      "Ingesta de documentos por API"
+    ],
+    "retrospective": "Medir con evals desde el inicio cambió la conversación de “se ve bien” a una métrica reproducible.",
+    "nextEvolution": "Búsqueda híbrida (léxica + vectorial) con re-ranking."
+  },
+  {
+    "slug": "ledgercore-distributed",
+    "inventory": "05",
+    "name": "LedgerCore",
+    "everydayName": "Billetera digital",
+    "oneLiner": "Transferencias que nunca cobran dos veces, ni con doble clic.",
+    "problem": "Un doble clic o una red inestable pueden duplicar una transferencia y cobrar dos veces.",
+    "audience": "Cualquier usuario de pagos digitales; equipos que construyen pagos.",
+    "outcome": "Llave de idempotencia por operación, reverso automático si falla la liquidación y contabilidad de doble partida.",
+    "category": "fintech",
+    "categoryLabel": "Fintech",
+    "stack": [
+      "Python 3.12",
+      "Saga orquestada",
+      "Transactional Outbox",
+      "Cola de mensajes muertos"
+    ],
+    "liveUrl": "https://ledgercore-distributed-production.up.railway.app",
+    "repoUrl": "https://github.com/danieldiaz54/ledgercore-distributed",
+    "hosting": "Railway",
+    "testsLabel": "34 pruebas",
+    "matrix": {
+      "paradigm": "Saga + Outbox + doble partida",
+      "persistence": "Libro contable append-only",
+      "consistency": "Eventual con compensación"
+    },
+    "plate": {
+      "bg": "#F4F7F6",
+      "surface": "#FFFFFF",
+      "ink": "#064E3B",
+      "muted": "#4B6B61",
+      "accent": "#047857",
+      "displayFont": "Albert Sans",
+      "bodyFont": "JetBrains Mono",
+      "displayVar": "--font-albert"
+    },
+    "previewKind": "wallet",
+    "tradeOffs": [
+      {
+        "chosen": "Saga orquestada con pasos compensables",
+        "rejected": "Commit en dos fases (2PC)",
+        "because": "Ningún servicio queda bloqueado esperando a otro.",
+        "failureMode": "Durante unos instantes el saldo se muestra como “pendiente”."
+      }
+    ],
+    "flow": [
+      "Envías dinero con una llave única",
+      "Débito reservado",
+      "Liquidación",
+      "Si falla: reverso automático",
+      "Asientos que suman cero"
+    ],
+    "evidence": [
+      "Demo de doble clic: la segunda solicitud devuelve el mismo resultado",
+      "Auditoría: la suma de todos los asientos siempre es 0"
+    ],
+    "retrospective": "Hacer explícito el estado “pendiente” en la interfaz resolvió más dudas que cualquier optimización.",
+    "nextEvolution": "Conciliación diaria contra un extracto externo."
+  },
+  {
+    "slug": "fieldnotes-mobile",
+    "inventory": "06",
+    "name": "FieldNotes",
+    "everydayName": "Notas de campo sin internet",
+    "oneLiner": "Registra datos sin señal y sincroniza al volver a tener conexión.",
+    "problem": "Técnicos en zonas sin cobertura pierden registros o los duplican al reconectarse.",
+    "audience": "Personal de campo: inspección, mantenimiento, investigación.",
+    "outcome": "Todo se guarda en el teléfono; al reconectar se sincroniza y los choques se resuelven en tres opciones claras.",
+    "category": "mobile",
+    "categoryLabel": "Móvil",
+    "stack": [
+      "Python 3.12",
+      "SQLite local",
+      "API de sincronización",
+      "Blueprint Expo"
+    ],
+    "liveUrl": "https://fieldnotes-mobile-production.up.railway.app",
+    "repoUrl": "https://github.com/danieldiaz54/fieldnotes-mobile",
+    "hosting": "Railway",
+    "testsLabel": "46 pruebas",
+    "matrix": {
+      "paradigm": "Offline-first + sincronización",
+      "persistence": "SQLite en dispositivo",
+      "consistency": "Convergente con resolución explícita"
+    },
+    "plate": {
+      "bg": "#EFECE6",
+      "surface": "#FFFBEB",
+      "ink": "#292524",
+      "muted": "#78716C",
+      "accent": "#9A3412",
+      "displayFont": "Bitter",
+      "bodyFont": "Work Sans",
+      "displayVar": "--font-bitter"
+    },
+    "previewKind": "phone",
+    "tradeOffs": [
+      {
+        "chosen": "Resolución de conflictos explícita por la persona",
+        "rejected": "Última escritura gana (LWW)",
+        "because": "En registros de campo, perder un dato en silencio es inaceptable.",
+        "failureMode": "Si hay muchos choques, resolverlos uno a uno genera fricción."
+      }
+    ],
+    "flow": [
+      "Modo avión: escribes notas",
+      "Se encolan localmente",
+      "Reconectas",
+      "Sincronización",
+      "Choque: conservar mía, la del servidor o ambas"
+    ],
+    "evidence": [
+      "Simulador de teléfono con interruptor de modo avión",
+      "Botón “Simular choque” que provoca un conflicto real"
+    ],
+    "retrospective": "Diseñar primero el estado sin conexión simplificó todo el resto del flujo.",
+    "nextEvolution": "Sincronización en segundo plano con reintentos exponenciales."
+  }
+];
+    const FILTERS = [
+      { id: "all", label: "Todo" }, { id: "web", label: "Web local" }, { id: "data", label: "Datos" },
+      { id: "realtime", label: "Tiempo real" }, { id: "ai", label: "IA" },
+      { id: "fintech", label: "Fintech" }, { id: "mobile", label: "Móvil" }
+    ];
+
+    /* Constructor seguro de nodos: solo createElement + textContent. */
+    function h(tag, attrs, children) {
+      const node = document.createElement(tag);
+      const options = attrs || {};
+      Object.keys(options).forEach(function (key) {
+        const value = options[key];
+        if (key === "className") { node.className = value; }
+        else if (key === "text") { node.textContent = value; }
+        else if (key === "style") { Object.keys(value).forEach(function (prop) { node.style.setProperty(prop, value[prop]); }); }
+        else if (key.indexOf("on") === 0) { node.addEventListener(key.slice(2).toLowerCase(), value); }
+        else { node.setAttribute(key, value); }
       });
+      (children || []).forEach(function (child) {
+        if (child === null || child === undefined) { return; }
+        node.appendChild(typeof child === "string" ? document.createTextNode(child) : child);
+      });
+      return node;
+    }
 
-      function el(tag, className, text) {
-        const node = document.createElement(tag);
-        if (className) node.className = className;
-        if (text !== undefined) node.textContent = text;
-        return node;
+    function bar(brand, chip) {
+      return h("div", { className: "pv-bar" }, [h("span", { className: "pv-brand", text: brand }), chip]);
+    }
+    function chip(text) { return h("span", { className: "pv-chip", text: text }); }
+
+    const PREVIEWS = {
+      pdf: function () {
+        return [
+          bar("PdfCraft", chip("Firmar")),
+          h("div", { className: "pv-body" }, [
+            h("div", { className: "pv-thumbs" }, [h("i"), h("i", { className: "on" }), h("i")]),
+            h("div", { className: "pv-page" }, [
+              h("b", { className: "w80" }), h("b", { className: "w60" }), h("b", { className: "hl" }),
+              h("b", { className: "w70" }), h("span", { className: "pv-sign", text: "D. Díaz" })
+            ])
+          ])
+        ];
+      },
+      catalog: function () {
+        const items = [["Anillo Sol", "$ 120"], ["Seda Nº 4", "$ 86"], ["Ámbar 50 ml", "$ 64"]];
+        return [
+          bar("Merkat", chip("Joyería")),
+          h("div", { className: "pv-tiles" }, items.map(function (item) {
+            return h("div", { className: "pv-tile" }, [h("i"), h("span", { text: item[0] }), h("em", { text: item[1] })]);
+          }))
+        ];
+      },
+      kanban: function () {
+        return [
+          bar("PulseFlow", h("span", { className: "pv-presence", "aria-hidden": "true" }, [h("i"), h("i"), h("i")])),
+          h("div", { className: "pv-cols" }, [
+            h("div", { className: "pv-col" }, [h("span", { text: "Por hacer" }), h("i"), h("i")]),
+            h("div", { className: "pv-col" }, [h("span", { text: "En curso" }), h("i", { className: "on" })]),
+            h("div", { className: "pv-col" }, [h("span", { text: "Hecho" }), h("i")])
+          ])
+        ];
+      },
+      chat: function () {
+        return [
+          bar("Cortex", chip("manual.pdf")),
+          h("div", { className: "pv-q", text: "¿Cada cuánto se cambia el filtro?" }),
+          h("div", { className: "pv-a" }, ["Cada 500 horas de uso.", h("span", { className: "pv-cite", text: "p. 12" })]),
+          h("div", { className: "pv-src", text: "«…reemplace el filtro cada 500 horas de operación…» — manual.pdf, p. 12" })
+        ];
+      },
+      wallet: function () {
+        return [
+          bar("LedgerCore", chip("Saldo")),
+          h("div", { className: "pv-balance", text: "$ 2.480,00" }),
+          h("div", { className: "pv-row" }, [h("span", { text: "Envío a Ana" }), h("em", { text: "− 120,00" })]),
+          h("div", { className: "pv-row" }, [h("span", { text: "Reverso automático" }), h("em", { text: "+ 45,00" })]),
+          h("div", { className: "pv-actions" }, [h("span", { text: "Enviar" }), h("span", { text: "Recibir" })])
+        ];
+      },
+      phone: function () {
+        return [
+          h("div", { className: "pv-device" }, [
+            h("div", { className: "pv-offline", text: "Sin conexión · 3 en cola" }),
+            h("div", { className: "pv-note" }, [h("b", { text: "Poste 14" }), h("span", { text: "Tensión normal" })]),
+            h("div", { className: "pv-note" }, [h("b", { text: "Válvula B" }), h("span", { text: "Fuga leve" })]),
+            h("div", { className: "pv-fab", text: "+ Nota" })
+          ])
+        ];
       }
+    };
 
-      function renderFilters() {
-        const bar = document.getElementById("filter-bar");
-        bar.replaceChildren();
-        FILTERS.forEach((filter) => {
-          const isActive = filter === activeFilter;
-          const btn = el(
-            "button",
-            isActive
-              ? "rounded-xl bg-cyan-400 px-3.5 py-1.5 text-xs font-semibold text-slate-950 transition"
-              : "rounded-xl border border-slate-700 bg-surface-900 px-3.5 py-1.5 text-xs font-medium text-slate-300 hover:border-cyan-400/50 hover:text-white transition",
-            filter
-          );
-          btn.type = "button";
-          btn.addEventListener("click", () => {
-            activeFilter = filter;
-            renderFilters();
-            renderProjects();
-          });
-          bar.appendChild(btn);
-        });
-      }
-
-      async function renderCardDiagram(container, diagramId, definition) {
-        try {
-          const { svg } = await mermaid.render(diagramId, definition);
-          const parsed = new DOMParser().parseFromString(svg, "image/svg+xml");
-          const svgElement = parsed.documentElement;
-          container.replaceChildren(document.importNode(svgElement, true));
-        } catch (err) {
-          container.textContent = definition;
+    function plate(project) {
+      const p = project.plate;
+      return h("div", {
+        className: "pv pv-" + project.previewKind,
+        role: "img",
+        "aria-label": "Miniatura de " + project.name + " en su paleta y tipografía " + p.displayFont,
+        style: {
+          "--p-bg": p.bg, "--p-surface": p.surface, "--p-ink": p.ink, "--p-muted": p.muted,
+          "--p-accent": p.accent, "--p-display": "\"" + p.displayFont + "\", serif"
         }
-      }
+      }, PREVIEWS[project.previewKind]());
+    }
 
-      function renderProjects() {
-        const grid = document.getElementById("projects-grid");
-        grid.replaceChildren();
+    function extLink(className, href, text) {
+      return h("a", { className: className, href: href, target: "_blank", rel: "noopener noreferrer", text: text });
+    }
 
-        const visible =
-          activeFilter === "Todos"
-            ? PROJECTS
-            : PROJECTS.filter((p) => p.filterKey === activeFilter);
+    function specRow(label, value) {
+      return h("div", {}, [h("dt", { text: label }), h("dd", {}, value)]);
+    }
 
-        visible.forEach((project, idx) => {
-          const card = el(
-            "article",
-            "flex flex-col justify-between rounded-2xl border border-slate-800 bg-surface-900/80 p-6 transition hover:border-cyan-500/40"
-          );
+    function card(project) {
+      return h("article", { className: "exhibit", "aria-labelledby": "title-" + project.slug }, [
+        h("div", { className: "exhibit-mount" }, [plate(project)]),
+        h("div", { className: "exhibit-body" }, [
+          h("div", { className: "exhibit-top mono" }, [h("span", { text: "N.º " + project.inventory }), h("span", { text: project.categoryLabel })]),
+          h("h3", { id: "title-" + project.slug }, [project.name, h("small", { text: project.everydayName })]),
+          h("p", { text: project.oneLiner }),
+          h("dl", { className: "exhibit-spec" }, [
+            specRow("Paradigma", [project.matrix.paradigm]),
+            specRow("Pruebas", [project.testsLabel]),
+            specRow("Identidad", [h("span", { className: "swatch", style: { background: project.plate.accent } }), project.plate.displayFont])
+          ]),
+          h("div", { className: "exhibit-actions" }, [
+            h("button", { type: "button", className: "link-case", text: "Leer ficha de caso →", onClick: function () { openCase(project.slug); } }),
+            extLink("link-live", project.liveUrl, "En vivo"),
+            extLink("link-plain", project.repoUrl, "Código")
+          ])
+        ])
+      ]);
+    }
 
-          const top = el("div");
-          const badges = el("div", "mb-3 flex flex-wrap items-center justify-between gap-2");
-          badges.appendChild(
-            el(
-              "span",
-              "rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-medium text-cyan-300",
-              project.area
-            )
-          );
-          badges.appendChild(
-            el(
-              "span",
-              "rounded-md bg-slate-800 px-2.5 py-1 font-mono text-[11px] text-slate-300",
-              project.phase
-            )
-          );
-          top.appendChild(badges);
+    function block(title, children) {
+      return h("section", { className: "case-block" }, [h("h4", { text: title })].concat(children));
+    }
 
-          top.appendChild(el("h3", "text-xl font-semibold text-white", project.title));
-          top.appendChild(
-            el(
-              "p",
-              "mt-1 text-xs font-medium uppercase tracking-wider text-emerald-300",
-              project.architecture
-            )
-          );
-          top.appendChild(
-            el("p", "mt-2.5 text-sm leading-relaxed text-slate-300", project.tagline)
-          );
+    function caseStudy(project) {
+      const trade = project.tradeOffs.map(function (t) {
+        return h("div", { className: "tradeoff" }, [
+          h("div", {}, [h("span", { className: "mono label", text: "Elegido" }), t.chosen]),
+          h("div", {}, [h("span", { className: "mono label", text: "Descartado" }), h("s", { text: t.rejected })]),
+          h("div", { className: "tradeoff-note" }, [h("span", { className: "mono label", text: "Por qué" }), t.because]),
+          h("div", { className: "tradeoff-note" }, [h("span", { className: "mono label", text: "Modo de falla aceptado" }), t.failureMode])
+        ]);
+      });
+      return h("div", { className: "case-body" }, [
+        h("p", { className: "mono", text: "N.º " + project.inventory + " · " + project.categoryLabel + " · " + project.hosting }),
+        h("h2", { className: "case-title", id: "case-title", text: project.name }),
+        h("p", { className: "case-sub", text: project.everydayName + ". " + project.oneLiner }),
+        block("El problema", [h("p", { text: project.problem }), h("p", {}, [h("strong", { text: "Para quién: " }), project.audience])]),
+        block("Qué entrega", [h("p", { text: project.outcome })]),
+        block("Decisión de arquitectura", trade),
+        block("Flujo", [h("ol", { className: "flow" }, project.flow.map(function (s) { return h("li", { text: s }); }))]),
+        block("Evidencia", [h("ul", { className: "case-list" }, [h("li", { text: "Pruebas automatizadas: " + project.testsLabel })].concat(project.evidence.map(function (e) { return h("li", { text: e }); })))]),
+        block("Stack", [h("ul", { className: "stack-list" }, project.stack.map(function (s) { return h("li", { text: s }); }))]),
+        block("Retrospectiva", [h("p", { text: project.retrospective }), h("p", {}, [h("strong", { text: "Siguiente evolución: " }), project.nextEvolution])]),
+        h("div", { className: "exhibit-actions" }, [
+          extLink("btn btn-solid", project.liveUrl, "Abrir en vivo ↗"),
+          extLink("btn", project.repoUrl, "Código fuente")
+        ])
+      ]);
+    }
 
-          const diagramBox = el(
-            "div",
-            "mt-4 overflow-x-auto rounded-xl border border-slate-800 bg-surface-950 p-3"
-          );
-          const diagramTarget = el("div", "mermaid flex justify-center text-xs");
-          diagramBox.appendChild(diagramTarget);
-          top.appendChild(diagramBox);
-          renderCardDiagram(
-            diagramTarget,
-            `card-mermaid-${project.slug}-${idx}`,
-            project.mermaidDiagram
-          );
+    const drawerRoot = document.getElementById("drawer-root");
+    let lastFocus = null;
 
-          const stackRow = el("div", "mt-4 flex flex-wrap gap-1.5");
-          project.techStack.forEach((tech) => {
-            stackRow.appendChild(
-              el(
-                "span",
-                "rounded-md border border-slate-700/70 bg-surface-800/70 px-2 py-0.5 font-mono text-[11px] text-slate-300",
-                tech
-              )
-            );
+    function onKey(event) { if (event.key === "Escape") { closeCase(); } }
+
+    function closeCase() {
+      drawerRoot.replaceChildren();
+      document.body.style.overflow = "";
+      document.removeEventListener("keydown", onKey);
+      if (location.hash.indexOf("#caso-") === 0) { history.replaceState(null, "", location.pathname + location.search); }
+      if (lastFocus) { lastFocus.focus(); }
+    }
+
+    function openCase(slug) {
+      const project = PROJECTS.find(function (p) { return p.slug === slug; });
+      if (!project) { return; }
+      lastFocus = document.activeElement;
+      const closeBtn = h("button", { type: "button", className: "btn", text: "Cerrar (Esc)", onClick: closeCase });
+      drawerRoot.replaceChildren(
+        h("div", { className: "drawer-backdrop", "aria-hidden": "true", onClick: closeCase }),
+        h("aside", { className: "drawer", role: "dialog", "aria-modal": "true", "aria-label": "Ficha de caso: " + project.name }, [
+          h("div", { className: "drawer-head" }, [h("span", { className: "mono", text: "Ficha de caso" }), closeBtn]),
+          h("div", { className: "drawer-body" }, [caseStudy(project)])
+        ])
+      );
+      document.body.style.overflow = "hidden";
+      document.addEventListener("keydown", onKey);
+      history.replaceState(null, "", "#caso-" + slug);
+      closeBtn.focus();
+    }
+
+    let activeFilter = "all";
+    function renderFilters() {
+      document.getElementById("filters").replaceChildren.apply(
+        document.getElementById("filters"),
+        FILTERS.map(function (f) {
+          return h("button", {
+            type: "button", role: "tab", "aria-selected": String(activeFilter === f.id), text: f.label,
+            onClick: function () { activeFilter = f.id; renderFilters(); renderGrid(); }
           });
-          top.appendChild(stackRow);
+        })
+      );
+    }
+    function renderGrid() {
+      const grid = document.getElementById("exhibit-grid");
+      grid.replaceChildren.apply(grid, PROJECTS
+        .filter(function (p) { return activeFilter === "all" || p.category === activeFilter; })
+        .map(card));
+    }
+    function renderMatrix() {
+      const body = document.getElementById("matrix-body");
+      body.replaceChildren.apply(body, PROJECTS.map(function (p) {
+        return h("tr", {}, [
+          h("td", {}, [h("span", { className: "swatch", style: { background: p.plate.accent } }), p.name]),
+          h("td", { text: p.matrix.paradigm }), h("td", { text: p.matrix.persistence }),
+          h("td", { text: p.matrix.consistency }), h("td", { text: p.hosting }), h("td", { text: p.testsLabel })
+        ]);
+      }));
+    }
 
-          const footer = el(
-            "div",
-            "mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-slate-800 pt-4"
-          );
-          const actions = el("div", "flex flex-wrap items-center gap-2");
-
-          const liveLink = el(
-            "a",
-            "rounded-lg bg-emerald-400/15 border border-emerald-500/40 px-2.5 py-1.5 text-xs font-semibold text-emerald-300 hover:bg-emerald-400 hover:text-slate-950 transition",
-            "Demo en Vivo (Railway) ↗"
-          );
-          liveLink.href = project.liveUrl;
-          liveLink.target = "_blank";
-          liveLink.rel = "noreferrer";
-
-          const repoLink = el(
-            "a",
-            "rounded-lg border border-slate-700 bg-surface-950 px-2.5 py-1.5 text-xs font-medium text-slate-300 hover:border-slate-500 hover:text-white transition",
-            "GitHub Repo"
-          );
-          repoLink.href = project.repoUrl;
-          repoLink.target = "_blank";
-          repoLink.rel = "noreferrer";
-
-          const openBtn = el(
-            "button",
-            "rounded-lg bg-cyan-400/15 border border-cyan-500/40 px-3 py-1.5 text-xs font-semibold text-cyan-300 hover:bg-cyan-400 hover:text-slate-950 transition",
-            "Case Study & ADRs →"
-          );
-          openBtn.type = "button";
-          openBtn.addEventListener("click", () => openModal(project));
-
-          actions.appendChild(liveLink);
-          actions.appendChild(repoLink);
-          actions.appendChild(openBtn);
-          footer.appendChild(
-            el("span", "font-mono text-xs text-slate-400", project.slug)
-          );
-          footer.appendChild(actions);
-
-          card.appendChild(top);
-          card.appendChild(footer);
-          grid.appendChild(card);
-        });
-      }
-
-      async function openModal(project) {
-        document.getElementById("modal-area").textContent = project.area;
-        document.getElementById("modal-arch").textContent = project.architecture;
-        document.getElementById("modal-phase").textContent = project.phase;
-        document.getElementById("modal-title").textContent = project.title;
-        document.getElementById("modal-tagline").textContent = project.tagline;
-        document.getElementById("modal-problem").textContent = project.problem;
-        document.getElementById("modal-solution").textContent = project.solution;
-
-        const linksEl = document.getElementById("modal-links");
-        linksEl.replaceChildren();
-        const modalLive = el(
-          "a",
-          "rounded-xl bg-emerald-400 px-3.5 py-1.5 text-xs font-semibold text-slate-950 hover:bg-emerald-300 transition",
-          "Demo en Vivo (Railway) ↗"
-        );
-        modalLive.href = project.liveUrl;
-        modalLive.target = "_blank";
-        modalLive.rel = "noreferrer";
-        const modalRepo = el(
-          "a",
-          "rounded-xl border border-cyan-500/40 bg-cyan-500/10 px-3.5 py-1.5 text-xs font-semibold text-cyan-300 hover:bg-cyan-500/20 transition",
-          "GitHub Repo"
-        );
-        modalRepo.href = project.repoUrl;
-        modalRepo.target = "_blank";
-        modalRepo.rel = "noreferrer";
-        linksEl.appendChild(modalLive);
-        linksEl.appendChild(modalRepo);
-
-        const metricsEl = document.getElementById("modal-metrics");
-        metricsEl.replaceChildren();
-        project.metrics.forEach((m) => {
-          const box = el("div", "rounded-xl border border-slate-800 bg-surface-950/70 p-3.5");
-          box.appendChild(el("p", "text-[11px] uppercase tracking-wider text-slate-400", m.label));
-          box.appendChild(el("p", "mt-1 text-sm font-semibold text-white", m.value));
-          metricsEl.appendChild(box);
-        });
-
-        const adrsEl = document.getElementById("modal-adrs");
-        adrsEl.replaceChildren();
-        project.adrHighlights.forEach((adr) => {
-          const box = el("div", "rounded-xl border border-slate-800 bg-surface-950/70 p-4");
-          const head = el("div", "flex items-center gap-2");
-          head.appendChild(
-            el(
-              "span",
-              "rounded bg-indigo-500/20 px-2 py-0.5 font-mono text-xs font-semibold text-indigo-300",
-              adr.id
-            )
-          );
-          head.appendChild(el("h5", "text-sm font-semibold text-white", adr.title));
-          box.appendChild(head);
-          box.appendChild(
-            el("p", "mt-2 text-xs text-slate-200", `Decisión: ${adr.decision}`)
-          );
-          box.appendChild(
-            el("p", "mt-1 text-xs text-emerald-300", `Justificación: ${adr.rationale}`)
-          );
-          adrsEl.appendChild(box);
-        });
-
-        const diagramEl = document.getElementById("modal-diagram");
-        diagramEl.replaceChildren();
-        await renderCardDiagram(
-          diagramEl,
-          `modal-mermaid-${project.slug}-${Date.now()}`,
-          project.mermaidDiagram
-        );
-
-        const modal = document.getElementById("case-study-modal");
-        modal.classList.remove("hidden");
-        modal.classList.add("flex");
-      }
-
-      function closeModal() {
-        const modal = document.getElementById("case-study-modal");
-        modal.classList.add("hidden");
-        modal.classList.remove("flex");
-      }
-
-      document.getElementById("modal-close").addEventListener("click", closeModal);
-      document.getElementById("case-study-modal").addEventListener("click", (e) => {
-        if (e.target.id === "case-study-modal") closeModal();
-      });
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") closeModal();
-      });
-
-      renderFilters();
-      renderProjects();
-    </script>
-  </body>
+    document.getElementById("fig-live").textContent = String(PROJECTS.length);
+    document.getElementById("fig-paradigms").textContent = String(new Set(PROJECTS.map(function (p) { return p.matrix.paradigm; })).size);
+    renderFilters();
+    renderGrid();
+    renderMatrix();
+    if (location.hash.indexOf("#caso-") === 0) { openCase(location.hash.slice(6)); }
+  </script>
+</body>
 </html>
