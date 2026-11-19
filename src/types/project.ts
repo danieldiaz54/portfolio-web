@@ -17,9 +17,10 @@ export type PreviewKind =
 export type Hosting = "GitHub Pages" | "Railway";
 
 export type HeroEffectId =
+  | "prism-dispersion"
+  | "spotlight-cone"
+  | "god-rays"
   | "fluted-glass"
-  | "silk-folds"
-  | "grain-gradient"
   | "grid-pulse"
   | "contour-lines"
   | "off";

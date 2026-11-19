@@ -8,15 +8,15 @@ import { ArrowDown, ArrowRight } from "lucide-react";
 import type { HeroEffectId, Project, TelemetryEntry, TelemetryMap } from "@/types/project";
 import { OWNER, PROJECTS, SUPPORTING_REPO } from "@/data/projects";
 import Navbar, { type ActiveSectionId } from "@/components/Navbar";
-import HeroShader from "@/components/HeroShader";
-import ProjectIndex from "@/components/ProjectIndex";
+import FixedBackdrop from "@/components/FixedBackdrop";
+import CinemaStage from "@/components/CinemaStage";
 import ProjectStudio from "@/components/ProjectStudio";
 import CommandPalette from "@/components/CommandPalette";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import MagneticButton from "@/components/MagneticButton";
 import KineticManifesto from "@/components/KineticManifesto";
-import CriteriaStack, { type CriterionItem } from "@/components/CriteriaStack";
-import ContactPortal from "@/components/ContactPortal";
+import EditorialMethod, { type CriterionItem } from "@/components/EditorialMethod";
+import CinemaFinale from "@/components/CinemaFinale";
 import { useSmoothScroll } from "@/components/SmoothScrollProvider";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -71,7 +71,7 @@ export default function PortfolioApp() {
   const heroSectionRef = useRef<HTMLElement>(null);
   const heroInnerRef = useRef<HTMLDivElement>(null);
 
-  const [heroEffect, setHeroEffect] = useState<HeroEffectId>("fluted-glass");
+  const [heroEffect, setHeroEffect] = useState<HeroEffectId>("prism-dispersion");
   const [activeSection, setActiveSection] = useState<ActiveSectionId>("hero");
   const [selectedSlug, setSelectedSlug] = useState<string>(PROJECTS[0].slug);
   const [studioSlug, setStudioSlug] = useState<string | null>(null);
@@ -133,7 +133,7 @@ export default function PortfolioApp() {
     };
   }, []);
 
-  // Entrada tipográfica 3D de Hero en montaje inicial
+  // Entrada tipográfica 3D inicial de Hero
   useEffect(() => {
     const scope = heroInnerRef.current;
     if (!scope || typeof window === "undefined") {
@@ -151,12 +151,12 @@ export default function PortfolioApp() {
       const subElements = scope.querySelectorAll<HTMLElement>(".hero-thesis, .hero-actions");
       gsap.fromTo(
         words,
-        { yPercent: 115, rotateX: 22, opacity: 0 },
+        { yPercent: 115, rotateX: 20, opacity: 0 },
         {
           yPercent: 0,
           rotateX: 0,
           opacity: 1,
-          duration: 0.78,
+          duration: 0.8,
           stagger: 0.048,
           ease: "power3.out",
           clearProps: "transform,opacity",
@@ -168,7 +168,7 @@ export default function PortfolioApp() {
         {
           y: 0,
           opacity: 1,
-          duration: 0.65,
+          duration: 0.68,
           delay: 0.22,
           stagger: 0.09,
           ease: "power3.out",
@@ -180,7 +180,7 @@ export default function PortfolioApp() {
     return () => ctx.revert();
   }, []);
 
-  // Coreografía global: Hero Cortina Fijada + rastreo de sección activa
+  // Cámara dolly-through de Hero + rastreo continuo de sección activa sobre el lienzo fijo
   useEffect(() => {
     const heroEl = heroSectionRef.current;
     const heroInner = heroInnerRef.current;
@@ -189,9 +189,7 @@ export default function PortfolioApp() {
       return undefined;
     }
 
-    const shaderEl = heroEl.querySelector<HTMLElement>(".hero-shader");
     const cueEl = heroEl.querySelector<HTMLElement>(".hero-scroll-cue");
-
     const mm = gsap.matchMedia();
 
     mm.add("(min-width: 960px) and (prefers-reduced-motion: no-preference)", () => {
@@ -199,44 +197,33 @@ export default function PortfolioApp() {
         scrollTrigger: {
           trigger: heroEl,
           start: "top top",
-          end: "bottom top",
+          end: "+=55%",
           pin: true,
-          pinSpacing: false,
-          scrub: true,
+          pinSpacing: true,
+          scrub: 0.6,
+          anticipatePin: 1,
         },
       });
 
       heroTl.to(
         heroInner,
         {
-          y: -64,
-          scale: 0.92,
-          opacity: 0.08,
-          filter: "blur(6px)",
+          scale: 1.06,
+          y: -28,
+          opacity: 0,
+          filter: "blur(8px)",
           ease: "none",
         },
         0,
       );
-
-      if (shaderEl) {
-        heroTl.to(
-          shaderEl,
-          {
-            scale: 1.12,
-            y: 32,
-            ease: "none",
-          },
-          0,
-        );
-      }
 
       if (cueEl) {
         heroTl.to(
           cueEl,
           {
             opacity: 0,
-            y: 14,
-            duration: 0.25,
+            y: 12,
+            duration: 0.28,
             ease: "none",
           },
           0,
@@ -315,17 +302,20 @@ export default function PortfolioApp() {
     scrollTo(`#${targetId}`, { duration: 0.95 });
   };
 
+  const activeProject = PROJECTS.find((project) => project.slug === selectedSlug) ?? PROJECTS[0];
+  const sceneAccent = activeSection === "proyectos" ? activeProject.plate.accent : "#3B82F6";
+
   return (
     <>
+      <FixedBackdrop effect={heroEffect} accent={sceneAccent} />
       <ScrollProgressBar />
       <a className="skip-link" href="#proyectos">
         Saltar a los proyectos
       </a>
       <Navbar activeSection={activeSection} onOpenCmdk={() => setCmdkOpen(true)} />
 
-      <main ref={mainRef}>
+      <main ref={mainRef} className="cinema-main">
         <section ref={heroSectionRef} className="hero" aria-labelledby="hero-title">
-          <HeroShader effect={heroEffect} />
           <div className="shell hero-inner" ref={heroInnerRef}>
             <h1 id="hero-title" className="hero-title">
               {HERO_TITLE_WORDS.map((word, idx) => (
@@ -348,7 +338,7 @@ export default function PortfolioApp() {
                   href="#proyectos"
                   onClick={(event) => handleHeroScrollLink(event, "proyectos")}
                 >
-                  <span>Explorar los proyectos</span>
+                  <span>Explorar las obras</span>
                   <ArrowDown size={15} aria-hidden="true" />
                 </a>
               </MagneticButton>
@@ -368,50 +358,48 @@ export default function PortfolioApp() {
           </div>
         </section>
 
-        <div className="curtain-surface">
-          <section id="proyectos" className="projects-cinema-section" aria-labelledby="proyectos-title">
-            <ProjectIndex
-              projects={PROJECTS}
-              selectedSlug={selectedSlug}
-              telemetry={telemetry}
-              onSelect={setSelectedSlug}
-              onOpenStudio={openStudio}
+        <section id="proyectos" className="cinema-stage-section" aria-labelledby="proyectos-title">
+          <CinemaStage
+            projects={PROJECTS}
+            selectedSlug={selectedSlug}
+            telemetry={telemetry}
+            onSelect={setSelectedSlug}
+            onOpenStudio={openStudio}
+          />
+        </section>
+
+        <section id="criterio" className="section" aria-labelledby="criterio-title">
+          <div className="shell">
+            <div className="section-intro">
+              <h2 id="criterio-title">Cómo diseño y construyo software</h2>
+              <p>Un mismo método para las seis obras, sin repetir arquitectura ni estética.</p>
+            </div>
+            <KineticManifesto text="Cada producto empieza por el problema humano real, aísla su dominio puro de la infraestructura y demuestra su comportamiento bajo falla." />
+            <EditorialMethod items={CRITERIA} />
+          </div>
+        </section>
+
+        <section id="contacto" className="section section-finale" aria-labelledby="contacto-title">
+          <div className="shell">
+            <CinemaFinale
+              githubUrl={OWNER.github}
+              copied={copied}
+              onCopyLink={copyPortfolioLink}
             />
-          </section>
+          </div>
+        </section>
 
-          <section id="criterio" className="section" aria-labelledby="criterio-title">
-            <div className="shell">
-              <div className="section-intro">
-                <h2 id="criterio-title">Cómo diseño y construyo software</h2>
-                <p>Un mismo método para las seis obras, sin repetir arquitectura ni estética.</p>
-              </div>
-              <KineticManifesto text="Cada producto empieza por el problema humano real, aísla su dominio puro de la infraestructura y demuestra su comportamiento bajo falla." />
-              <CriteriaStack items={CRITERIA} />
-            </div>
-          </section>
-
-          <section id="contacto" className="section" aria-labelledby="contacto-title">
-            <div className="shell">
-              <ContactPortal
-                githubUrl={OWNER.github}
-                copied={copied}
-                onCopyLink={copyPortfolioLink}
-              />
-            </div>
-          </section>
-
-          <footer className="shell">
-            <div className="footer">
-              <span>
-                © {OWNER.name} · Tipografías Archivo y Hanken Grotesk · Infraestructura{" "}
-                <a href={SUPPORTING_REPO.repoUrl} target="_blank" rel="noopener noreferrer">
-                  {SUPPORTING_REPO.name} ↗
-                </a>
-              </span>
-              <span className="mono">Atajo ⌘K</span>
-            </div>
-          </footer>
-        </div>
+        <footer className="shell">
+          <div className="footer">
+            <span>
+              © {OWNER.name} · Tipografías Archivo y Hanken Grotesk · Infraestructura{" "}
+              <a href={SUPPORTING_REPO.repoUrl} target="_blank" rel="noopener noreferrer">
+                {SUPPORTING_REPO.name} ↗
+              </a>
+            </span>
+            <span className="mono">Atajo ⌘K</span>
+          </div>
+        </footer>
       </main>
 
       <AnimatePresence>

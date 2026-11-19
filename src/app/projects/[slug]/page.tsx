@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import FixedBackdrop from "@/components/FixedBackdrop";
 import Navbar from "@/components/Navbar";
 import ProjectStudio from "@/components/ProjectStudio";
 import { PROJECTS, getProjectBySlug } from "@/data/projects";
@@ -33,8 +34,9 @@ export default async function CasePage({ params }: CasePageProps) {
 
   return (
     <>
-      <Navbar />
-      <main>
+      <FixedBackdrop effect="prism-dispersion" accent={project.plate.accent} />
+      <Navbar activeSection="proyectos" />
+      <main className="cinema-main">
         <ProjectStudio project={project} allProjects={PROJECTS} mode="page" />
       </main>
     </>

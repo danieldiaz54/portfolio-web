@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type MouseEvent } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowUpRight, Check, Copy } from "lucide-react";
@@ -8,21 +8,21 @@ import MagneticButton from "@/components/MagneticButton";
 
 gsap.registerPlugin(ScrollTrigger);
 
-interface ContactPortalProps {
+interface CinemaFinaleProps {
   githubUrl: string;
   copied: boolean;
   onCopyLink: () => void;
 }
 
-export default function ContactPortal({
+export default function CinemaFinale({
   githubUrl,
   copied,
   onCopyLink,
-}: ContactPortalProps) {
-  const portalRef = useRef<HTMLDivElement>(null);
+}: CinemaFinaleProps) {
+  const finaleRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const el = portalRef.current;
+    const el = finaleRef.current;
     if (!el || typeof window === "undefined") {
       return undefined;
     }
@@ -31,7 +31,7 @@ export default function ContactPortal({
     mm.add("(prefers-reduced-motion: no-preference)", () => {
       const tween = gsap.fromTo(
         el,
-        { scale: 0.94, y: 32 },
+        { scale: 0.94, y: 26 },
         {
           scale: 1,
           y: 0,
@@ -39,7 +39,7 @@ export default function ContactPortal({
           scrollTrigger: {
             trigger: el,
             start: "top 92%",
-            end: "top 52%",
+            end: "top 50%",
             scrub: 0.5,
           },
         },
@@ -54,21 +54,15 @@ export default function ContactPortal({
     };
   }, []);
 
-  const handleMouseMove = (event: MouseEvent<HTMLDivElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const mx = `${(((event.clientX - rect.left) / rect.width) * 100).toFixed(1)}%`;
-    const my = `${(((event.clientY - rect.top) / rect.height) * 100).toFixed(1)}%`;
-    event.currentTarget.style.setProperty("--mx", mx);
-    event.currentTarget.style.setProperty("--my", my);
-  };
-
   return (
-    <div ref={portalRef} className="contact-band" onMouseMove={handleMouseMove}>
-      <div>
-        <h2 id="contacto-title">Conversemos</h2>
-        <p>Todos los repositorios son públicos, auditados y tienen despliegue activo en la nube.</p>
-      </div>
-      <div className="contact-actions">
+    <div ref={finaleRef} className="cinema-finale">
+      <h2 id="contacto-title" className="cinema-finale-title">
+        Conversemos.
+      </h2>
+      <p className="cinema-finale-lead">
+        Todos los repositorios son públicos, auditados y tienen despliegue activo en la nube.
+      </p>
+      <div className="cinema-actions">
         <MagneticButton>
           <a className="btn btn-solid" href={githubUrl} target="_blank" rel="noopener noreferrer">
             <span>GitHub</span>
