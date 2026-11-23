@@ -18,12 +18,13 @@ function PdfPreview(): ReactNode {
     <>
       <div className="pv-bar">
         <span className="pv-brand">PdfCraft</span>
-        <span className="pv-chip">Firmar</span>
+        <span className="pv-chip">0 KB · Firmar</span>
       </div>
       <div className="pv-body">
         <div className="pv-thumbs">
           <i />
           <i className="on" />
+          <i />
           <i />
         </div>
         <div className="pv-page">
@@ -31,7 +32,7 @@ function PdfPreview(): ReactNode {
           <b className="w60" />
           <b className="hl" />
           <b className="w70" />
-          <span className="pv-sign">D. Díaz</span>
+          <span className="pv-sign">D. Díaz · 2/4</span>
         </div>
       </div>
     </>
