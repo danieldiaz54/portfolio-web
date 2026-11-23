@@ -37,11 +37,11 @@ export const PROJECTS: readonly Project[] = [
     healthUrl: null,
     repoUrl: "https://github.com/danieldiaz54/pdfcraft-studio",
     hosting: "GitHub Pages",
-    testsLabel: "7 Vitest + 5 contratos",
+    testsLabel: "8 Vitest + 5 contratos",
     labPrompt: "Reordena páginas, rota el lienzo o estampa tu firma local: 0 bytes enviados a servidores.",
     matrix: {
       paradigm: "Local-first / SPA sin backend",
-      persistence: "Memoria del navegador",
+      persistence: "IndexedDB privado + RAM",
       consistency: "Local, inmediata",
     },
     plate: {
